@@ -1,0 +1,281 @@
+.shell {
+  --tumblr-radius: 14px;
+  width: min(1080px, 100%);
+  margin: 0 auto;
+  color: var(--ink);
+  font-family: var(--font);
+  padding: 1.25rem 1rem 2.5rem;
+}
+
+.shell[data-layout="grid"] {
+  width: min(1120px, 100%);
+}
+
+.header {
+  position: relative;
+  border-radius: var(--tumblr-radius);
+  overflow: hidden;
+  min-height: 180px;
+  margin-bottom: 1rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  box-shadow: 0 18px 40px -24px var(--glow);
+  background:
+    linear-gradient(180deg, transparent 35%, color-mix(in srgb, var(--surface) 88%, transparent)),
+    var(--header-image) center/cover no-repeat,
+    var(--panel);
+}
+
+.headerBody {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  align-items: end;
+  gap: 1rem;
+  padding: 1rem 1.15rem 1.1rem;
+}
+
+.avatar {
+  width: 78px;
+  height: 78px;
+  border-radius: 18px;
+  object-fit: cover;
+  border: 3px solid color-mix(in srgb, var(--surface) 90%, white);
+  box-shadow: 0 8px 20px -10px var(--glow);
+  background: var(--panel);
+}
+
+.blogTitle {
+  margin: 0;
+  font-size: clamp(1.55rem, 3vw, 2.1rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.handle,
+.tagline {
+  margin: 0.15rem 0 0;
+  color: var(--soft);
+  font-size: 0.92rem;
+}
+
+.status {
+  display: inline-flex;
+  margin-top: 0.45rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--chip) 88%, transparent);
+  color: var(--ink);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.layout {
+  display: grid;
+  gap: 1rem;
+}
+
+.shell[data-layout="sidebar"] .layout {
+  grid-template-columns: minmax(220px, 270px) minmax(0, 1fr);
+  align-items: start;
+}
+
+.shell[data-layout="grid"] .layout {
+  grid-template-columns: 1fr;
+}
+
+.sidebar,
+.post {
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  border-radius: var(--tumblr-radius);
+  box-shadow: 0 14px 30px -24px var(--glow);
+}
+
+.sidebar {
+  padding: 1rem;
+  display: grid;
+  gap: 1rem;
+  position: sticky;
+  top: 1rem;
+}
+
+.aboutLabel,
+.sectionLabel {
+  margin: 0 0 0.4rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--soft);
+}
+
+.aboutText {
+  margin: 0;
+  line-height: 1.55;
+  font-size: 0.95rem;
+}
+
+.links {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.link {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: baseline;
+  padding: 0.55rem 0.65rem;
+  border-radius: 10px;
+  background: var(--panel);
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.link strong {
+  display: block;
+  font-size: 0.92rem;
+}
+
+.link small {
+  color: var(--soft);
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.nav button {
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  background: var(--chip);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.nav button[aria-pressed="true"] {
+  background: var(--accent);
+  color: #1a1428;
+  border-color: transparent;
+}
+
+.shell[data-font="soft"] .nav button[aria-pressed="true"] {
+  color: #fffdf8;
+}
+
+.feed {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.shell[data-layout="grid"] .feed {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.post {
+  overflow: hidden;
+  animation: rise 0.45s ease both;
+}
+
+.postMedia {
+  display: block;
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  background: var(--panel);
+}
+
+.postBody {
+  padding: 0.9rem 1rem 1rem;
+}
+
+.postKind {
+  margin: 0 0 0.35rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.postTitle {
+  margin: 0 0 0.4rem;
+  font-size: 1.15rem;
+  line-height: 1.25;
+}
+
+.postText,
+.postCaption {
+  margin: 0;
+  line-height: 1.55;
+  color: var(--soft);
+}
+
+.quote {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+.quote cite {
+  display: block;
+  margin-top: 0.55rem;
+  font-size: 0.85rem;
+  font-style: normal;
+  color: var(--soft);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+}
+
+.tag {
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  background: var(--chip);
+  color: var(--ink);
+  font-size: 0.75rem;
+}
+
+.footerNote {
+  margin: 1rem 0 0;
+  text-align: center;
+  color: var(--soft);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 820px) {
+  .shell[data-layout="sidebar"] .layout,
+  .shell[data-layout="grid"] .feed {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+  }
+
+  .headerBody {
+    flex-direction: column;
+    align-items: start;
+  }
+}

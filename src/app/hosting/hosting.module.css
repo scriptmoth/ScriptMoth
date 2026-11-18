@@ -1,0 +1,125 @@
+.page {
+  display: grid;
+  gap: clamp(1.75rem, 5vw, 3.5rem);
+}
+
+.options, .planGrid {
+  display: grid;
+  gap: 1rem;
+}
+
+.options {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+}
+
+.option, .plan {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: clamp(1.15rem, 2.5vw, 1.65rem);
+  overflow-wrap: anywhere;
+}
+
+.option {
+  gap: .6rem;
+  box-shadow: var(--panel-shadow);
+}
+
+.managed {
+  background: var(--panel-lavender);
+  border-color: var(--strong-line);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  color: var(--accent);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-bottom: .15rem;
+}
+
+.option p, .plans header p, .summary, .details dd {
+  color: var(--muted);
+}
+
+.option p {
+  flex: 1;
+  max-width: 55ch;
+  margin-bottom: .45rem;
+}
+
+.plans {
+  scroll-margin-top: 6rem;
+}
+
+.plans header {
+  margin-bottom: 1rem;
+}
+
+.plans header p {
+  margin-top: .35rem;
+  max-width: 68ch;
+}
+
+.planGrid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 36rem) {
+  .planGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 66rem) {
+  .planGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.plan {
+  border-top: 3px solid var(--strong-line);
+}
+
+.plan h3 {
+  font-size: 1.22rem;
+}
+
+.price {
+  margin-block: .55rem .7rem;
+  color: var(--accent);
+  font: 750 clamp(1.35rem, 2.15vw, 1.85rem)/1.15 var(--heading);
+}
+
+.price span {
+  color: var(--muted);
+  font: 500 .85rem/1.5 var(--body);
+  white-space: nowrap;
+}
+
+.details {
+  display: grid;
+  gap: .55rem;
+  width: 100%;
+  margin-top: .9rem;
+  padding-top: .75rem;
+  border-top: 1px solid var(--line);
+  font-size: .88rem;
+}
+
+.details dt {
+  font-weight: 700;
+}
+
+.planLink {
+  margin-top: auto;
+  padding-top: .75rem;
+}

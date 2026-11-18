@@ -1,0 +1,65 @@
+.showcase {
+  padding-block: clamp(2rem, 5vw, 4rem) clamp(1.6rem, 4vw, 3rem);
+  background:
+    radial-gradient(ellipse at 12% 0%, color-mix(in srgb, var(--lavender) 28%, transparent), transparent 58%),
+    var(--surface-alt);
+  border-bottom: 1px solid var(--line);
+}
+
+.header, .caption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: end;
+  gap: .6rem 1.5rem;
+}
+
+.header {
+  margin-bottom: clamp(1.3rem, 3vw, 2rem);
+}
+
+.header h1 {
+  margin-block: .2rem .55rem;
+}
+
+.header h1 + p, .caption p {
+  color: var(--muted);
+}
+
+.caption {
+  align-items: center;
+  padding-top: .85rem;
+  font-size: .9rem;
+}
+
+.caption span {
+  margin-inline: .25em;
+}
+
+.galleryTitle {
+  margin-bottom: 1.3rem;
+}
+
+.featured {
+  padding: clamp(1rem, 4vw, 3rem) clamp(.6rem, 3vw, 2.5rem);
+  border-radius: 16px;
+}
+
+.captionLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem 1.2rem;
+}
+
+.sectionHeader {
+  max-width: 62ch;
+  margin-bottom: clamp(1.3rem, 3vw, 2rem);
+}
+
+.sectionHeader h2 {
+  margin-block: .2rem .5rem;
+}
+
+.sectionHeader p:last-child {
+  color: var(--muted);
+}

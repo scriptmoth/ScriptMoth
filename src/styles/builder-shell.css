@@ -1,0 +1,79 @@
+/* Project builder: retro shop layout */
+.quote-builder .wizard-steps {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.step-intro {
+  max-width: 62ch;
+  color: var(--muted);
+}
+.field-hint {
+  display: block;
+  color: var(--muted);
+  font-size: .86rem;
+  font-weight: 500;
+}
+.field-optional {
+  color: var(--muted);
+  font-weight: 500;
+}
+.heading-moth img {
+  width: 2.75rem;
+  height: auto;
+  animation: moth-bob 3.2s ease-in-out infinite;
+}
+@keyframes moth-bob {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-5px) rotate(4deg); }
+}
+
+@media (max-width: 720px) {
+  .build-layout .build-estimate {
+    order: 1;
+    position: static;
+  }
+  .build-estimate .window {
+    max-height: none;
+  }
+  .estimate-dock {
+    position: fixed;
+    inset: auto .75rem .75rem;
+    z-index: 20;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .2rem .75rem;
+    padding: .55rem .85rem;
+    border: 2px solid #503b5d;
+    border-radius: 10px;
+    background: #1e1128;
+    color: #f4c590;
+    font-family: var(--mono);
+    text-decoration: none;
+    box-shadow: 0 6px 18px #1e112866;
+  }
+  .estimate-dock span, .estimate-dock small {
+    color: #d6c4f0;
+    font-size: .75rem;
+  }
+  .build-layout {
+    padding-bottom: 4rem;
+  }
+  .feature-body, .feature-suggested {
+    padding-inline-start: 0;
+  }
+  .quote-builder .wizard-steps {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: .25rem;
+  }
+  .quote-builder .wizard-steps li {
+    font-size: .66rem;
+  }
+}
+@media print {
+  body:has(.receipt) .build-main { display: block; }
+  body:has(.receipt) .build-main .wizard-steps, body:has(.receipt) .build-main .button-row,
+  body:has(.receipt) .build-main .quote-step-heading, body:has(.receipt) .build-tools,
+  body:has(.receipt) .window-bar, body:has(.receipt) .build-estimate, .estimate-dock { display: none !important; }
+  .receipt { animation: none; box-shadow: none; clip-path: none; }
+}

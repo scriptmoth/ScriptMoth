@@ -1,0 +1,166 @@
+/* Live estimate with CRT display */
+.estimate-panel {
+  display: grid;
+  gap: .7rem;
+  padding: .9rem;
+  color: var(--ink);
+  background: var(--surface);
+}
+.estimate-head {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+.estimate-moth img {
+  width: 2.4rem;
+  height: auto;
+  animation: moth-bob 3.6s ease-in-out infinite;
+}
+.estimate-kicker {
+  color: var(--muted);
+  font: 700 .7rem var(--mono);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.estimate-panel h2 {
+  font-size: clamp(1.15rem, 2.4vw, 1.45rem);
+}
+.crt {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: .2rem;
+  padding: .85rem .9rem;
+  border: 3px solid #503b5d;
+  border-radius: 12px / 16px;
+  background: radial-gradient(ellipse at center, #2b1a3a 0%, #170c1f 100%);
+  color: #f4c590;
+  box-shadow: inset 0 0 18px #000a, 0 2px 0 #3e2850;
+}
+.crt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, #ffffff0a 0 1px, transparent 1px 3px);
+}
+.crt-label, .crt-sub {
+  color: #d6c4f0;
+  font: 600 .72rem/1.4 var(--mono);
+}
+.crt-label {
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+.crt-total {
+  font: 700 clamp(1.6rem, 3.4vw, 2.1rem)/1.1 var(--mono);
+  text-shadow: 0 0 8px #f4c59099;
+  animation: crt-flicker 320ms steps(3, end);
+}
+.crt-plus {
+  display: block;
+  font-size: .8rem;
+  text-shadow: none;
+  color: #fff6e9;
+}
+@keyframes crt-flicker {
+  0% { opacity: .35; }
+  50% { opacity: .85; }
+  100% { opacity: 1; }
+}
+.crt-sparkles i {
+  position: absolute;
+  width: .6rem;
+  color: #f4c590;
+  animation: sparkle-pop 650ms var(--ease-out);
+}
+.crt-sparkles i:nth-child(1) { top: 18%; right: 12%; }
+.crt-sparkles i:nth-child(2) { top: 52%; right: 26%; animation-delay: 90ms; }
+.crt-sparkles i:nth-child(3) { top: 30%; right: 40%; animation-delay: 170ms; }
+.estimate-section {
+  border-top: 1px dotted var(--strong-line);
+  padding-top: .45rem;
+}
+.estimate-section > summary {
+  display: flex;
+  justify-content: space-between;
+  gap: .5rem;
+  min-height: 36px;
+  align-items: center;
+  font-weight: 760;
+}
+.estimate-section > summary span:last-child {
+  color: var(--accent);
+  font: 700 .85rem var(--mono);
+}
+.estimate-hint {
+  color: var(--muted);
+  font-size: .8rem;
+  margin-bottom: .3rem;
+}
+.estimate-lines {
+  display: grid;
+  gap: .1rem;
+}
+.estimate-lines summary {
+  display: flex;
+  justify-content: space-between;
+  gap: .5rem;
+  padding-block: .2rem;
+  font-size: .86rem;
+}
+.estimate-lines summary span:last-child {
+  font: 700 .78rem/1.6 var(--mono);
+  white-space: nowrap;
+}
+.estimate-lines summary::marker, .estimate-lines summary::-webkit-details-marker {
+  color: var(--strong-line);
+}
+.estimate-lines p {
+  padding: .15rem 0 .35rem 1rem;
+  color: var(--muted);
+  font-size: .8rem;
+}
+.estimate-flag {
+  padding: .5rem .6rem;
+  border-radius: 5px;
+  background: var(--surface-alt);
+  font-size: .82rem;
+}
+.estimate-flag[data-tone="custom"] {
+  border: 1px dashed var(--accent);
+}
+.estimate-flag p {
+  color: var(--muted);
+}
+.estimate-notes {
+  display: grid;
+  gap: .45rem;
+  font-size: .84rem;
+}
+.estimate-notes small {
+  display: block;
+  color: var(--muted);
+  font-size: .78rem;
+}
+.estimate-dock {
+  display: none;
+}
+
+/* How pricing works */
+.pricing-explainer {
+  margin-top: 1rem;
+}
+.pricing-explainer h3 {
+  font-size: 1.08rem;
+}
+.explainer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  gap: 1rem 1.6rem;
+}
+.explainer-list {
+  display: grid;
+  gap: .45rem;
+  margin-top: .5rem;
+}

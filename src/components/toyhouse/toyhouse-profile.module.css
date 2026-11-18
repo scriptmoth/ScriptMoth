@@ -1,0 +1,45 @@
+/* Softblog Toyhouse demo chrome. Profile look is Bootstrap 4 + inline styles. */
+.root {
+  width: 100%;
+  --th-accent: #9b87c9;
+  --th-chip: #e8e0f5;
+  --th-soft: #8b7fa3;
+  --th-ink: #3d3550;
+  --th-tab-active: #9b87c9;
+}
+
+.root :global(a.nav-link) {
+  text-decoration: none !important;
+  box-shadow: none !important;
+}
+
+.root :global(a.nav-link:hover) {
+  color: var(--th-tab-active) !important;
+}
+
+.root :global(a.nav-link.active) {
+  color: var(--th-tab-active) !important;
+  border-bottom-color: var(--th-tab-active) !important;
+}
+
+/* Fixed tab panel so switching tabs never resizes the card. */
+.root :global(.tab-content) {
+  position: relative;
+  height: 420px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.root :global(.tab-pane) {
+  display: none;
+}
+
+.root :global(.tab-pane.active),
+.root :global(.tab-pane.show.active),
+.root :global(.tab-pane.active.show) {
+  display: block;
+}
+
+.root :global(img) {
+  max-width: 100%;
+}

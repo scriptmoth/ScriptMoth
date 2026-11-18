@@ -1,0 +1,75 @@
+/* Step 3: hosting */
+.hosting-modes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: .65rem;
+}
+.hosting-mode, .plan-card {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: .35rem;
+  padding: .8rem;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+  cursor: pointer;
+  transition: border-color var(--quick), transform var(--quick) var(--ease-out);
+}
+.hosting-mode:hover, .plan-card:hover {
+  transform: translateY(-1px);
+}
+.hosting-mode[data-active], .plan-card[data-active] {
+  border-color: var(--accent);
+  background: var(--surface-alt);
+}
+.hosting-mode input, .plan-card input {
+  position: absolute;
+  top: .7rem;
+  right: .7rem;
+  appearance: auto;
+  accent-color: var(--muted-purple);
+}
+.hosting-mode img {
+  width: 3.25rem;
+  height: auto;
+}
+.hosting-mode span, .plan-card span {
+  color: var(--muted);
+  font-size: .88rem;
+  line-height: 1.45;
+}
+.plan-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: .55rem;
+}
+.plan-card strong {
+  padding-inline-end: 1.5rem;
+}
+.plan-card em {
+  color: var(--accent);
+  font: 700 normal .9rem var(--mono);
+}
+.advice-box {
+  display: grid;
+  justify-items: start;
+  gap: .5rem;
+  padding: .8rem .9rem;
+  border: 2px dashed var(--accent);
+  border-radius: 6px;
+  background: var(--panel-lavender);
+}
+.glossary dl {
+  display: grid;
+  gap: .55rem;
+  padding: .6rem .2rem;
+}
+.glossary dt, .explainer-list dt {
+  font-weight: 750;
+}
+.glossary dd, .explainer-list dd {
+  margin: 0;
+  color: var(--muted);
+  font-size: .92rem;
+}

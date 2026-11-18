@@ -1,0 +1,93 @@
+/* Step 5: printed receipt */
+.receipt-slot {
+  overflow: hidden;
+  padding: .4rem .2rem 1rem;
+  border-top: 6px solid var(--night-edge);
+  border-radius: 3px;
+}
+.receipt {
+  max-width: 30rem;
+  margin-inline: auto;
+  padding: 1.1rem 1.15rem 1.6rem;
+  background: #fffdf7;
+  color: #2e1128;
+  font: .86rem/1.5 var(--mono);
+  box-shadow: 0 6px 16px #2e11281f;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), 95% 100%, 90% calc(100% - 8px), 85% 100%, 80% calc(100% - 8px), 75% 100%, 70% calc(100% - 8px), 65% 100%, 60% calc(100% - 8px), 55% 100%, 50% calc(100% - 8px), 45% 100%, 40% calc(100% - 8px), 35% 100%, 30% calc(100% - 8px), 25% 100%, 20% calc(100% - 8px), 15% 100%, 10% calc(100% - 8px), 5% 100%, 0 calc(100% - 8px));
+  animation: receipt-print 1.4s steps(14, end) both;
+}
+@keyframes receipt-print {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+.receipt h3 {
+  margin: .8rem 0 .3rem;
+  padding-bottom: .2rem;
+  border-bottom: 1px dashed #9e84a5;
+  font: 700 .78rem var(--mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.receipt-head {
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+.receipt-head small {
+  font-weight: 500;
+  letter-spacing: .05em;
+}
+.receipt-meta div, .receipt li, .receipt-total {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+}
+.receipt-meta dt {
+  color: #634c63;
+}
+.receipt-meta dd {
+  margin: 0;
+  text-align: end;
+}
+.receipt li span:first-child {
+  min-width: 0;
+}
+.receipt li span:last-child {
+  white-space: nowrap;
+}
+.receipt li small {
+  display: block;
+  color: #634c63;
+  font-size: .76rem;
+}
+.receipt-total {
+  margin-top: .6rem;
+  padding-top: .4rem;
+  border-top: 2px solid #2e1128;
+  font-weight: 700;
+}
+.receipt-total + .receipt-total {
+  margin-top: 0;
+  border-top: 0;
+}
+.receipt .build-detail dt {
+  color: #634c63;
+}
+.receipt-foot {
+  margin-top: 1rem;
+  color: #634c63;
+  font-size: .76rem;
+  text-align: center;
+}
+.share-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: .5rem 1rem;
+}
+.share-box .field {
+  flex: 1 1 18rem;
+}
+.share-box input {
+  font: .8rem var(--mono);
+}
