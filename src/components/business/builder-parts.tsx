@@ -20,7 +20,7 @@ export function linePrice(line: PriceLine, feature: Feature | undefined, fmt: Mo
   if (line.cents === null) return feature?.unpriced ? "Price pending review" : "Custom estimate";
   return `${fmt(line.cents)}${feature?.manual && line.cents > 0 ? "+" : ""}${line.kind === "recurring" ? "/mo" : ""}`;
 }
-export const sumCost = (items: Feature[], fmt: Money) => {
+const sumCost = (items: Feature[], fmt: Money) => {
   const known = items.reduce((sum, item) => sum + (item.cents ?? 0), 0);
   const unknown = items.some(item => item.cents === null);
   return unknown ? known ? `+${fmt(known)} + custom estimate` : "+ custom estimate" : `+${fmt(known)}`;

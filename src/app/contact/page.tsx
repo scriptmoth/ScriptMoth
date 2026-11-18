@@ -11,12 +11,13 @@ import type { InquiryData, InquiryRow } from "@/lib/business/inquiries";
 import { decodeBuild } from "@/lib/business/pricing";
 import { hostingModes, projectTypes, type HostingMode, type ProjectType } from "@/lib/business/rules";
 import { assets } from "@/lib/assets";
+import { parseStyleIds } from "@/data/discord-styles";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata("Build a project", "Configure your Scriptmoth project, see a live estimate, and send a project inquiry.", "/contact");
 export const dynamic = "force-dynamic";
 
-export default async function Contact({ searchParams }: { searchParams: Promise<{ type?: string; draft?: string; hosting?: string; build?: string }> }) {
+export default async function Contact({ searchParams }: { searchParams: Promise<{ type?: string; draft?: string; hosting?: string; build?: string; showcase?: string }> }) {
   const query = await searchParams;
   const actor = await viewer();
   const draft = typeof query.draft === "string" && actor ? one<InquiryRow>("SELECT * FROM inquiries WHERE id=? AND owner_id=? AND status='draft'", query.draft, actor.id) : undefined;
@@ -31,6 +32,8 @@ export default async function Contact({ searchParams }: { searchParams: Promise<
     hosting_mode: Object.hasOwn(hostingModes, shared.hosting) ? shared.hosting as HostingMode : "unsure",
   } : { type: starter?.type ?? selection.type, product: starter?.slug ?? selection.product?.slug ?? selection.plan?.id,
     hosting_mode: selection.plan || starter?.recurring || query.hosting === "managed" ? "managed" : query.hosting === "client" ? "client" : "unsure" };
+  // Style library links like /contact?type=discord-server-setup&showcase=02F,04B pre-fill the codes.
+  if (!draft && typeof query.showcase === "string") initial.showcase_ids = parseStyleIds(query.showcase.slice(0, 400));
   const status = availability();
   const enabled = databaseConfigured();
   const accepting = enabled && status !== "Closed" && setting("maintenance") !== "yes";

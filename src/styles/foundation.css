@@ -23,6 +23,10 @@
   --quick: 160ms;
   --settle: 440ms;
   --ease-out: cubic-bezier(.2, .8, .3, 1);
+  --ease-bounce: cubic-bezier(.34, 1.56, .64, 1);
+  /* Moth silhouette shared by the spinner, confirmation moths, and the footer status light. */
+  --moth-shape: polygon(5% 22%, 24% 30%, 40% 48%, 44% 33%, 39% 14%, 46% 19%, 50% 29%, 54% 19%, 61% 14%, 56% 33%, 60% 48%, 76% 30%, 95% 22%, 100% 43%, 87% 69%, 70% 72%, 70% 89%, 59% 100%, 50% 83%, 41% 100%, 30% 89%, 30% 72%, 13% 69%, 0 43%);
+  --star-shape: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
   --radius: 10px;
   --heading: "Bricolage Grotesque Variable", sans-serif;
   --body: "DM Sans Variable", sans-serif;
@@ -124,6 +128,21 @@ p {
   .section {
     padding-block: clamp(2.75rem, 6vw, 5.25rem);
   }
+}
+
+/* Content settles in as it scrolls into view. CSS scroll timelines only: no JS, no layout shift, and
+   the backwards fill hands control back to hover transforms once an element has arrived. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    main :is(.section-heading, .services-grid > *, .project-grid > *, .process-grid > li, .detail-services > *, .about-notes > *, .contact-band) {
+      animation: reveal-rise linear backwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+  }
+}
+@keyframes reveal-rise {
+  from { opacity: 0; translate: 0 1.1rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

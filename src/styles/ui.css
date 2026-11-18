@@ -36,7 +36,7 @@
   text-align: center;
   color: #2e1128;
   font: 750 .93rem/1.25 var(--body);
-  transition: transform .18s ease, color .18s ease;
+  transition: transform .18s var(--ease-bounce), color .18s ease;
 }
 /* Slice the supplied plate into corners and edges so long labels keep their shape. */
 .button::before {
@@ -67,7 +67,28 @@
   filter: brightness(1.06) saturate(1.09);
 }
 .button:active:not(:disabled), .plain-button:active {
-  transform: translateY(1px);
+  transform: translateY(1px) scale(.97);
+  transition-duration: 60ms;
+}
+/* A star winks from the corner of skinned buttons, once per hover. */
+.button--primary::after, .button--secondary::after {
+  content: "";
+  position: absolute;
+  inset: -.32rem .65rem auto auto;
+  width: .72rem;
+  aspect-ratio: 1;
+  background: var(--gold);
+  clip-path: var(--star-shape);
+  opacity: 0;
+  pointer-events: none;
+}
+.button--secondary::after {
+  background: var(--muted-purple);
+}
+@media (hover: hover) and (pointer: fine) {
+  .button:is(.button--primary, .button--secondary):hover:not(:disabled)::after {
+    animation: sparkle-pop 560ms var(--ease-out);
+  }
 }
 .button svg, .text-link svg {
   transition: transform var(--quick) var(--ease-out);
@@ -156,7 +177,7 @@
   display: block;
   aspect-ratio: 1;
   background: currentColor;
-  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  clip-path: var(--star-shape);
   opacity: 0;
   pointer-events: none;
 }
@@ -164,6 +185,13 @@
   0% { transform: translateY(.25rem) scale(.3); opacity: 0; }
   38% { transform: translateY(0) scale(1); opacity: 1; }
   100% { transform: translateY(-.35rem) scale(.7); opacity: 0; }
+}
+@keyframes twinkle {
+  0%, 100% { opacity: .15; scale: .6; }
+  50% { opacity: .9; scale: 1; }
+}
+@keyframes moth-float {
+  50% { translate: 0 -5px; }
 }
 
 .window {
@@ -208,37 +236,6 @@
 }
 .info-panel h2 {
   font-size: 1.45rem;
-}
-
-.dialog-trigger {
-  margin-top: .65rem;
-}
-.dialog {
-  width: min(92vw, 43rem);
-  max-height: 90dvh;
-  margin: auto;
-  padding: 1rem;
-  background: var(--surface);
-  color: var(--ink);
-  border: 1px solid var(--strong-line);
-  border-radius: var(--radius);
-}
-.dialog::backdrop {
-  background: #1e1128cb;
-}
-.dialog header {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: .65rem;
-}
-.dialog header h2 {
-  margin: 0;
-  font-size: 1.45rem;
-}
-.dialog-caption {
-  margin-top: .7rem;
 }
 
 .filters {
@@ -341,6 +338,9 @@
 .accordion summary:hover {
   color: var(--accent);
 }
+.accordion[open] .accordion-body {
+  animation: intro-arrive 240ms var(--ease-out);
+}
 .accordion-body {
   padding: 0 1rem 1rem;
   color: var(--muted);
@@ -388,9 +388,34 @@
   color: var(--cream);
   --focus: var(--gold);
 }
+.lost-page {
+  position: relative;
+  overflow: hidden;
+}
 .lost-page img {
   width: 5.75rem;
   height: auto;
+}
+/* A lost moth drifting around the 404 page, as moths do near a lamp. */
+.lost-page .lost-moth {
+  position: absolute;
+  top: 18%;
+  left: 14%;
+  width: 2.1rem;
+  opacity: .85;
+  pointer-events: none;
+  animation: moth-wander 11s ease-in-out infinite;
+}
+@keyframes moth-wander {
+  0%, 100% { translate: 0 0; rotate: -8deg; }
+  25% { translate: 3.5rem -1rem; rotate: 10deg; }
+  50% { translate: 6rem 1.2rem; rotate: -4deg; }
+  75% { translate: 2rem 2rem; rotate: 14deg; }
+}
+.loading-moth {
+  width: 3.4rem;
+  height: auto;
+  animation: moth-float 1.6s ease-in-out infinite, wing-flutter .9s ease-in-out infinite;
 }
 .lost-page h1 {
   font-size: clamp(2.2rem, 6vw, 3.75rem);
@@ -403,11 +428,57 @@
   width: 1.2em;
   height: 1em;
   background: currentColor;
-  clip-path: polygon(5% 22%, 24% 30%, 40% 48%, 44% 33%, 39% 14%, 46% 19%, 50% 29%, 54% 19%, 61% 14%, 56% 33%, 60% 48%, 76% 30%, 95% 22%, 100% 43%, 87% 69%, 70% 72%, 70% 89%, 59% 100%, 50% 83%, 41% 100%, 30% 89%, 30% 72%, 13% 69%, 0 43%);
-  animation: spinner-flutter .65s ease-in-out 4;
+  clip-path: var(--moth-shape);
+  animation: spinner-flutter .65s ease-in-out infinite;
   vertical-align: -.1em;
 }
 @keyframes spinner-flutter { 50% { transform: scaleX(.65); opacity: .6; } }
+
+/* Optional cursor companion, toggled from the footer. Desktop mouse users only. */
+.moth-companion {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  width: 1.6rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--settle);
+  will-change: transform;
+}
+.moth-companion[data-visible] {
+  opacity: .9;
+}
+.moth-companion img {
+  width: 100%;
+  height: auto;
+  animation: wing-flutter .8s ease-in-out infinite;
+  filter: drop-shadow(0 0 .35rem #f4c59099);
+}
+.companion-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  min-height: 44px;
+  color: #d4c2d8;
+  font: .76rem/1.3 var(--mono);
+}
+.companion-toggle:hover, .companion-toggle[aria-pressed="true"] {
+  color: var(--gold);
+}
+.companion-toggle [data-box] {
+  display: inline-grid;
+  place-items: center;
+  width: .9rem;
+  height: .9rem;
+  border: 1px solid currentColor;
+  font-size: .62rem;
+}
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .moth-companion, .companion-toggle {
+    display: none;
+  }
+}
 
 .search-field input::placeholder {
   color: var(--muted);

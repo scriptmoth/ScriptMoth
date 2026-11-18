@@ -19,19 +19,8 @@
 .build-main { min-width: 0; }
 .build-group { border: 1px solid var(--line); border-radius: 8px; padding: .85rem; min-width: 0; }
 .build-group legend { font-weight: 800; padding-inline: .35rem; }
-.build-options { display: grid; gap: .5rem; }
-.build-choice { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: .65rem; align-items: start; padding: .65rem; min-height: 48px; border: 1px solid var(--line); border-radius: 6px; cursor: pointer; }
-.build-choice[data-selected="true"] { background: var(--surface-alt); border-color: var(--strong-line); }
-.build-choice input { appearance: auto; margin-top: .25rem; accent-color: var(--muted-purple); width: 1rem; height: 1rem; }
-.build-choice small { display: block; color: var(--muted); }
-.build-cost { font-size: .84rem; font-weight: 750; text-align: end; }
 .build-estimate { position: sticky; top: 6rem; min-width: 0; }
 .build-estimate .window { max-height: calc(100dvh - 7rem); overflow: auto; }
-.build-totals { display: grid; gap: .55rem; }
-.build-totals strong, .build-totals span { display: block; }
-.build-totals strong { font-size: 1.35rem; line-height: 1.2; }
-.build-totals span { font-size: .8rem; color: var(--muted); }
-.build-review { background: var(--surface-alt); padding: .5rem; border-radius: 6px; }
 .build-issues { display: grid; margin-bottom: 0; }
 .build-detail { margin-bottom: .55rem; }
 .build-detail dt { font-weight: 750; }
@@ -43,14 +32,11 @@
   .build-estimate .window { max-height: 38dvh; }
   .build-estimate .business-panel { padding: .6rem .8rem; }
   .build-estimate h2 { font-size: 1rem; }
-  .build-totals { display: flex; flex-wrap: wrap; gap: .45rem 1rem; }
   .build-estimate .business-summary { min-height: 30px; }
-  .build-choice { grid-template-columns: auto minmax(0, 1fr); }
-  .build-cost { grid-column: 2; text-align: start; }
 }
 @media print {
   body:has(.build-estimate) header, body:has(.build-estimate) footer,
-  body:has(.build-estimate) .build-main, body:has(.build-estimate) .build-export,
+  body:has(.build-estimate) .build-main,
   body:has(.build-estimate) main > .section > :not(.build-layout) { display: none; }
   .build-layout { display: block; }
   .build-estimate { position: static; color: black; }

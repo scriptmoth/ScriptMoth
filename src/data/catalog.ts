@@ -28,7 +28,7 @@ const listings: Record<string, { art: Artwork; extras: string; category: string;
   "tumblr-theme": { art: assets.gallery, category: "Websites", demo: "/portfolio#tumblr-themes", extras: "Extra post types, infinite-scroll polish, custom permalink pages, and appearance-option toggles in the Tumblr editor" },
   "custom-discord-bot": { art: assets.bot, category: "Discord Bots", extras: "Extra modules, branded embeds, moderation, tickets, and Discord server setup" },
   "community-engagement-bot": { art: assets.bot, category: "Discord Bots", extras: "More modules, question review, trivia scoring, moderation, tickets, and Discord server setup" },
-  "discord-server-setup": { art: assets.community, category: "Discord Servers", demo: "/portfolio#discord-setup", extras: "Extra embeds, interest roles, existing-server cleanup, and emoji placement" },
+  "discord-server-setup": { art: assets.community, category: "Discord Servers", extras: "Extra embeds, interest roles, existing-server cleanup, and emoji placement" },
   "custom-rp-bot": { art: assets.community, category: "Roleplay & Community Systems", extras: "Inventories, currency, quests, progression, a web dashboard, and Discord server setup" },
   "single-page-website": { art: assets.websites, category: "Websites", extras: "Extra pages, galleries, contact forms, and animations" },
   "personal-website": { art: assets.websites, category: "Websites", extras: "Extra pages, filterable galleries, contact forms, and editable content" },

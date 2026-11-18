@@ -41,5 +41,9 @@ See the [asset inventory](ASSET-INVENTORY.md) for original artwork. Keep editabl
 | Moth hover and action sparkles | 520–650ms, once per interaction |
 | Add-on corner peel | 300ms |
 | Homepage command | 900ms on the first homepage visit per tab |
+| Button press squish and star wink | 60ms press, 560ms star once per hover |
+| Scroll reveal | Tied to scroll position via `animation-timeline: view()`; skipped where unsupported |
+| Feature collected (quote builder) | 360ms bounce, price-tag pop, sticker corner peel |
+| Ambient loops (hero float, hero stars, footer status light, 404 moth) | 3.4–11s, low amplitude, at most one per area |
 
-Use transform and opacity for movement. The global reduced-motion rule disables animations, transitions, and smooth scrolling. Labels, focus, form results, and progress markers carry all necessary information independently of motion.
+Use transform and opacity for movement. Keep continuous loops rare and slow; everything else plays once per interaction. Use `--star-shape` and `--moth-shape` for decorative sparkles and moths instead of new clip paths, and place a resting moth in one spot per page at most. The cursor companion is off by default, toggled from the footer, and hidden on touch and reduced-motion devices. The global reduced-motion rule disables animations, transitions, and smooth scrolling. Labels, focus, form results, and progress markers carry all necessary information independently of motion.

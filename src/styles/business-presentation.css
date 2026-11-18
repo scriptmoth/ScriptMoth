@@ -140,46 +140,6 @@
   padding-inline: .35rem;
   font-weight: 750;
 }
-.quote-builder .build-options {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: .55rem;
-}
-.quote-builder .build-choice {
-  position: relative;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-content: start;
-  align-items: start;
-  width: 100%;
-  min-height: 44px;
-  gap: .35rem .6rem;
-  cursor: pointer;
-  padding: .6rem .7rem;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: var(--paper);
-  transition: background-color var(--quick), border-color var(--quick);
-}
-.quote-builder .build-choice[data-selected="true"] {
-  border-color: var(--accent);
-  background: var(--surface-alt);
-}
-.build-choice input {
-  appearance: auto;
-  margin-top: .28rem;
-  accent-color: var(--muted-purple);
-}
-.build-choice small {
-  display: block;
-  margin-top: .15rem;
-  color: var(--muted);
-}
-.quote-builder .build-cost {
-  grid-column: 2;
-  color: var(--accent);
-  font: 700 .8rem/1.4 var(--mono);
-}
 .choice-sparkle {
   position: absolute;
   inset: -.3rem .45rem auto auto;
@@ -187,39 +147,8 @@
   color: var(--accent);
   animation: sparkle-pop 520ms var(--ease-out);
 }
-.build-choice[data-kind="addon"][data-selected="true"][data-sparkle]::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: .85rem;
-  height: .85rem;
-  background: linear-gradient(135deg, var(--lavender) 50%, var(--surface) 50%);
-  border-radius: 4px 0 0 0;
-  transform-origin: right bottom;
-  animation: sticker-peel 300ms var(--ease-out) both;
-}
-@keyframes sticker-peel {
-  from { transform: rotateY(80deg) scale(.6); opacity: .25; }
-}
 .build-estimate h2 {
   font-size: clamp(1.3rem, 3vw, 1.7rem);
-}
-.build-layout .build-totals {
-  display: grid;
-  gap: .4rem;
-  background: var(--surface-alt);
-  padding: .9rem;
-  border-inline-start: 3px solid var(--strong-line);
-}
-.build-totals span {
-  display: block;
-  color: var(--muted);
-  font-size: .88rem;
-}
-.build-totals strong {
-  color: var(--accent);
-  font-size: 1.25rem;
 }
 .build-estimate-note {
   color: var(--muted);
@@ -371,18 +300,11 @@
   text-transform: capitalize;
 }
 @media (max-width: 720px) {
-  .build-layout .build-totals {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    padding: .5rem;
-  }
   .build-estimate h2 {
     font-size: 1rem;
   }
 }
 @media (max-width: 510px) {
-  .quote-builder .build-options {
-    grid-template-columns: minmax(0, 1fr);
-  }
   .quote-builder .wizard-steps {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }

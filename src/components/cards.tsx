@@ -2,6 +2,9 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { services } from "@/data/services";
 import { Art } from "./ui";
+import { DiscordStylesLink } from "./discord/styles-callout";
+
+const discordServices = new Set(["discord", "discord-setup", "community"]);
 
 export function ServiceCard({ service, detailed }: {
   service: typeof services[number];
@@ -21,6 +24,7 @@ export function ServiceCard({ service, detailed }: {
           <Link className="text-link" href={service.id === "hosting" ? "/hosting" : `/contact?type=${service.id}`}>
             {service.id === "hosting" ? "Compare hosting plans" : "Start an inquiry"} <ArrowRight size={16} aria-hidden="true" />
           </Link>
+          {discordServices.has(service.id) && <DiscordStylesLink />}
         </>
       ) : (
         <Link className="text-link card-link" href={service.id === "hosting" ? "/hosting" : `/services#${service.id}`} aria-label={`View details for ${service.title}`}>

@@ -18,6 +18,9 @@ import {
 const localKey = "scriptmoth-build-v2";
 type Context = { options: Feature[]; versions: Record<string, string> };
 type Build = { type: ProjectType; product: string; selection: Selection[]; hosting: HostingMode };
+/** Project types and packages where Discord style library codes are useful. */
+const showcaseTypes = new Set(["discord-bot", "discord-setup", "roleplay-bot"]);
+const showcaseProducts = new Set(["custom-bot-dashboard", "bot-website-integration"]);
 const hostingOption = (id: string) => id.startsWith("plan:") || id.endsWith(":managed-hosting");
 
 export function QuoteBuilder({ contexts, packages, initial, account, currency, initialReference, acceptsSubmissions }: {
@@ -193,6 +196,7 @@ export function QuoteBuilder({ contexts, packages, initial, account, currency, i
     const labels: Record<string, string> = {
       name: "Preferred name", email: "Contact email", project_name: "Project name", description: "Project description",
       budget: "Budget", deadline: "Desired date", discord: "Discord", references: "Reference links", existing: "Existing site or bot",
+      showcase_ids: "Discord style codes", showcase_notes: "Style notes",
     };
     const details = Object.entries(labels).flatMap(([key, label]): [string, string][] => {
       const value = String(values.get(key) ?? "").trim();
@@ -243,6 +247,7 @@ export function QuoteBuilder({ contexts, packages, initial, account, currency, i
       <span className="result-letter" aria-hidden="true" />
       <Art artwork={assets.contact} sizes="64px" />
       <span className="result-sparkle sparkle" aria-hidden="true" />
+      <span className="result-moths" aria-hidden="true"><i /><i /><i /></span>
     </div>
     <h2 ref={confirmationRef} tabIndex={-1}>Your project inquiry was received</h2>
     <p>Quote reference <strong>{confirmation}</strong>. Keep it handy if you contact Scriptmoth about this project.</p>
@@ -277,7 +282,8 @@ export function QuoteBuilder({ contexts, packages, initial, account, currency, i
           {step === 2 && <HostingStep hosting={build.hosting} provider={provider} setProvider={setProvider} advice={advice} plans={plans}
             planActive={planActive} addons={addons} buildType={build.type} fmt={fmt} changeHosting={changeHosting}
             choosePlan={choosePlan} renderCard={renderCard} />}
-          <DetailsStep step={step} initial={initial} account={account} />
+          <DetailsStep step={step} initial={initial} account={account}
+            showcase={showcaseTypes.has(build.type) || showcaseProducts.has(build.product) } />
           {step === 4 && <ReceiptStep buildType={build.type} title={title} hosting={build.hosting} provider={provider} price={price}
             picked={picked} featureMap={featureMap} notes={notes} detailLines={detailLines} fmt={fmt} />}
 

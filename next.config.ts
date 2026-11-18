@@ -11,7 +11,7 @@ const config: NextConfig = {
       // Renamed demo and retired project pages, so old links and bookmarks don't 404.
       { source: "/demos/starlit-atelier", destination: "/demos/celestial-observatory", permanent: true },
       { source: "/demos/starfall-codex", destination: "/demos/soft-atelier", permanent: true },
-      { source: "/portfolio/:slug", destination: "/portfolio", permanent: false },
+      { source: "/portfolio/:slug((?!discord-styles$).*)", destination: "/portfolio", permanent: false },
     ];
   },
   async headers() {

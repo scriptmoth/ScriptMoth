@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUp, Menu, Moon, Sun, X } from "lucide-react";
+import { Menu, Moon, Sun, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { assets } from "@/lib/assets";
 import { navigation, themeStorageKey } from "@/lib/site";
-import { Art } from "./ui";
+import { Brand } from "./ui";
 
 type Theme = "light" | "dark";
 
@@ -14,7 +13,7 @@ function currentTheme(): Theme {
   return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
 }
 
-export function ThemeToggle() {
+function ThemeToggle() {
   const [theme, setTheme] = useState<Theme | null>(null);
 
   useEffect(() => {
@@ -78,10 +77,7 @@ function Navigation({ pathname }: { pathname: string }) {
       }
     }}>
       <div className="site-container header-row">
-        <Link href="/" className="brand" aria-label="Scriptmoth home" onClick={() => setExpanded(false)}>
-          <Art artwork={assets.mark} sizes="40px" eager />
-          <span>Scriptmoth<span className="brand-cursor" aria-hidden="true">_</span></span>
-        </Link>
+        <Brand eager onClick={() => setExpanded(false)} />
         <nav className="desktop-nav" aria-label="Main"><NavLinks pathname={pathname} /></nav>
         <div className="header-controls">
           <ThemeToggle />
@@ -103,8 +99,4 @@ function Navigation({ pathname }: { pathname: string }) {
 export function Header() {
   const path = usePathname();
   return <Navigation key={path} pathname={path} />;
-}
-
-export function BackToTop() {
-  return <a className="back-to-top" href="#top"><Art artwork={assets.moon} sizes="21px" /> Back to top <ArrowUp size={15} aria-hidden="true" /></a>;
 }

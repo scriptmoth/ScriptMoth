@@ -73,7 +73,7 @@ export default async function Admin() {
               <p className="business-prose">{data.description}</p>
               {data.hosting_mode && <p>Hosting responsibility · {hostingModes[data.hosting_mode]}</p>}
               {data.hosting_provider && <p className="business-prose">Client’s provider and plan · {data.hosting_provider}</p>}
-              {[["Requirements", data.features], ["Budget", data.budget], ["Desired date", data.deadline], ["Hosting", data.hosting], ["References", data.references], ["Existing project", data.existing]].map(([label, value]) => value && <p className="business-prose" key={label}><strong>{label}</strong> · {value}</p>)}
+              {[["Requirements", data.features], ["Budget", data.budget], ["Desired date", data.deadline], ["Hosting", data.hosting], ["References", data.references], ["Discord style codes", data.showcase_ids?.join(", ")], ["Style notes", data.showcase_notes], ["Existing project", data.existing]].map(([label, value]) => value && <p className="business-prose" key={label}><strong>{label}</strong> · {value}</p>)}
               <h3>Submitted estimate · {money(price.total, price.currency)} · {money(price.monthly, price.currency)}/mo</h3>
               <ul className="business-list">{price.lines.map(line => <li key={line.id}>{line.label}{(line.quantity ?? 1) > 1 ? ` × ${line.quantity}` : ""} · {line.cents === null ? "Custom estimate" : money(line.cents, price.currency)}
                 {data.configuration?.filter(item => item.id === line.id).map(item => <p key={item.id}>{[item.complexity, ...Object.entries(item.settings ?? {}).filter(([, value]) => value).map(([key, value]) => `${key} = ${value}`)].filter(Boolean).join(" · ")}</p>)}

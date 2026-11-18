@@ -14,3 +14,4 @@ export const siteDescription =
   "Scriptmoth is an independent development studio that builds personal websites, custom Discord bots, Discord server setup, and tools for online communities.";
 
 export const themeStorageKey = "scriptmoth-theme";
+

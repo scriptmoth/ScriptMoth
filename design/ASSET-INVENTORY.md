@@ -30,6 +30,21 @@ Source paths below are relative to this directory.
 | `references/concept_sheet.png` | 1536 × 1024, alpha range 31–253 | Reference for mascot expressions, buttons, frames, controls, badges, spot art, dividers, and palette. The expressions sit on a semi-opaque backdrop and need dedicated exports. |
 | `references/kit_overview.jpg` | 1500 × 1420, opaque | Kit summary and component examples. |
 
+### Web-only files without a master here
+
+These live only in [`public/assets/`](../public/assets/). None are used by the site yet unless noted.
+
+| File in `public/assets/` | Size and transparency | Use |
+| --- | --- | --- |
+| `logos/icon-rounded.png` | 1254 × 1254, opaque black corners | Moth app icon on a rounded plum tile. Trim the corners before using it as a transparent icon. |
+| `logos/icon-rounded-arc.png` | 1254 × 1254, opaque black corners | Rounded plum tile with a lavender arc above the moth. |
+| `logos/icon-square-arc.png` | 1254 × 1254, opaque | Full-bleed plum square with an arc and sparkles. Suits a Discord server icon, which Discord crops to a circle. |
+| `logos/badge-round-wordmark.png` | 1254 × 1254, opaque white corners | Round badge with the Scriptmoth wordmark and laurels. |
+| `logos/mark-sparkle-ring.png` | 1254 × 1254, transparent | Moth mark inside a dotted ring of sparkles. |
+| `mascot/holding-discord.png` | 1254 × 1254, transparent | Smiling moth hugging the Discord logo, for Discord-related sections. |
+| `illustrations/divider-moth.png` | 2172 × 724, transparent | Section divider: lavender rules and sparkles around a smiling moth. |
+| `discord/embed-pink-sparkle-strip.gif` | 500 × 36, 9-frame animation | Thin sparkle band for Discord embed images. Cropped from a third-party GIF, so confirm usage rights before public use. |
+
 The contact envelope in `public/assets/illustrations/` is an existing export from the original service and feature sheet. The full kit ZIP, original service sheet, and editable SAI file were unavailable in the workspace at the time of this inventory.
 
 The portfolio’s Sketchbook Index sketchbook tile uses the photo-stack illustration. Its web export keeps the full 300 × 300 canvas.

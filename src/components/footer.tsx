@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Art } from "./ui";
-import { BackToTop } from "./navigation";
+import { ArrowUp } from "lucide-react";
+import { Art, Brand } from "./ui";
+import { MothCompanion } from "./moth-companion";
 import { assets } from "@/lib/assets";
 import { navigation } from "@/lib/site";
 
@@ -10,11 +11,13 @@ export function Footer() {
       <div className="site-container">
         <div className="footer-grid">
           <div>
-            <Link href="/" className="brand" aria-label="Scriptmoth home">
-              <Art artwork={assets.mark} sizes="40px" />
-              <span>Scriptmoth<span className="brand-cursor" aria-hidden="true">_</span></span>
-            </Link>
+            <Brand />
             <p>Websites, Discord bots, server setup, and roleplay tools.</p>
+            <div className="footer-extras">
+              <span className="footer-status"><span className="footer-status-light" aria-hidden="true" /> moth.exe · made by hand</span>
+              <span className="web-badge" aria-hidden="true"><span>✦ moth</span><span>handmade</span></span>
+              <MothCompanion />
+            </div>
           </div>
           <nav aria-label="Footer">
             {navigation.filter(({ href }) => href !== "/").map(({ href, label }) =>
@@ -30,7 +33,7 @@ export function Footer() {
             <summary aria-label="Secret workshop note"><span aria-hidden="true">✦</span></summary>
             <p><span aria-hidden="true">&gt; </span> The moth reviewed this site. It approved the lighting.</p>
           </details>
-          <BackToTop />
+          <a className="back-to-top" href="#top"><Art artwork={assets.moon} sizes="21px" /> Back to top <ArrowUp size={15} aria-hidden="true" /></a>
         </div>
       </div>
     </footer>

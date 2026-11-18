@@ -12,15 +12,19 @@ function buttonStyle(variant: Variant): CSSProperties | undefined {
   return { "--button-art": `url("${skins[variant]}")` } as CSSProperties;
 }
 
-export function ButtonLink({ href, children, variant = "primary", arrow = true }: {
+export function ButtonLink({ href, children, variant = "primary", arrow = true, external = false }: {
   href: string;
   children: ReactNode;
   variant?: Variant;
   arrow?: boolean;
+  /** Opens in a new tab, for links that leave the site. */
+  external?: boolean;
 }) {
+  const content = <>{children}{external && <span className="sr-only"> (opens in a new tab)</span>}{arrow && <ArrowRight size={17} aria-hidden="true" />}</>;
+  if (external) return <a href={href} className={`button button--${variant}`} style={buttonStyle(variant)} target="_blank" rel="noreferrer">{content}</a>;
   return (
     <Link href={href} className={`button button--${variant}`} style={buttonStyle(variant)}>
-      {children}{arrow && <ArrowRight size={17} aria-hidden="true" />}
+      {content}
     </Link>
   );
 }
@@ -51,12 +55,18 @@ export function Art({ artwork, alt = "", className, sizes, eager }: {
   return <Image {...artwork} alt={alt} className={className} sizes={sizes} loading={eager ? "eager" : undefined} />;
 }
 
-export function Divider() {
-  return <div className="divider" aria-hidden="true"><span>✦</span></div>;
+/** Logo mark and wordmark, shared by the header and footer. */
+export function Brand({ eager, onClick }: { eager?: boolean; onClick?: () => void }) {
+  return (
+    <Link href="/" className="brand" aria-label="Scriptmoth home" onClick={onClick}>
+      <Art artwork={assets.mark} sizes="40px" eager={eager} />
+      <span>Scriptmoth<span className="brand-cursor" aria-hidden="true">_</span></span>
+    </Link>
+  );
 }
 
-export function Badge({ children }: { children: ReactNode }) {
-  return <span className="badge">{children}</span>;
+export function Divider() {
+  return <div className="divider" aria-hidden="true"><span>✦</span></div>;
 }
 
 export function Window({ label, children, className = "" }: {
@@ -135,7 +145,7 @@ export function EmptyState({ title, children, artwork = assets.faq }: {
 export function LoadingState({ label }: { label: string }) {
   return (
     <div className="empty-state" role="status">
-      <Art artwork={assets.coding} sizes="92px" />
+      <Art artwork={assets.mark} className="loading-moth" sizes="56px" />
       <p><span className="spinner" aria-hidden="true" /> {label}</p>
     </div>
   );

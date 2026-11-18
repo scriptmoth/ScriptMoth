@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import { DiscordStylesCallout } from "@/components/discord/styles-callout";
 import { ButtonLink, PageIntro, Window } from "@/components/ui";
 import { parseFaqLine } from "@/data/faq";
 import { catalog, currency, setting } from "@/lib/business/catalog";
@@ -9,6 +10,8 @@ import { money } from "@/lib/business/rules";
 import { pageMetadata } from "@/lib/metadata";
 
 type Page = { params: Promise<{ slug: string }> };
+/** Discord packages that include server channels, so the channel style library applies. */
+const stylePackages = new Set(["discord-server-setup", "custom-discord-bot", "community-engagement-bot", "custom-rp-bot"]);
 export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: Page) {
   const { slug } = await params;
@@ -48,6 +51,7 @@ export default async function ProductDetail({ params }: Page) {
       {product.images.length > 0 && <div className="business-split">{product.images.map((id, index) => <figure className="business-image" key={id}>
         <Image unoptimized src={`/api/product-images/${id}`} alt={`${product.title} screenshot ${index + 1}`} width={800} height={500} />
       </figure>)}</div>}
+      {stylePackages.has(product.slug) && <DiscordStylesCallout quoteType={product.slug} />}
       {faqs.length > 0 && (
         <Window label="Frequently asked questions">
           <div className="business-panel">

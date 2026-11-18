@@ -5,12 +5,13 @@ import { parseSelections, type Selection } from "./pricing";
 import { audit, db, one, run, takeLimit, transaction } from "./db";
 import { readUploads, storeUploads, type Actor } from "./files";
 import { enqueue } from "./notify";
+import { parseStyleIds } from "@/data/discord-styles";
 import { dateValue, hostingModes, isEmail, list, textValue, webUrl, type ProjectType, type HostingMode } from "./rules";
 
 export type InquiryData = {
   name: string; email: string; type: string; product: string; project_name: string; description: string;
   features: string; budget: string; deadline: string; hosting: string; existing: string; discord: string;
-  references: string; selected: string[]; configuration?: Selection[]; hosting_mode?: HostingMode; hosting_provider?: string;
+  references: string; showcase_ids?: string[]; showcase_notes?: string; selected: string[]; configuration?: Selection[]; hosting_mode?: HostingMode; hosting_provider?: string;
 };
 export type InquiryRow = { id: string; owner_id: string | null; email: string; status: string; data: string; estimate: string; created_at: string };
 
@@ -20,7 +21,8 @@ export async function saveInquiry(form: FormData, actor: Actor | null, draft: bo
   if (draft && !actor) throw new Error("Sign in to save a draft.");
   const reference = textValue(form, "reference", 40);
   const key = createHash("sha256").update(actor?.id ?? identity).digest("hex");
-  if (!takeLimit(`inquiry:${key}`, !actor && identity === "guest" ? 120 : 12, 3600)) throw new Error("Too many attempts. Try again in an hour.");
+  // Unidentified guests share one bucket when SCRIPTMOTH_TRUSTED_IP_HEADER is unset; keep that limit tight.
+  if (!takeLimit(`inquiry:${key}`, !actor && identity === "guest" ? 30 : 12, 3600)) throw new Error("Too many attempts. Try again in an hour.");
   const rawType = textValue(form, "type", 100, true);
   const selection = quoteSelection(rawType);
   if (!selection.type) throw new Error("Choose a project type.");
@@ -46,6 +48,7 @@ export async function saveInquiry(form: FormData, actor: Actor | null, draft: bo
     deadline: dateValue(textValue(form, "deadline", 10)) ?? "",
     hosting: textValue(form, "hosting", 120), existing: textValue(form, "existing", 1500),
     discord: textValue(form, "discord", 100), references: list(textValue(form, "references", 2000)).map(webUrl).join("\n"),
+    showcase_ids: parseStyleIds(textValue(form, "showcase_ids", 400)), showcase_notes: textValue(form, "showcase_notes", 1500),
     selected: configuration.map(item => item.id), configuration,
     hosting_mode: hostingMode as HostingMode, hosting_provider: hostingProvider,
   };

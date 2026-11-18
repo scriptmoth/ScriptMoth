@@ -2,14 +2,14 @@ import Link from "next/link";
 import { ArrowDown, ArrowUpRight, Maximize2 } from "lucide-react";
 import { CarrdSite } from "@/components/carrd/carrd-site";
 import { CarrdGallery } from "@/components/carrd/carrd-gallery";
-import { DiscordSetupGallery } from "@/components/discord/discord-setup-gallery";
+import { DiscordStylesCallout } from "@/components/discord/styles-callout";
 import { ToyhouseGallery } from "@/components/toyhouse/toyhouse-gallery";
 import { TumblrGallery } from "@/components/tumblr/tumblr-gallery";
 import { carrdTemplates } from "@/data/carrd-templates";
 import { pageMetadata } from "@/lib/metadata";
 import styles from "./portfolio.module.css";
 
-export const metadata = pageMetadata("Portfolio", "Live one-page site demos, Tumblr themes, Toyhouse profiles, and Discord server setup layouts you can click through.", "/portfolio");
+export const metadata = pageMetadata("Portfolio", "Live one-page site demos, Tumblr themes, and Toyhouse profiles you can click through, plus a library of Discord channel and category styles.", "/portfolio");
 
 const featured = carrdTemplates[0];
 
@@ -22,7 +22,7 @@ export default function PortfolioPage() {
             <div>
               <p className="eyebrow">Portfolio</p>
               <h1 id="portfolio-title">Package examples</h1>
-              <p>Click through a one-page site, Tumblr theme, Toyhouse profile, or Discord server layout below. Site, Tumblr, and Toyhouse demos also open as full pages.</p>
+              <p>Click through a one-page site, Tumblr theme, or Toyhouse profile below. Each one also opens as a full page. Discord channel and category styles are in the style library.</p>
             </div>
             <a className="text-link" href="#carrd-sites">Browse examples <ArrowDown className="icon-down" size={16} aria-hidden="true" /></a>
           </header>
@@ -89,11 +89,11 @@ export default function PortfolioPage() {
       <section className="section section-band" id="discord-setup" aria-labelledby="discord-setup-title">
         <div className="site-container">
           <header className={styles.sectionHeader}>
-            <p className="eyebrow">Discord servers</p>
-            <h2 id="discord-setup-title">Discord server setup</h2>
-            <p>Three fully different styles — cute aesthetic naming, clean literary RP names, and gaming/ops prefixes — each with its own embed look. Mix and match what you like in a quote.</p>
+            <p className="eyebrow">Discord servers &amp; bots</p>
+            <h2 id="discord-setup-title">Discord channel styles</h2>
+            <p>Browse 100 channel and category naming styles, each with a code you can add to your quote.</p>
           </header>
-          <DiscordSetupGallery />
+          <DiscordStylesCallout id="discord-styles-portfolio" headingLevel="h3" />
         </div>
       </section>
     </>

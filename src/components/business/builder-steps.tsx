@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { ShowcasePicker } from "./showcase-picker";
 import { Check, ExternalLink } from "lucide-react";
 import { Art } from "@/components/ui";
 import { Field } from "./forms";
@@ -15,15 +16,15 @@ export const steps = ["Project", "Features", "Hosting", "Your details", "Receipt
 export const stepTitles = [
   "What are we building?", "Pick your features", "Where will it live?", "A little about you", "Your project receipt",
 ] as const;
-export const groupArt = { bot: assets.bot, websites: assets.websites, coding: assets.coding, process: assets.process };
-export const modeCopy: Record<HostingMode, { art: typeof assets.hosting; body: string }> = {
+const groupArt = { bot: assets.bot, websites: assets.websites, coding: assets.coding, process: assets.process };
+const modeCopy: Record<HostingMode, { art: typeof assets.hosting; body: string }> = {
   client: { art: assets.websites,
     body: "You create the hosting account and pay the provider directly. Scriptmoth gives you deployment instructions, and can do the deployment setup for you as an add-on." },
   managed: { art: assets.hosting,
     body: "Scriptmoth puts your project online and looks after it. You pay a monthly management fee to Scriptmoth, and the hosting provider’s usage is billed separately at cost." },
   unsure: { art: assets.faq, body: "That’s fine. Scriptmoth will suggest a hosting approach for this project and confirm it with you." },
 };
-export const glossary: [string, string][] = [
+const glossary: [string, string][] = [
   ["Hosting infrastructure fees", "What the hosting provider charges to keep your site or bot running. Paid to the provider (or passed through at cost on managed plans)."],
   ["Initial deployment", "Putting the finished project online the first time and checking it works. A one-time cost."],
   ["Ongoing maintenance", "Keeping things updated, backed up, and running after launch. Part of a monthly management plan."],
@@ -155,10 +156,12 @@ export function HostingStep({ hosting, provider, setProvider, advice, plans, pla
   </div>;
 }
 
-export function DetailsStep({ step, initial, account }: {
+export function DetailsStep({ step, initial, account, showcase }: {
   step: number;
-  initial: Partial<{ name: string; email: string; project_name: string; discord: string; budget: string; deadline: string; description: string; references: string; existing: string }>;
+  initial: Partial<{ name: string; email: string; project_name: string; discord: string; budget: string; deadline: string; description: string; references: string; existing: string; showcase_ids: string[]; showcase_notes: string }>;
   account?: { email: string; name: string };
+  /** Shows the Discord style code field (Discord projects). */
+  showcase?: boolean;
 }) {
   return <div hidden={step !== 3}>
     <p className="step-intro">Only your name, email, and a short description are required. Everything else is optional.</p>
@@ -173,6 +176,7 @@ export function DetailsStep({ step, initial, account }: {
       <Field name="description" label="Describe the project in a few sentences" large value={initial.description} required={step === 3} max={5000} />
       <Field name="references" label="Reference links, one per line (optional)" large value={initial.references} max={2000} />
       <Field name="existing" label="Existing website or bot (optional)" large value={initial.existing} max={1500} />
+      {showcase && <ShowcasePicker initialIds={initial.showcase_ids} initialNotes={initial.showcase_notes} />}
       <label className="field">Reference files (optional, up to four, 4 MB combined)<input name="attachments" type="file" multiple accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.docx,.zip" /></label>
     </div>
   </div>;

@@ -35,6 +35,13 @@ export const questions = [
       "Scriptmoth configures your Discord without building a bot: channel categories and naming, role hierarchy and colors, permission layout, and branded embeds for rules, welcome, FAQs, or links. Order it alone, or add the same work when you commission a custom bot.",
   },
   {
+    id: "discord-styles",
+    category: "Projects",
+    question: "Where can I see Discord examples?",
+    answer:
+      "Browse the Discord Style Library on the Portfolio page: 100 channel and category naming styles, each with a preview and a code like 02F. Add the codes you like in the quote builder and say what you would change. For bots and server features, describe what you need and we’ll confirm the details in your quote.",
+  },
+  {
     id: "packages-vs-custom",
     category: "Projects",
     question: "What’s the difference between a package and custom work?",

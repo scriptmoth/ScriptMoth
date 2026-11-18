@@ -3,7 +3,7 @@ import test from "node:test";
 import { projectGroups, recommendHosting, seedFeatures, starterPackages } from "../src/data/builder.ts";
 import { priceBuild } from "../src/lib/business/pricing.ts";
 
-const types = ["discord-bot", "roleplay-bot", "personal-site", "oc-wiki", "community-site", "web-app", "improvement", "hosting", "other"];
+const types = ["discord-bot", "discord-setup", "roleplay-bot", "personal-site", "oc-wiki", "community-site", "web-app", "improvement", "hosting", "other"];
 const all = Object.fromEntries(types.map(type => [type, seedFeatures(type)]));
 const find = (type, id) => all[type].find(item => item.id === `${type}:${id}`);
 const packageBase = slug => {
@@ -38,7 +38,8 @@ test("no feature is accidentally free and unpriced features stay unpriced", () =
 
 test("configured prices match the approved brief", () => {
   assert.deepEqual(Object.fromEntries(starterPackages.map(item => [item.slug, item.dollars])), {
-    "custom-discord-bot": 95, "community-engagement-bot": 150, "custom-rp-bot": 200, "carrd-site": 95, "single-page-website": 175, "personal-website": 300,
+    "custom-discord-bot": 95, "community-engagement-bot": 150, "discord-server-setup": 85, "custom-rp-bot": 200,
+    "carrd-site": 95, "toyhouse-profile": 75, "tumblr-theme": 85, "single-page-website": 175, "personal-website": 300,
     "oc-wiki": 550, "community-website": 650, "custom-bot-dashboard": 600, "custom-web-application": 1500,
     "bot-website-integration": null, "existing-project-assessment": null,
   });

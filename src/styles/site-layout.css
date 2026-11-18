@@ -113,14 +113,28 @@
   background: #36223e;
   border: 1px solid #6d527b;
   color: var(--cream);
-  border-radius: 5px;
+  border-radius: 3px;
   opacity: 0;
+  translate: 0 -3px;
   pointer-events: none;
   white-space: nowrap;
-  font-size: .8rem;
+  font: 700 .74rem/1.4 var(--mono);
+  box-shadow: 3px 3px 0 #120a18;
+  transition: opacity var(--quick), translate var(--quick) var(--ease-out);
+}
+.tooltip-label::before {
+  content: "> ";
+  color: var(--gold);
 }
 .tooltip:hover .tooltip-label, .tooltip:focus-within .tooltip-label {
   opacity: 1;
+  translate: 0 0;
+}
+.icon-button {
+  transition: color var(--quick), border-color var(--quick), transform var(--quick) var(--ease-bounce);
+}
+.icon-button:active {
+  transform: scale(.92);
 }
 .mobile-toggle, .mobile-nav {
   display: none;
@@ -169,11 +183,29 @@
   gap: .6rem;
   min-height: 280px;
 }
+.hero-figure {
+  position: relative;
+}
 .hero-mark {
   position: relative;
   width: 100%;
   max-width: 34rem;
+  animation: moth-float 6s ease-in-out infinite;
 }
+/* A few pixel stars around the mascot. Slow and sparse, so they read as atmosphere. */
+.hero-twinkles i {
+  position: absolute;
+  width: .55rem;
+  aspect-ratio: 1;
+  background: var(--lavender);
+  clip-path: var(--star-shape);
+  pointer-events: none;
+  animation: twinkle 4.2s ease-in-out infinite;
+}
+.hero-twinkles i:nth-child(1) { top: 8%; left: 12%; }
+.hero-twinkles i:nth-child(2) { top: 18%; right: 6%; width: .4rem; background: var(--gold); animation-duration: 5.6s; animation-delay: -2s; }
+.hero-twinkles i:nth-child(3) { bottom: 26%; left: 4%; width: .35rem; animation-duration: 6.4s; animation-delay: -4s; }
+.hero-twinkles i:nth-child(4) { bottom: 14%; right: 16%; width: .45rem; background: #edadd3; animation-duration: 5s; animation-delay: -1s; }
 .hero-logo, .hero-logo-moth {
   width: 100%;
   height: auto;
@@ -250,6 +282,9 @@
 @keyframes intro-arrive {
   from { opacity: .84; transform: translateY(.35rem); }
 }
+@keyframes nav-drop {
+  from { opacity: 0; translate: 0 -.4rem; }
+}
 
 .section-band {
   background: var(--surface-alt);
@@ -303,6 +338,17 @@
 .process-grid li {
   counter-increment: steps;
   padding: 1.25rem;
+  transition: transform var(--quick) var(--ease-out), box-shadow var(--quick), border-color var(--quick);
+}
+@media (hover: hover) and (pointer: fine) {
+  .process-grid li:hover {
+    transform: translateY(-3px) rotate(-.4deg);
+    border-color: var(--strong-line);
+    box-shadow: var(--panel-shadow);
+  }
+  .process-grid li:nth-child(2n):hover {
+    transform: translateY(-3px) rotate(.4deg);
+  }
 }
 .process-grid li::before {
   content: "0" counter(steps);
@@ -324,9 +370,27 @@
   color: var(--cream);
   background-color: #302039;
 }
+.contact-band {
+  position: relative;
+}
 .contact-band img {
   width: 88px;
   height: auto;
+}
+/* A moth resting on the band's top edge; it stretches its wings when the band is hovered. */
+.contact-band .perched-moth {
+  position: absolute;
+  top: -1.05rem;
+  right: clamp(1.5rem, 9vw, 7rem);
+  width: 2rem;
+  rotate: 8deg;
+  transform-origin: 50% 90%;
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .contact-band:hover .perched-moth {
+    animation: wing-flutter 520ms var(--ease-out) 2;
+  }
 }
 .contact-band h2 {
   font-size: clamp(1.55rem, 4vw, 2.1rem);
@@ -388,6 +452,65 @@
 .back-to-top img {
   width: 1.25rem;
   height: auto;
+  transition: rotate var(--settle) var(--ease-bounce);
+}
+.back-to-top:hover img {
+  rotate: -25deg;
+}
+.footer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  font: .76rem/1.3 var(--mono);
+  color: #d4c2d8;
+}
+.footer-status-light {
+  width: .45rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #9fd8a4;
+  box-shadow: 0 0 .4rem #9fd8a4;
+  animation: twinkle 3.4s ease-in-out infinite;
+}
+/* An 88x31-style button, drawn in CSS so the text stays crisp. */
+.web-badge {
+  display: inline-flex;
+  align-items: stretch;
+  height: 31px;
+  border: 1px solid #c9b3d6;
+  outline: 1px solid #120a18;
+  font: 700 .62rem/1 var(--mono);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  user-select: none;
+}
+.web-badge span {
+  display: grid;
+  place-items: center;
+  padding-inline: .4rem;
+}
+.web-badge span:first-child {
+  background: var(--lavender);
+  color: var(--deep-plum);
+}
+.web-badge span:last-child {
+  background: repeating-linear-gradient(90deg, #2b1b34 0 2px, #33213d 2px 4px);
+  color: var(--gold);
+}
+@media (hover: hover) and (pointer: fine) {
+  .web-badge:hover span:first-child {
+    animation: blinkie 1s steps(1, end) 2;
+  }
+}
+@keyframes blinkie {
+  50% { background: var(--gold); }
+}
+.footer-extras {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem 1rem;
+  margin-top: 1.1rem;
 }
 .footer-egg {
   position: relative;
@@ -515,7 +638,13 @@
   .mobile-nav:not([hidden]) {
     display: block;
     border-top: 1px solid var(--night-edge);
+    animation: nav-drop 220ms var(--ease-out);
   }
+  .mobile-nav:not([hidden]) a {
+    animation: intro-arrive 260ms var(--ease-out) backwards;
+  }
+  .mobile-nav a:nth-child(n + 4) { animation-delay: 40ms; }
+  .mobile-nav a:nth-child(n + 7) { animation-delay: 80ms; }
   .mobile-nav > div {
     padding-block: .6rem;
     display: grid;

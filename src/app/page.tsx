@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ServiceCard } from "@/components/cards";
 import { CarrdGallery } from "@/components/carrd/carrd-gallery";
-import { DiscordSetupGallery } from "@/components/discord/discord-setup-gallery";
+import { DiscordStylesCallout } from "@/components/discord/styles-callout";
 import { ToyhouseGallery } from "@/components/toyhouse/toyhouse-gallery";
 import { TumblrGallery } from "@/components/tumblr/tumblr-gallery";
 import { HeroCommand } from "@/components/hero-command";
@@ -39,6 +39,7 @@ export default function Home() {
               <span className="hero-heart" aria-hidden="true" />
             </div>
             <HeroCommand />
+            <span className="hero-twinkles" aria-hidden="true"><i /><i /><i /><i /></span>
           </figure>
         </div>
       </section>
@@ -100,10 +101,10 @@ export default function Home() {
 
       <section className="section section-band" aria-labelledby="discord-setup-home-title">
         <div className="site-container">
-          <SectionHeading eyebrow="Discord" title="Server setup layouts" id="discord-setup-home-title">
-            <Link className="text-link" href="/portfolio#discord-setup">Browse Discord demos <ArrowRight size={16} aria-hidden="true" /></Link>
+          <SectionHeading eyebrow="Discord" title="Discord servers and bots" id="discord-setup-home-title">
+            <Link className="text-link" href="/services#discord-setup">Discord services <ArrowRight size={16} aria-hidden="true" /></Link>
           </SectionHeading>
-          <DiscordSetupGallery />
+          <DiscordStylesCallout id="discord-styles-home" headingLevel="h3" />
         </div>
       </section>
 
@@ -134,6 +135,7 @@ export default function Home() {
       </section>
 
       <section className="site-container contact-band" aria-labelledby="contact-title">
+        <Art artwork={assets.mark} className="perched-moth" sizes="32px" />
         <Art artwork={assets.contact} sizes="(max-width: 600px) 80px, 110px" />
         <div><h2 id="contact-title">Have a project in mind?</h2><p>Start with what you want to make and who will use it.</p></div>
         <ButtonLink href="/contact">Build a project</ButtonLink>

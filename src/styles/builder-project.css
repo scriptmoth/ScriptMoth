@@ -179,6 +179,35 @@
   background: var(--surface-alt);
   box-shadow: 0 2px 0 var(--accent);
 }
+/* Selected features earn a folded sticker corner, like an item added to a collection.
+   It peels on just once, when the feature was the one just picked. */
+.feature-card[data-selected]::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: .85rem;
+  height: .85rem;
+  background: linear-gradient(135deg, var(--lavender) 50%, var(--paper) 50%);
+  border-radius: 4px 0 5px 0;
+  transform-origin: right bottom;
+  pointer-events: none;
+}
+.feature-card[data-selected][data-sparkle]::after {
+  animation: sticker-peel 300ms var(--ease-out) both;
+}
+.feature-card[data-sparkle] {
+  animation: card-collect 360ms var(--ease-bounce);
+}
+.feature-card[data-sparkle] .price-tag {
+  animation: check-pop 300ms var(--ease-out);
+}
+@keyframes sticker-peel {
+  from { transform: rotateY(80deg) scale(.6); opacity: .25; }
+}
+@keyframes card-collect {
+  40% { scale: 1.018; }
+}
 .feature-card-head {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;

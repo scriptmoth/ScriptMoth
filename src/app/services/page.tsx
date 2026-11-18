@@ -1,4 +1,5 @@
 import { ServiceCard } from "@/components/cards";
+import { DiscordStylesCallout } from "@/components/discord/styles-callout";
 import { ButtonLink, PageIntro } from "@/components/ui";
 import { services } from "@/data/services";
 import { assets } from "@/lib/assets";
@@ -27,9 +28,10 @@ export default function ServicesPage() {
           </div>
           <div className="button-row">
             <ButtonLink href="/products/discord-server-setup">See the package</ButtonLink>
-            <ButtonLink href="/portfolio#discord-setup" variant="secondary">See layout examples</ButtonLink>
+            <ButtonLink href="/portfolio/discord-styles" variant="secondary">Browse channel styles</ButtonLink>
           </div>
         </section>
+        <DiscordStylesCallout />
         <section className="info-panel" id="one-page-sites" aria-labelledby="one-page-sites-title">
           <div>
             <h2 id="one-page-sites-title">One-page creator sites</h2>

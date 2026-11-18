@@ -74,6 +74,9 @@
   color: #f4c590;
   animation: sparkle-pop 650ms var(--ease-out);
 }
+.estimate-lines > li {
+  animation: intro-arrive 260ms var(--ease-out);
+}
 .crt-sparkles i:nth-child(1) { top: 18%; right: 12%; }
 .crt-sparkles i:nth-child(2) { top: 52%; right: 26%; animation-delay: 90ms; }
 .crt-sparkles i:nth-child(3) { top: 30%; right: 40%; animation-delay: 170ms; }

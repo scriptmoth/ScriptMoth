@@ -1,23 +1,8 @@
 /* Shared form stack (quote builder, auth, admin) and feedback */
-.contact-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(230px, 320px);
-  align-items: start;
-  gap: 1.2rem;
-}
-.contact-aside {
-  display: grid;
-  gap: .75rem;
-}
 .inquiry-form {
   padding: clamp(1rem, 3vw, 1.55rem);
   border-top: 3px double var(--strong-line);
   box-shadow: var(--panel-shadow);
-}
-.form-hint {
-  grid-column: 1 / -1;
-  color: var(--muted);
-  font-size: .875rem;
 }
 .form-grid {
   min-width: 0;
@@ -31,9 +16,6 @@
   align-content: start;
   gap: .25rem;
   min-width: 0;
-}
-.field--wide {
-  grid-column: 1 / -1;
 }
 .field label {
   font-size: .93rem;
@@ -70,21 +52,6 @@
   color: var(--danger);
   font-size: .87rem;
 }
-.form-result {
-  display: flex;
-  align-items: center;
-  gap: .7rem;
-  margin-top: 1rem;
-  padding: .7rem .85rem;
-  border: 1px solid var(--strong-line);
-  border-radius: 6px;
-  background: var(--surface-alt);
-}
-.form-result img {
-  width: 42px;
-  height: auto;
-  flex: none;
-}
 .result-art {
   position: relative;
   flex: none;
@@ -109,6 +76,27 @@
 @keyframes envelope-open {
   35% { transform: rotate(-5deg) translateY(2px); }
 }
+/* Three moths fly out of the envelope once a request is sent. */
+.result-moths i {
+  position: absolute;
+  bottom: 40%;
+  left: 40%;
+  width: .95rem;
+  height: .8rem;
+  background: var(--muted-purple);
+  clip-path: var(--moth-shape);
+  opacity: 0;
+  pointer-events: none;
+  animation: moth-flyaway 1.5s var(--ease-out) .35s;
+}
+.result-moths i:nth-child(2) { --drift: -2.4rem; background: var(--gold); animation-delay: .5s; width: .75rem; }
+.result-moths i:nth-child(3) { --drift: 1.2rem; animation-delay: .65s; width: .65rem; }
+@keyframes moth-flyaway {
+  0% { opacity: 0; transform: translate(0, 0) scale(.4); }
+  20% { opacity: 1; }
+  50% { transform: translate(calc(var(--drift, 2.6rem) * .5), -2.2rem) scale(1) rotate(-12deg); }
+  100% { opacity: 0; transform: translate(var(--drift, 2.6rem), -4.4rem) scale(.8) rotate(10deg); }
+}
 .result-sparkle {
   position: absolute;
   inset: -.25rem -.2rem auto auto;
@@ -116,36 +104,6 @@
   color: var(--accent);
   animation: sparkle-pop 580ms var(--ease-out);
 }
-.form-result[data-status="failed"] {
-  border-color: var(--danger);
-}
-.form-result p {
-  font-size: .92rem;
-}
-
-.field-label {
-  font-size: .93rem;
-  font-weight: 740;
-}
-.field .checkbox-label {
-  display: flex;
-  align-items: center;
-  min-height: 44px;
-  width: fit-content;
-  gap: .55rem;
-  cursor: pointer;
-  font-weight: 550;
-}
-.field .checkbox-label input {
-  appearance: auto;
-  width: 1.15rem;
-  height: 1.15rem;
-  min-height: 0;
-  padding: 0;
-  accent-color: var(--muted-purple);
-  flex: none;
-}
-
 
 .form-notice {
   display: flex;
@@ -175,22 +133,6 @@
   color: var(--muted);
   font: 600 .79rem/1.3 var(--body);
   margin-left: .25rem;
-}
-.form-grid--optional {
-  margin-top: 1.4rem;
-}
-
-@media (max-width: 860px) {
-  .contact-layout {
-    grid-template-columns: minmax(0, 1fr) minmax(205px, 31%);
-  }
-}
-
-@media (max-width: 700px) {
-  .contact-layout {
-    grid-template-columns: minmax(0, 1fr);
-    padding-top: 1.7rem;
-  }
 }
 
 @media (max-width: 510px) {
