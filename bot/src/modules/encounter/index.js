@@ -84,10 +84,10 @@ module.exports = {
           return interaction.reply({
             embeds: [
               ctx.ui.embed({
-                title: `${TABLES.biomes[biome].emoji} ${KIND_LABEL[result.kind]} encounter`,
+                title: `${KIND_LABEL[result.kind]} encounter`,
                 description: result.text,
                 color: KIND_COLOR(ctx.ui)[result.kind],
-                fields: result.loot ? [{ name: '🎁 Found', value: result.loot }] : [],
+                fields: result.loot ? [{ name: 'Loot', value: result.loot }] : [],
                 footer: `${biome} · ${DANGER[danger].label.replace(/^\S+ /, '')}`,
               }),
             ],
@@ -98,7 +98,7 @@ module.exports = {
           const custom = await ctx.store.get(interaction.guildId, customKey, []);
           const lines = custom.map((c, i) => `\`${i + 1}\` *${KIND_LABEL[c.kind]}*: ${c.text}`);
           return ctx.ui.ephemeral(interaction, {
-            embeds: [ctx.ui.embed({ title: `Custom ${biome} encounters`, description: ctx.ui.truncate(lines.join('\n') || 'None yet.', 4000) })],
+            embeds: [ctx.ui.embed({ title: `Custom ${biome} encounters`, tone: lines.length ? 'general' : 'empty', description: ctx.ui.truncate(lines.join('\n') || 'None yet.', 4000) })],
           });
         }
 

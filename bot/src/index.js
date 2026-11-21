@@ -4,6 +4,7 @@ const { Client, GatewayIntentBits, Partials, Events } = require('discord.js');
 const { loadModules } = require('./core/loader');
 const { createJsonStore } = require('./core/store');
 const { createRuntime } = require('./core/runtime');
+const { artwork, availableArtwork } = require('./core/embed-assets');
 
 const { DISCORD_TOKEN, MOTH_MODULES } = process.env;
 if (!DISCORD_TOKEN) {
@@ -25,6 +26,9 @@ runtime.attach();
 
 client.once(Events.ClientReady, (c) => {
   console.log(`moth.exe online as ${c.user.tag} with ${modules.size} modules: ${[...modules.keys()].join(', ')}`);
+  const available = availableArtwork();
+  const missingArtwork = [...artwork.keys()].filter((name) => !available.has(name));
+  if (missingArtwork.length) console.warn(`Optional embed artwork missing: ${missingArtwork.join(', ')}`);
 });
 
 function shutdown() {

@@ -32,11 +32,24 @@ async function announce(ctx, guildId, { force = false } = {}) {
   const channel = await ctx.client.channels.fetch(config.channelId).catch(() => null);
   if (!channel?.isTextBased()) return 'no-channel';
   const characters = ctx.use('characters');
-  await channel.send(ctx.ui.withDivider({
-    content: `${ctx.ui.pick(CAKES)} **Happy birthday** to ${today.map((e) => `**${e.character.name}**`).join(', ')}!`,
-    embeds: today.slice(0, 10).map((e) => characters.card(e.character, { footer: `Birthday: ${formatDate(e.birthday)}` })),
-    allowedMentions: { parse: [] },
-  }));
+  const batches = [[]];
+  let embedCount = 0;
+  for (const { character, birthday } of today.slice(0, 10)) {
+    const count = character.image ? 2 : 1;
+    if (embedCount + count > 10) {
+      batches.push([]);
+      embedCount = 0;
+    }
+    batches.at(-1).push(characters.card(character, { footer: `Birthday: ${formatDate(birthday)}` }));
+    embedCount += count;
+  }
+  for (const [index, embeds] of batches.entries()) {
+    await channel.send(await ctx.ui.withArtwork({
+      content: index === 0 ? `${ctx.ui.pick(CAKES)} **Happy birthday** to ${today.map((e) => `**${e.character.name}**`).join(', ')}!` : undefined,
+      embeds,
+      allowedMentions: { parse: [] },
+    }));
+  }
   return 'sent';
 }
 
@@ -118,7 +131,7 @@ module.exports = {
               .sort((a, b) => a.birthday.day - b.birthday.day)
               .map((e) => `\`${String(e.birthday.day).padStart(2, ' ')}\` **${e.character.name}** · <@${e.character.ownerId}>`);
             return interaction.reply({
-              embeds: [ctx.ui.embed({ title: `🎂 ${MONTHS[month - 1]} birthdays`, description: ctx.ui.truncate(lines.join('\n') || 'No birthdays this month.', 4000) })],
+              embeds: [ctx.ui.embed({ title: `${MONTHS[month - 1]} birthdays`, tone: lines.length ? 'general' : 'empty', description: ctx.ui.truncate(lines.join('\n') || 'No birthdays this month.', 4000) })],
               allowedMentions: { parse: [] },
             });
           }
@@ -127,7 +140,7 @@ module.exports = {
             .sort((a, b) => a.days - b.days)
             .slice(0, 10)
             .map((e) => `**${e.character.name}**, ${formatDate(e.birthday)} · ${e.days === 0 ? '**today!**' : e.days === 1 ? 'tomorrow' : `in ${e.days} days`}`);
-          return interaction.reply({ embeds: [ctx.ui.embed({ title: '🎈 Upcoming birthdays', description: lines.join('\n') || 'No birthdays set yet.' })] });
+          return interaction.reply({ embeds: [ctx.ui.embed({ title: 'Upcoming birthdays', tone: lines.length ? 'general' : 'empty', description: lines.join('\n') || 'No birthdays set yet.' })] });
         }
 
         const characterId = interaction.options.getString('character');

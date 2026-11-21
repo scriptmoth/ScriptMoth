@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Check, ChevronDown, Plus } from "lucide-react";
 import type { CatalogSystem } from "@/data/feature-catalog";
+import { showcaseCommands, showcaseInvite } from "@/data/bot-showcase";
 import { systemsById } from "@/lib/feature-catalog";
 import type { SearchHit } from "@/lib/feature-catalog-search";
 import styles from "./catalog.module.css";
@@ -53,8 +54,12 @@ function SystemDetails({ system, interested, onInterest, onJump }: {
   onJump: (id: string) => void;
 }) {
   const related = system.related.map((id) => systemsById.get(id)).filter((item): item is CatalogSystem => Boolean(item));
+  const commands = showcaseCommands[system.id];
   return (
     <>
+      {commands && <p className={styles.showcaseCommands}>
+        <a className="text-link" href={showcaseInvite}>Try in Discord</a> <span>{commands}</span>
+      </p>}
       <div className={styles.cardColumns}>
         <div className={styles.cardColumn}>
           <h4><span aria-hidden="true">01</span> What’s included</h4>

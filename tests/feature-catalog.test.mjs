@@ -31,6 +31,7 @@ test("system ids are unique kebab-case and every reference resolves", () => {
 test("searches find systems by their uses, not just their names", () => {
   assert.equal(ids("fishing")[0], "resource-collection");
   assert.equal(ids("QOTD")[0], "question-prompts");
+  assert.equal(ids("in-character question of the day")[0], "character-qotd");
   assert.equal(ids("I want a fishing bot")[0], "resource-collection");
   assert.equal(ids("I need character applications")[0], "applications");
   assert.equal(ids("Can you make a game night planner?")[0], "group-planner");

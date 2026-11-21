@@ -23,9 +23,9 @@ async function feature(ctx, guildId) {
 
   const channel = await ctx.client.channels.fetch(config.channelId).catch(() => null);
   if (!channel?.isTextBased()) return { error: 'I can\'t post in the spotlight channel anymore.' };
-  await channel.send(ctx.ui.withDivider({
+  await channel.send(await ctx.ui.withArtwork({
     content: `🌙 **Character Spotlight**: this ${config.days === 7 ? 'week' : 'round'}'s featured character is **${chosen.name}**, by <@${chosen.ownerId}>!`,
-    embeds: [characters.card(chosen, { footer: 'Character Spotlight' })],
+    embeds: [characters.card(chosen, { footer: 'Character spotlight' })],
     allowedMentions: { users: [chosen.ownerId] },
   }));
   await ctx.store.set(guildId, 'history', [{ characterId: chosen.id, at: Date.now() }, ...history].slice(0, HISTORY));
@@ -62,7 +62,7 @@ module.exports = {
         if (sub === 'current') {
           const [latest] = await ctx.store.get(guildId, 'history', []);
           const character = latest && (await ctx.use('characters').get(guildId, latest.characterId));
-          if (!character) return ctx.ui.ephemeral(interaction, { embeds: [ctx.ui.warn('Nobody is in the spotlight yet.')] });
+          if (!character) return ctx.ui.ephemeral(interaction, { embeds: [ctx.ui.empty('Nobody is in the spotlight yet.')] });
           return interaction.reply({
             embeds: [ctx.use('characters').card(character, { footer: `In the spotlight since ${new Date(latest.at).toDateString()}` })],
             allowedMentions: { parse: [] },

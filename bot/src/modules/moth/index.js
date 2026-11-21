@@ -2,13 +2,14 @@
 // This is the only module that is always on. Every Scriptmoth bot ships with it.
 
 const {
-  ActionRowBuilder,
   PermissionFlagsBits,
   SlashCommandBuilder,
-  StringSelectMenuBuilder,
 } = require('discord.js');
 const { CATEGORIES, TIERS, describeModules } = require('../../core/loader');
-const { BUILD_A_BOT_URL, BOT_PACKAGES_URL, SITE_HOST } = require('../../links');
+const { BUILD_A_BOT_URL, BOT_PACKAGES_URL, FEATURE_CATALOGUE_URL, PORTFOLIO_URL } = require('../../links');
+const { categories, showcaseEntries, catalogueView } = require('../../core/showcase');
+
+const quickStart = ['trivia', 'polls', 'dice', 'gathering', 'crafting', 'art-prompt'];
 
 function catalog(ctx) {
   return describeModules(ctx.modules).sort(
@@ -16,54 +17,18 @@ function catalog(ctx) {
   );
 }
 
-function categoriesInUse(entries) {
-  return Object.keys(CATEGORIES).filter((key) => entries.some((e) => e.category === key));
-}
-
-async function featuresView(ctx, guildId, category) {
-  const entries = catalog(ctx);
-  const disabled = new Set(await ctx.runtime.disabledModules(guildId));
-  const cats = categoriesInUse(entries);
-  const active = cats.includes(category) ? category : null;
-  const shown = active ? entries.filter((e) => e.category === active) : entries;
-
-  const lines = shown.map((e) => {
-    const off = disabled.has(e.id) ? ' · *off here*' : '';
-    return `${ctx.ui.TIER_BADGES[e.tier]} **${e.name}**${off}\n${e.description}`;
+async function featureCard(ctx, guildId, entry) {
+  const enabled = entry.moduleId && await ctx.runtime.isEnabled(guildId, entry.moduleId);
+  const demo = !entry.moduleId ? { name: 'Sample · custom build', value: entry.demo }
+    : enabled ? { name: 'Try it', value: entry.demo }
+      : { name: 'Demo availability', value: 'This feature is turned off in this server.' };
+  return ctx.ui.embed({
+    title: entry.name,
+    description: entry.description,
+    fields: [{ name: 'Use it for', value: entry.use }, demo],
+    footer: categories[entry.category],
+    tone: 'bot',
   });
-
-  const tierCounts = TIERS.map((t) => [t, entries.filter((e) => e.tier === t).length])
-    .filter(([, n]) => n)
-    .map(([t, n]) => `${ctx.ui.TIER_BADGES[t]} ×${n}`)
-    .join('  ');
-
-  const embed = ctx.ui.embed({
-    title: active ? `moth.exe features · ${CATEGORIES[active]}` : 'moth.exe features',
-    description: [
-      active ? null : 'Each of these can go into a bot for **your** server. Pick a category, or try `/moth info` on one.',
-      '',
-      ctx.ui.truncate(lines.join('\n\n'), 3800),
-    ]
-      .filter((l) => l !== null)
-      .join('\n'),
-    fields: active ? [] : [{ name: 'Tiers', value: tierCounts }],
-    footer: `Build your own at ${SITE_HOST}`,
-  });
-
-  const menu = new StringSelectMenuBuilder()
-    .setCustomId('moth:category')
-    .setPlaceholder('Browse a category')
-    .addOptions(
-      { label: 'All features', value: 'all', default: !active },
-      ...cats.map((key) => ({
-        label: CATEGORIES[key],
-        value: key,
-        description: `${entries.filter((e) => e.category === key).length} modules`,
-        default: key === active,
-      })),
-    );
-
-  return { embeds: [embed], components: [new ActionRowBuilder().addComponents(menu)] };
 }
 
 function infoEmbed(ctx, entry, enabled) {
@@ -80,6 +45,7 @@ function infoEmbed(ctx, entry, enabled) {
       ...(entry.scheduled ? [{ name: 'Automatic', value: 'Runs on a schedule in the background.' }] : []),
     ],
     footer: `Module id: ${entry.id}`,
+    thumbnail: ctx.ui.art('icon.botFeatures'),
   });
 }
 
@@ -102,39 +68,59 @@ module.exports = {
     {
       data: new SlashCommandBuilder()
         .setName('moth')
-        .setDescription('moth.exe: see what this bot can do')
-        .addSubcommand((s) => s.setName('features').setDescription('Browse every feature module'))
+        .setDescription('Browse Scriptmoth’s custom bot showcase and try demos')
+        .addSubcommand((s) => s.setName('features').setDescription('Browse bot features by purpose'))
+        .addSubcommand((s) => s.setName('try').setDescription('Open a short list of bot demos'))
         .addSubcommand((s) => s.setName('info').setDescription('Details on one feature').addStringOption((o) => moduleOption(o, 'Which feature')))
         .addSubcommand((s) => s.setName('enable').setDescription('Turn a feature on in this server (Manage Server)').addStringOption((o) => moduleOption(o, 'Which feature')))
         .addSubcommand((s) => s.setName('disable').setDescription('Turn a feature off in this server (Manage Server)').addStringOption((o) => moduleOption(o, 'Which feature')))
-        .addSubcommand((s) => s.setName('about').setDescription('About moth.exe and Scriptmoth')),
+        .addSubcommand((s) => s.setName('about').setDescription('See Scriptmoth’s portfolio and ask about a custom bot')),
 
       async execute(interaction, ctx) {
         const sub = interaction.options.getSubcommand();
 
         if (sub === 'features') {
-          return interaction.reply(await featuresView(ctx, interaction.guildId, null));
+          return interaction.reply(catalogueView(ctx.ui, showcaseEntries(ctx.modules)));
+        }
+
+        if (sub === 'try') {
+          const disabled = new Set(await ctx.runtime.disabledModules(interaction.guildId));
+          const entries = showcaseEntries(ctx.modules);
+          const fields = quickStart
+            .map((id) => entries.find((entry) => entry.id === id))
+            .filter((entry) => entry && !disabled.has(entry.moduleId))
+            .map((entry) => ({ name: entry.name, value: entry.demo }));
+          return ctx.ui.ephemeral(interaction, {
+            embeds: [ctx.ui.embed({
+              title: 'Try the bot',
+              description: 'Pick a demo and run its command with moth.exe in #try-the-bot. Use fictional data when a demo asks for input.',
+              fields: [...fields, { name: 'Find more demos', value: 'Open the catalogue with `/moth features` or browse the [website catalogue](' + FEATURE_CATALOGUE_URL + ').' }],
+              tone: 'help',
+            })],
+          });
         }
 
         if (sub === 'about') {
           return interaction.reply({
-            embeds: [
-              ctx.ui.embed({
-                title: 'moth.exe',
-                description: [
-                  `Handmade by **Scriptmoth**. This copy runs **${ctx.modules.size} modules**, and any of them can go into your own bot.`,
-                  '',
-                  '`/moth features` to look around',
-                  `📦 Bot packages: ${BOT_PACKAGES_URL}`,
-                  `🛠️ Build your own: ${BUILD_A_BOT_URL}`,
-                ].join('\n'),
-                color: ctx.ui.COLORS.night,
-              }),
-            ],
+            embeds: ctx.ui.embedLayout({
+              title: 'Scriptmoth bot showcase',
+              description: 'Scriptmoth builds custom Discord bots. Try moth.exe here to see what a bot could do for your server.',
+              fields: [
+                { name: 'Explore', value: 'Run `/moth features` to browse or `/moth try` to start a demo.' },
+                { name: 'Ask about a custom bot', value: '[See packages](' + BOT_PACKAGES_URL + ') or [describe what your server needs](' + BUILD_A_BOT_URL + ').' },
+                { name: 'Portfolio', value: '[See bot dashboards, websites, themes, and profiles](' + PORTFOLIO_URL + ').' },
+              ],
+              color: ctx.ui.COLORS.night,
+              thumbnail: ctx.ui.art('icon.services'),
+            }, { header: 'header.lavenderWindow' }),
           });
         }
 
         const id = interaction.options.getString('module');
+        if (sub === 'info') {
+          const feature = showcaseEntries(ctx.modules).find((entry) => entry.id === id);
+          if (feature) return interaction.reply({ embeds: [await featureCard(ctx, interaction.guildId, feature)] });
+        }
         const entry = catalog(ctx).find((e) => e.id === id);
         if (!entry) return ctx.ui.ephemeral(interaction, { embeds: [ctx.ui.fail(`No feature called \`${id}\`.`)] });
 
@@ -156,10 +142,13 @@ module.exports = {
 
       async autocomplete(interaction, ctx) {
         const query = interaction.options.getFocused().toLowerCase();
-        const choices = catalog(ctx)
+        const features = interaction.options.getSubcommand() === 'info' ? showcaseEntries(ctx.modules) : [];
+        const featureIds = new Set(features.map(({ id }) => id));
+        const entries = [...features, ...catalog(ctx).filter(({ id }) => !featureIds.has(id))];
+        const choices = entries
           .filter((e) => e.id.includes(query) || e.name.toLowerCase().includes(query))
           .slice(0, 25)
-          .map((e) => ({ name: `${e.name} (${e.tier})`, value: e.id }));
+          .map((e) => ({ name: e.tier ? `${e.name} (${e.tier})` : e.name, value: e.id }));
         return interaction.respond(choices);
       },
     },
@@ -168,10 +157,16 @@ module.exports = {
   components: {
     async category(interaction, ctx) {
       const value = interaction.values[0];
-      const view = await featuresView(ctx, interaction.guildId, value === 'all' ? null : value);
+      const previousCategories = { fun: 'community', characters: 'roleplay', creators: 'utilities', utility: 'utilities' };
+      const view = catalogueView(ctx.ui, showcaseEntries(ctx.modules), { category: previousCategories[value] ?? value });
       // Only the person who opened the menu changes the shared message; others get their own copy.
       if (interaction.message.interactionMetadata?.user?.id === interaction.user.id) return interaction.update(view);
       return ctx.ui.ephemeral(interaction, view);
+    },
+    async feature(interaction, ctx) {
+      const entry = showcaseEntries(ctx.modules).find(({ id }) => id === interaction.values[0]);
+      if (!entry) return ctx.ui.ephemeral(interaction, { embeds: [ctx.ui.empty('Open `/moth features` to see the current catalogue.')] });
+      return ctx.ui.ephemeral(interaction, { embeds: [await featureCard(ctx, interaction.guildId, entry)] });
     },
   },
 };

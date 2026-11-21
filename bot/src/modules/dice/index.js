@@ -28,14 +28,14 @@ module.exports = {
           throw error;
         }
 
-        const flair = result.crit ? '  ✨ **Natural 20!**' : result.fumble ? '  💀 **Natural 1.**' : '';
-        const color = result.crit ? ctx.ui.COLORS.success : result.fumble ? ctx.ui.COLORS.danger : ctx.ui.COLORS.moth;
+        const outcome = result.crit ? 'Natural 20.' : result.fumble ? 'Natural 1.' : undefined;
+        const tone = result.crit ? 'success' : result.fumble ? 'warning' : 'bot';
         return interaction.reply({
           embeds: [
             ctx.ui.embed({
-              title: `🎲 ${result.total}${flair}`,
-              description: ctx.ui.truncate(formatParts(result.parts), 3500),
-              color,
+              title: `Roll result · ${result.total}`,
+              description: [outcome, ctx.ui.truncate(formatParts(result.parts), 3500)].filter(Boolean).join('\n'),
+              tone,
               footer: `${interaction.member?.displayName ?? interaction.user.username} rolled ${expression}${reason ? ` · ${reason}` : ''}`,
             }),
           ],

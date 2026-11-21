@@ -48,7 +48,7 @@ function validateModule(mod, source = mod?.id) {
   if (!mod.description) problems.push(`${source}: missing description`);
   for (const command of mod.commands ?? []) {
     if (!command.data?.name || typeof command.execute !== 'function') {
-      problems.push(`${source}: every command needs data (a SlashCommandBuilder) and execute()`);
+      problems.push(`${source}: every command needs a command builder and execute()`);
     }
   }
   for (const [action, handler] of Object.entries(mod.components ?? {})) {
@@ -118,6 +118,7 @@ function describeModules(modules) {
 }
 
 function commandSignatures(json) {
+  if (json.type === 3) return [`Apps → ${json.name}`];
   const SUB = 1;
   const GROUP = 2;
   const subs = (json.options ?? []).filter((o) => o.type === SUB || o.type === GROUP);

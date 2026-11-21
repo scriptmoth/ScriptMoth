@@ -10,6 +10,24 @@ const path = require('node:path');
 
 const FLUSH_DELAY_MS = 250;
 
+function withUpdates(store) {
+  const pending = new Map();
+  return {
+    ...store,
+    async update(guildId, key, fn, fallback) {
+      const id = JSON.stringify([guildId, key]);
+      const next = (pending.get(id) ?? Promise.resolve()).catch(() => {}).then(async () =>
+        store.set(guildId, key, await fn(await store.get(guildId, key, fallback))));
+      pending.set(id, next);
+      try {
+        return await next;
+      } finally {
+        if (pending.get(id) === next) pending.delete(id);
+      }
+    },
+  };
+}
+
 function createJsonStore(dir) {
   fs.mkdirSync(dir, { recursive: true });
   const files = new Map(); // moduleId -> { data, timer }
@@ -23,7 +41,7 @@ function createJsonStore(dir) {
     } catch (error) {
       if (error.code !== 'ENOENT') console.error(`[store] could not read ${file}:`, error.message);
     }
-    const entry = { file, data, timer: null };
+    const entry = { file, data, timer: null, scoped: null };
     files.set(moduleId, entry);
     return entry;
   }
@@ -48,10 +66,11 @@ function createJsonStore(dir) {
 
   function scope(moduleId) {
     const entry = load(moduleId);
+    if (entry.scoped) return entry.scoped;
     const guild = (guildId) => (entry.data[guildId] ??= {});
     const clone = (value) => (value === undefined ? undefined : structuredClone(value));
 
-    return {
+    entry.scoped = withUpdates({
       async get(guildId, key, fallback) {
         const value = entry.data[guildId]?.[key];
         return value === undefined ? fallback : clone(value);
@@ -60,11 +79,6 @@ function createJsonStore(dir) {
         guild(guildId)[key] = clone(value);
         schedule(entry);
         return value;
-      },
-      async update(guildId, key, fn, fallback) {
-        const current = await this.get(guildId, key, fallback);
-        const next = await fn(current);
-        return this.set(guildId, key, next);
       },
       async delete(guildId, key) {
         if (entry.data[guildId]) delete entry.data[guildId][key];
@@ -76,7 +90,8 @@ function createJsonStore(dir) {
       async guilds() {
         return Object.keys(entry.data);
       },
-    };
+    });
+    return entry.scoped;
   }
 
   function flush() {
@@ -94,10 +109,12 @@ function createJsonStore(dir) {
 // In-memory store with the same interface, used by tests.
 function createMemoryStore() {
   const data = {};
+  const scopes = new Map();
   return {
     scope(moduleId) {
+      if (scopes.has(moduleId)) return scopes.get(moduleId);
       const mod = (data[moduleId] ??= {});
-      return {
+      const scoped = withUpdates({
         async get(g, k, fallback) {
           const v = mod[g]?.[k];
           return v === undefined ? fallback : structuredClone(v);
@@ -105,9 +122,6 @@ function createMemoryStore() {
         async set(g, k, v) {
           (mod[g] ??= {})[k] = structuredClone(v);
           return v;
-        },
-        async update(g, k, fn, fallback) {
-          return this.set(g, k, await fn(await this.get(g, k, fallback)));
         },
         async delete(g, k) {
           if (mod[g]) delete mod[g][k];
@@ -118,7 +132,9 @@ function createMemoryStore() {
         async guilds() {
           return Object.keys(mod);
         },
-      };
+      });
+      scopes.set(moduleId, scoped);
+      return scoped;
     },
     flush() {},
   };

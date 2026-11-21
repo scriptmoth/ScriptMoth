@@ -27,14 +27,14 @@ async function pool(ctx, guildId, genre) {
 
 function promptEmbed(ctx, prompt) {
   return ctx.ui.embed({
-    title: '📜 RP prompt',
+    title: 'RP prompt',
     description: prompt.text,
     footer: prompt.community ? `${prompt.genre} · submitted by a member` : prompt.genre,
   });
 }
 
 function reviewView(ctx, pending) {
-  if (!pending.length) return { embeds: [ctx.ui.ok('No prompts waiting for review.')], components: [] };
+  if (!pending.length) return { embeds: [ctx.ui.empty('No prompts waiting for review.')], components: [] };
   const next = pending[0];
   return {
     embeds: [

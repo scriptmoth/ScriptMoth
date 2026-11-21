@@ -60,20 +60,27 @@ function createRuntime({ client, modules, store, log = console }) {
     return contexts.get(mod.id);
   }
 
-  // New messages get the divider file attached automatically. update() edits a message that
-  // already carries it, so it's left alone.
-  function attachDivider(interaction) {
-    if (interaction.mothDivider) return;
-    interaction.mothDivider = true;
-    for (const method of ['reply', 'followUp', 'editReply']) {
+  // Preserve the existing artwork on component edits and attach missing files to older messages.
+  function prepareInteraction(interaction) {
+    if (interaction.mothArtwork) return;
+    interaction.mothArtwork = true;
+    for (const method of ['reply', 'followUp', 'editReply', 'update']) {
       if (typeof interaction[method] !== 'function') continue;
       const original = interaction[method].bind(interaction);
-      interaction[method] = (payload) => original(ui.withDivider(payload));
+      interaction[method] = async (payload) => {
+        let message;
+        if (method === 'update') message = interaction.message;
+        if (method === 'editReply' && payload?.embeds && interaction.fetchReply) {
+          message = await interaction.fetchReply();
+        }
+        const existing = [...(message?.attachments?.values() ?? [])];
+        return original(await ui.withArtwork(payload, existing));
+      };
     }
   }
 
   async function guard(interaction, mod, fn) {
-    attachDivider(interaction);
+    prepareInteraction(interaction);
     if (!(await isEnabled(interaction.guildId, mod.id))) {
       if (interaction.isAutocomplete()) return interaction.respond([]);
       return ui.ephemeral(interaction, {
@@ -85,7 +92,7 @@ function createRuntime({ client, modules, store, log = console }) {
     } catch (error) {
       log.error(`[${mod.id}] interaction failed:`, error);
       if (interaction.isAutocomplete()) return;
-      const payload = { embeds: [ui.fail('Something went wrong running that. The moth has been notified.')] };
+      const payload = { embeds: [ui.fail('This command failed. If it keeps happening, use `/feedback send` to tell staff what you tried.')] };
       try {
         await ui.ephemeral(interaction, payload);
       } catch {
@@ -95,7 +102,7 @@ function createRuntime({ client, modules, store, log = console }) {
   }
 
   async function onInteraction(interaction) {
-    if (interaction.isChatInputCommand() || interaction.isAutocomplete()) {
+    if (interaction.isChatInputCommand() || interaction.isAutocomplete() || interaction.isMessageContextMenuCommand?.()) {
       const owner = commandOwners.get(interaction.commandName);
       if (!owner) return;
       const ctx = contextFor(owner.mod);
@@ -146,11 +153,16 @@ function createRuntime({ client, modules, store, log = console }) {
 
   const timers = [];
   function startTick(mod) {
+    let running = false;
     const run = async () => {
+      if (running) return;
+      running = true;
       try {
         await mod.tick.run(contextFor(mod));
       } catch (error) {
         log.error(`[${mod.id}] scheduled job failed:`, error);
+      } finally {
+        running = false;
       }
     };
     timers.push(setInterval(run, mod.tick.everyMs));

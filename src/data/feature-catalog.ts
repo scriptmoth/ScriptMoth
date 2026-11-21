@@ -68,14 +68,24 @@ const demo = {
 export const systems: CatalogSystem[] = [
   // Community & engagement
   {
-    id: "question-prompts", name: "Question & Prompt System", shelf: "community",
-    summary: "A library of questions or prompts that posts on a schedule, collects answers, and keeps an archive.",
-    included: ["Question and prompt library", "Scheduled daily or weekly posting", "Answer threads or replies", "Member submissions with staff review", "Archive of past questions"],
-    uses: ["Community question of the day", "In-character QOTD answered as an OC", "Writing and art prompts", "Icebreakers for new members", "Character interviews"],
-    enhancements: ["Question codes for easy reference", "Thread clean-up and reply rules", "Answer streaks and rewards", "Themed prompt packs", "Random prompt generator by genre or mood"],
-    categories: ["community", "roleplay", "creators"],
-    related: ["trivia-quiz", "reminders-scheduler", "community-rewards", "character-registry"],
-    keywords: ["qotd", "question of the day", "daily question", "ic qotd", "in character", "journal prompt", "drawing prompt", "rp prompt", "conversation starter"],
+    id: "question-prompts", name: "Community question of the day", shelf: "community",
+    summary: "Posts scheduled conversation starters for members to answer as themselves and keeps an archive of past questions.",
+    included: ["Question library", "Scheduled daily or weekly posting", "Answer threads or replies", "Member submissions with staff review", "Archive of past questions"],
+    uses: ["Community icebreakers", "Weekly check-ins", "Getting new members into the conversation"],
+    enhancements: ["Themed question packs", "Answer streaks and rewards", "Thread clean-up and reply rules"],
+    categories: ["community"],
+    related: ["character-qotd", "trivia-quiz", "reminders-scheduler", "community-rewards"],
+    keywords: ["qotd", "daily question", "conversation starter"],
+  },
+  {
+    id: "art-prompts", name: "Art prompt generator", shelf: "community",
+    summary: "Draws a subject, setting, mood, palette, and twist for a drawing prompt.",
+    included: ["Prompt library", "Theme selection", "Reroll button"],
+    uses: ["Drawing challenges", "Warm-up sketches", "Creative community events"],
+    enhancements: ["Custom theme packs", "Scheduled challenges"],
+    categories: ["creators", "community"],
+    related: ["question-prompts", "roleplay-scene-prompts"],
+    keywords: ["drawing prompt", "art prompt", "random creative prompt"],
   },
   {
     id: "spotlight", name: "Spotlight System", shelf: "community",
@@ -292,6 +302,26 @@ export const systems: CatalogSystem[] = [
   },
 
   // Characters & applications
+  {
+    id: "character-qotd", name: "In-character question of the day", shelf: "characters",
+    summary: "Posts scheduled questions for members to answer in a character’s voice.",
+    included: ["In-character question library", "Scheduled posts", "Answer threads", "Question archive"],
+    uses: ["Character development between scenes", "Character interviews", "Worldbuilding through character answers"],
+    enhancements: ["Character profile links", "Prompts by faction or setting", "Player-submitted questions"],
+    categories: ["roleplay", "creators"],
+    related: ["question-prompts", "character-registry", "roleplay-scene-prompts"],
+    keywords: ["ic qotd", "in character qotd", "oc questions", "character interviews"],
+  },
+  {
+    id: "roleplay-scene-prompts", name: "Roleplay scene prompts", shelf: "characters",
+    summary: "Picks a scene starter from a prompt library and lets staff review suggestions.",
+    included: ["Scene prompt library", "Genre selection", "Suggestion review"],
+    uses: ["Start an RP scene", "Give writers a short exercise", "Find ideas for an encounter"],
+    enhancements: ["Setting-specific prompt packs", "Custom mood filters"],
+    categories: ["roleplay", "creators"],
+    related: ["character-qotd", "art-prompts", "random-encounters"],
+    keywords: ["rp prompt", "writing prompt", "scene starter", "story prompt"],
+  },
   {
     id: "character-registry", name: "Character Registry", shelf: "characters",
     summary: "Members create and manage character profiles that everyone can browse.",

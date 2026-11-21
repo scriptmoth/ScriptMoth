@@ -22,7 +22,9 @@ function card(ui, c, { footer } = {}) {
     title: c.name,
     description: [subtitle && `*${subtitle}*`, c.bio].filter(Boolean).join('\n\n') || '*No bio yet.*',
     fields: [{ name: 'Owner', value: `<@${c.ownerId}>`, inline: true }],
-    thumbnail: c.image || undefined,
+    author: c.image ? { name: 'Character artwork', url: c.image } : undefined,
+    image: c.image,
+    thumbnail: ui.art('icon.portfolio'),
     color: c.color ?? ui.COLORS.moth,
     footer: footer ?? `Character id: ${c.id}`,
   });
@@ -118,6 +120,7 @@ module.exports = {
                 title: member ? `${member.username}'s characters` : 'Character directory',
                 description: ctx.ui.truncate(lines.join('\n') || 'No characters yet. Make one with `/character create`.', 4000),
                 footer: `${shown.length} character${shown.length === 1 ? '' : 's'}`,
+                tone: shown.length ? 'general' : 'empty',
               }),
             ],
             allowedMentions: { parse: [] },
@@ -127,7 +130,7 @@ module.exports = {
         if (sub === 'random') {
           const member = interaction.options.getUser('member');
           const pool = member ? all.filter((c) => c.ownerId === member.id) : all;
-          if (!pool.length) return ctx.ui.ephemeral(interaction, { embeds: [ctx.ui.warn('No characters to pick from yet.')] });
+          if (!pool.length) return ctx.ui.ephemeral(interaction, { embeds: [ctx.ui.empty('No characters to pick from yet.')] });
           return interaction.reply({ content: '🎲 The moth picks…', embeds: [card(ctx.ui, ctx.ui.pick(pool))], allowedMentions: { parse: [] } });
         }
 

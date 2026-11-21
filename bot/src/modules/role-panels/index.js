@@ -11,7 +11,7 @@ const KEY = 'panels';
  * Builds a panel message. `roles` is [{ id, label, emoji? }].
  * Returns plain JSON so it works with both discord.js and raw REST calls.
  */
-function buildPanel(ui, { panelId, title, description, roles, exclusive, color }) {
+function buildPanel(ui, { panelId, title, description, roles, exclusive, color, divider, roleMarker }) {
   const rows = [];
   for (let i = 0; i < roles.length; i += 5) {
     rows.push(
@@ -28,8 +28,12 @@ function buildPanel(ui, { panelId, title, description, roles, exclusive, color }
     );
   }
   const hint = exclusive ? '*Pick one. Picking another swaps it, and clicking yours again removes it.*' : '*Pick as many as you like. Click again to remove.*';
+  const roleList = roleMarker && roles.map(({ id }, index) => {
+    const border = index === 0 ? '╭' : index === roles.length - 1 ? '╰' : '┊';
+    return `${border}  ${roleMarker}  <@&${id}>`;
+  }).join('\n');
   return {
-    embeds: [ui.embed({ title, description: [description, hint].filter(Boolean).join('\n\n'), color }).toJSON()],
+    embeds: [ui.embed({ title, description: [description, roleList, hint].filter(Boolean).join('\n\n'), color, divider }).toJSON()],
     components: rows.map((r) => r.toJSON()),
   };
 }
@@ -92,7 +96,7 @@ module.exports = {
         const panelId = newPanelId();
         const exclusive = interaction.options.getBoolean('pick_one') ?? false;
         const message = await channel.send(
-          ctx.ui.withDivider(buildPanel(ctx.ui, {
+          await ctx.ui.withArtwork(buildPanel(ctx.ui, {
             panelId,
             title: interaction.options.getString('title'),
             description: interaction.options.getString('description'),

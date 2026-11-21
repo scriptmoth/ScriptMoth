@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowDown, ArrowUpRight, BookOpen, LayoutDashboard, LayoutTemplate, Maximize2, MessageCircle, NotebookPen, UserRound } from "lucide-react";
+import { ArrowUpRight, BookOpen, LayoutDashboard, LayoutTemplate, Maximize2, MessageCircle, NotebookPen, UserRound } from "lucide-react";
 import { CarrdSite } from "@/demos/carrd/carrd-site";
 import { CarrdGallery } from "@/demos/carrd/carrd-gallery";
 import { AstralArchiveShowcase } from "@/demos/astral-archive/showcase";
@@ -10,39 +10,66 @@ import { WikiGallery } from "@/demos/wiki/wiki-gallery";
 import { carrdTemplates } from "@/demos/carrd/carrd-templates";
 import { discordStyles } from "@/demos/discord/discord-styles";
 import { embedStyles } from "@/demos/discord/discord-embeds";
+import { showcaseInvite } from "@/data/bot-showcase";
 import { pageMetadata } from "@/lib/metadata";
 import styles from "./portfolio.module.css";
 
-export const metadata = pageMetadata("Portfolio", "Live one-page site demos, Tumblr themes, Toyhouse profiles, and character wikis you can click through, plus a library of Discord channel and category styles.", "/portfolio");
+export const metadata = pageMetadata("Portfolio", "Try Scriptmoth’s Discord bot demos and browse bot dashboards, one-page websites, Tumblr themes, Toyhouse profiles, and character wikis.", "/portfolio");
 
 const featured = carrdTemplates[0];
 const sections = [
+  { id: "discord-bots", label: "Discord bots", icon: MessageCircle },
+  { id: "dashboards", label: "Bot dashboards", icon: LayoutDashboard },
   { id: "carrd-sites", label: "One-page sites", icon: LayoutTemplate },
   { id: "tumblr-themes", label: "Tumblr themes", icon: NotebookPen },
   { id: "toyhouse-profiles", label: "Toyhouse profiles", icon: UserRound },
   { id: "oc-wikis", label: "Character wikis", icon: BookOpen },
-  { id: "dashboards", label: "Bot dashboards", icon: LayoutDashboard },
   { id: "discord-setup", label: "Discord styles", icon: MessageCircle },
 ];
 
 export default function PortfolioPage() {
   return (
     <>
-      <section className={`night-band ${styles.showcase}`} aria-labelledby="portfolio-title">
+      <section className={`night-band ${styles.showcase}`} id="discord-bots" aria-labelledby="portfolio-title">
         <div className="site-container">
           <header className={styles.header}>
             <div>
               <p className="eyebrow kicker-chip">Portfolio</p>
-              <h1 id="portfolio-title">Package examples</h1>
-              <p>Click through a one-page site, Tumblr theme, Toyhouse profile, character wiki, or bot dashboard below. Each one also opens as a full page. Discord channel and category styles are in the style library.</p>
+              <h1 id="portfolio-title">Discord bots and creative work</h1>
+              <p>Try moth.exe to see what a custom bot could do for your server. You can also browse my bot dashboards, websites, Tumblr themes, Toyhouse profiles, and character wikis.</p>
             </div>
-            <a className="text-link" href="#carrd-sites">Browse examples <ArrowDown className="icon-down" size={16} aria-hidden="true" /></a>
+            <a className="button button--primary" href={showcaseInvite}>Try a bot on Discord <ArrowUpRight size={16} aria-hidden="true" /></a>
           </header>
           <nav aria-label="Portfolio categories" className={styles.sectionNav}>
             {sections.map(({ id, label, icon: Icon }) => (
               <a key={id} href={`#${id}`}><Icon size={17} aria-hidden="true" />{label}</a>
             ))}
           </nav>
+          <div className={styles.captionLinks}>
+            <Link className="text-link" href="/features">Browse bot features <ArrowUpRight size={16} aria-hidden="true" /></Link>
+            <Link className="text-link" href="/contact?type=discord-bot">Ask about a custom bot <ArrowUpRight size={16} aria-hidden="true" /></Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="section" id="dashboards" aria-labelledby="dashboards-title">
+        <div className="site-container">
+          <header className={styles.sectionHeader}>
+            <p className="eyebrow">Bot dashboards</p>
+            <h2 id="dashboards-title">Staff dashboards for Discord bots</h2>
+            <p>Run the bot from a browser tab: members, applications, events, raid statics, and embeds. This one is for a Final Fantasy XIV Free Company.</p>
+          </header>
+          <AstralArchiveShowcase />
+        </div>
+      </section>
+
+      <section className="section section-band" id="carrd-sites" aria-labelledby="carrd-title">
+        <div className="site-container">
+          <header className={styles.sectionHeader}>
+            <p className="eyebrow">One-page sites</p>
+            <h2 id="carrd-title">Commission sheets, bios, and shrines</h2>
+            <p>Everything that fits on one link in your bio: commission terms, BYF/DNI, an OC profile, a fan shrine. Every design opens as a real page.</p>
+          </header>
           <div className={styles.featured} style={{ background: featured.palette.backdrop }}>
             <CarrdSite template={featured} />
           </div>
@@ -53,16 +80,6 @@ export default function PortfolioPage() {
               <Link className="text-link" href="/contact?type=carrd-site">Build a project like this <ArrowUpRight size={16} aria-hidden="true" /></Link>
             </div>
           </div>
-        </div>
-      </section>
-
-      <section className="section" id="carrd-sites" aria-labelledby="carrd-title">
-        <div className="site-container">
-          <header className={styles.sectionHeader}>
-            <p className="eyebrow">One-page sites</p>
-            <h2 id="carrd-title">Commission sheets, bios, and shrines</h2>
-            <p>Everything that fits on one link in your bio: commission terms, BYF/DNI, an OC profile, a fan shrine. Every design opens as a real page.</p>
-          </header>
           <CarrdGallery />
         </div>
       </section>
@@ -116,17 +133,6 @@ export default function PortfolioPage() {
               <Link className="text-link" href="/contact?type=oc-wiki">Request a quote</Link>
             </div>
           </div>
-        </div>
-      </section>
-
-      <section className="section" id="dashboards" aria-labelledby="dashboards-title">
-        <div className="site-container">
-          <header className={styles.sectionHeader}>
-            <p className="eyebrow">Bot dashboards</p>
-            <h2 id="dashboards-title">Staff dashboards for Discord bots</h2>
-            <p>Run the bot from a browser tab: members, applications, events, raid statics, and embeds. This one is for a Final Fantasy XIV Free Company.</p>
-          </header>
-          <AstralArchiveShowcase />
         </div>
       </section>
 

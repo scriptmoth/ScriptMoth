@@ -35,24 +35,22 @@ function panel(ctx, ex) {
   const count = Object.keys(ex.participants).length;
   const open = ex.status === 'open';
   if (ex.status === 'ended') {
-    return { embeds: [ctx.ui.embed({ title: '🎁 Secret Santa has ended', description: 'Thanks for taking part!', color: ctx.ui.COLORS.danger })], components: [] };
+    return { embeds: [ctx.ui.ok('Thanks for taking part!', 'Secret Santa has ended')], components: [] };
   }
   return {
-    embeds: [
-      ctx.ui.embed({
-        title: open ? '🎁 Secret Santa sign-ups are open!' : '🎁 Secret Santa: names have been drawn',
-        description: open
-          ? 'Press **Join** to take part, then add a wishlist so your Santa knows what you like.'
-          : 'Check your DMs for your match, or use `/secretsanta mymatch`.',
-        fields: [
-          { name: 'Joined', value: String(count), inline: true },
-          ...(ex.budget ? [{ name: 'Budget', value: ex.budget, inline: true }] : []),
-          ...(ex.deadline ? [{ name: 'Send by', value: ex.deadline, inline: true }] : []),
-          { name: 'Host', value: `<@${ex.hostId}>`, inline: true },
-        ],
-        color: ctx.ui.COLORS.danger,
-      }),
-    ],
+    embeds: ctx.ui.embedLayout({
+      title: open ? 'Secret Santa sign-ups are open' : 'Secret Santa names have been drawn',
+      description: open
+        ? 'Press **Join** to take part, then add a wishlist so your Santa knows what you like.'
+        : 'Check your DMs for your match, or use `/secretsanta mymatch`.',
+      fields: [
+        { name: 'Joined', value: String(count), inline: true },
+        ...(ex.budget ? [{ name: 'Budget', value: ex.budget, inline: true }] : []),
+        ...(ex.deadline ? [{ name: 'Send by', value: ex.deadline, inline: true }] : []),
+        { name: 'Host', value: `<@${ex.hostId}>`, inline: true },
+      ],
+      thumbnail: ctx.ui.art('icon.support'),
+    }, { header: 'header.moonStars' }),
     components: open
       ? [
           new ActionRowBuilder().addComponents(
@@ -68,7 +66,7 @@ function panel(ctx, ex) {
 function matchEmbed(ctx, ex, receiverId, guildName) {
   const wishlist = ex.participants[receiverId]?.wishlist;
   return ctx.ui.embed({
-    title: '🎅 Your Secret Santa match',
+    title: 'Your Secret Santa match',
     description: `You're getting a gift for <@${receiverId}>${guildName ? ` in **${guildName}**` : ''}!`,
     fields: [
       { name: 'Their wishlist', value: wishlist ? ctx.ui.truncate(wishlist, 1000) : '*They didn\'t write one. Time to be creative!*' },
@@ -76,7 +74,7 @@ function matchEmbed(ctx, ex, receiverId, guildName) {
       ...(ex.deadline ? [{ name: 'Send by', value: ex.deadline, inline: true }] : []),
     ],
     footer: 'Keep it secret! Use /secretsanta sent once your gift is on its way.',
-    color: ctx.ui.COLORS.danger,
+    thumbnail: ctx.ui.art('icon.support'),
   });
 }
 
@@ -84,7 +82,7 @@ async function refreshPanel(ctx, ex) {
   if (!ex.channelId || !ex.messageId) return;
   const channel = await ctx.client.channels.fetch(ex.channelId).catch(() => null);
   const message = await channel?.messages?.fetch(ex.messageId).catch(() => null);
-  await message?.edit(panel(ctx, ex)).catch(() => null);
+  if (message) await message.edit(await ctx.ui.withArtwork(panel(ctx, ex), [...message.attachments.values()])).catch(() => null);
 }
 
 module.exports = {
@@ -190,7 +188,7 @@ module.exports = {
         for (const [giver, receiver] of Object.entries(ex.pairs)) {
           try {
             const user = await ctx.client.users.fetch(giver);
-            await user.send(ctx.ui.withDivider({ embeds: [matchEmbed(ctx, ex, receiver, interaction.guild?.name)] }));
+            await user.send(await ctx.ui.withArtwork({ embeds: [matchEmbed(ctx, ex, receiver, interaction.guild?.name)] }));
           } catch {
             ex.participants[giver].dmFailed = true;
             failed++;

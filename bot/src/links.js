@@ -10,4 +10,6 @@ module.exports = {
   SITE_HOST: SITE_URL.replace(/^https?:\/\//, ''),
   BUILD_A_BOT_URL: `${SITE_URL}/contact?type=discord-bot`,
   BOT_PACKAGES_URL: `${SITE_URL}/products#discord-packages`,
+  FEATURE_CATALOGUE_URL: `${SITE_URL}/features`,
+  PORTFOLIO_URL: `${SITE_URL}/portfolio`,
 };

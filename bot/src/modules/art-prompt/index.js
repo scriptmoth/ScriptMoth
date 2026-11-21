@@ -19,7 +19,8 @@ function view(ctx, prompt, userId) {
   return {
     embeds: [
       ctx.ui.embed({
-        title: '🎨 Art prompt',
+        title: 'Art prompt',
+        thumbnail: ctx.ui.art('icon.portfolio'),
         description: `Draw **${prompt.subject}** ${prompt.setting}.`,
         fields: [
           { name: 'Mood', value: prompt.mood, inline: true },

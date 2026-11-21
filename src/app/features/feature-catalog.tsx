@@ -3,6 +3,7 @@
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { CalendarDays, Castle, Coins, LayoutDashboard, MessagesSquare, Pickaxe, Search, ShieldCheck, Swords, UsersRound, Wrench, X, type LucideIcon } from "lucide-react";
 import { ButtonLink, EmptyState } from "@/components/ui";
+import { showcaseCommands } from "@/data/bot-showcase";
 import { categories, shelves, systems, type CategoryId, type ShelfId } from "@/data/feature-catalog";
 import { inquiryHref, systemsById } from "@/lib/feature-catalog";
 import { buildIndex, search, type SearchHit } from "@/lib/feature-catalog-search";
@@ -37,6 +38,7 @@ function groupByShelf(hits: SearchHit[], ranked: boolean) {
 export function FeatureCatalog() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<CategoryFilter>("all");
+  const [showcaseOnly, setShowcaseOnly] = useState(false);
   const [open, setOpen] = useState<ReadonlySet<string>>(new Set());
   const [interest, setInterest] = useState<string[]>([]);
   const [announcement, setAnnouncement] = useState("");
@@ -47,20 +49,25 @@ export function FeatureCatalog() {
   const deferredQuery = useDeferredValue(query);
   const searching = deferredQuery.trim().length > 0;
 
-  const matches = useMemo(() => search(index, deferredQuery), [deferredQuery]);
+  const matches = useMemo(() => {
+    const results = search(index, deferredQuery);
+    return showcaseOnly ? results.filter(({ system }) => Boolean(showcaseCommands[system.id])) : results;
+  }, [deferredQuery, showcaseOnly]);
   const hits = matches.filter(({ system }) => category === "all" || system.categories.includes(category));
   const groups = groupByShelf(hits, searching);
-  const filtered = category !== "all";
+  const categoryFiltered = category !== "all";
+  const filtered = categoryFiltered || showcaseOnly;
   const categoryCounts = useMemo(() => Object.fromEntries(categoryIds.map((id) =>
     [id, matches.filter(({ system }) => system.categories.includes(id)).length])), [matches]);
 
-  // Restore ?q=, ?category=, the saved interest list, and a #system deep link after hydration.
+  // Restore filters, the saved interest list, and a #system deep link after hydration.
   useEffect(() => {
     function restore() {
       const params = new URLSearchParams(window.location.search);
       const savedCategory = params.get("category");
       setQuery(params.get("q") ?? "");
       if (savedCategory && savedCategory in categories) setCategory(savedCategory as CategoryId);
+      setShowcaseOnly(params.get("try") === "1");
       setInterest(readStoredInterest());
       const target = decodeURIComponent(window.location.hash.slice(1));
       if (systemsById.has(target)) {
@@ -78,9 +85,10 @@ export function FeatureCatalog() {
     const params = new URLSearchParams();
     if (deferredQuery.trim()) params.set("q", deferredQuery.trim());
     if (category !== "all") params.set("category", category);
+    if (showcaseOnly) params.set("try", "1");
     const next = params.size ? `?${params}` : "";
     if (next !== window.location.search) history.replaceState(history.state, "", `${window.location.pathname}${next}${window.location.hash}`);
-  }, [restored, deferredQuery, category]);
+  }, [restored, deferredQuery, category, showcaseOnly]);
 
   useEffect(() => {
     if (!restored) return;
@@ -144,6 +152,7 @@ export function FeatureCatalog() {
   function clearAll() {
     setQuery("");
     setCategory("all");
+    setShowcaseOnly(false);
   }
 
   const picked = interest.map((id) => systemsById.get(id)).filter((system) => system !== undefined);
@@ -203,6 +212,9 @@ export function FeatureCatalog() {
               {hits.length === systems.length ? `Showing all ${systems.length} systems` : `${hits.length} of ${systems.length} systems`}
               {searching && hits.length > 0 && <> for “{deferredQuery.trim()}”</>}
             </p>
+            <button type="button" className={styles.showcaseFilter} aria-pressed={showcaseOnly} onClick={() => setShowcaseOnly(!showcaseOnly)}>
+              Has a Discord demo
+            </button>
             {(query || filtered) && <button type="button" className={styles.clearAll} onClick={clearAll}>Clear search and filters</button>}
           </div>
         </div>
@@ -256,13 +268,13 @@ export function FeatureCatalog() {
       ) : (
         <div className={styles.empty}>
           <EmptyState title={searching ? `Nothing on the shelves for “${deferredQuery.trim()}”` : "No systems match this filter"}>
-            {filtered && matches.length > 0
+            {categoryFiltered && matches.length > 0
               ? <>There {matches.length === 1 ? "is 1 match" : `are ${matches.length} matches`} in other categories. </>
               : "Try a shorter word, or describe what members would do (“collect”, “vote”, “sign up”). "}
             Custom ideas are welcome too.
           </EmptyState>
           <div className={styles.emptyActions}>
-            {filtered && matches.length > 0 && <button type="button" className="button button--outline" onClick={() => setCategory("all")}>Show all matches</button>}
+            {categoryFiltered && matches.length > 0 && <button type="button" className="button button--outline" onClick={() => setCategory("all")}>Show all matches</button>}
             {searching && <ButtonLink href={inquiryHref([], deferredQuery.trim())} variant="secondary">Describe your idea</ButtonLink>}
             <button type="button" className={styles.clearAll} onClick={clearAll}>Browse everything</button>
           </div>
