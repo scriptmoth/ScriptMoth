@@ -184,22 +184,21 @@ export const embedPurposes: EmbedPurpose[] = [
   },
   {
     id: "welcome", label: "Welcome", title: "Welcome",
-    intro: "We’re so glad you found us.",
+    intro: "Browse #bot-features, then run `/moth try` in #try-the-bot to see a bot in action.",
     items: [
-      { title: "Read the rules", body: "Start in #rules so you know the basics." },
-      { title: "Pick your roles", body: "Choose colors and pings in #roles." },
-      { title: "Say hello", body: "Introduce yourself in #introductions." },
-      { title: "Grab a color", body: "Pick a name color in #roles." },
-      { title: "Join events", body: "Weekly events are posted in #events." },
-      { title: "Have fun", body: "Make friends and enjoy your stay!" },
+      { title: "Explore the catalogue", body: "Pick a category and open a feature to see how it works." },
+      { title: "Try a demo", body: "Use fictional names and sample content when you test commands." },
+      { title: "Request a custom bot", body: "See packages and send a project inquiry from #commissions." },
+      { title: "Read the rules and choose roles", body: "Read #rules before posting. Use #roles to choose a name color or notifications." },
+      { title: "Chat and share art", body: "Say hello in #general or post your art in #share-your-work." },
     ],
     outro: "Make yourself at home",
     buttons: [{ label: "Get roles", emoji: "🎨", style: "primary" }, { label: "Server guide", style: "secondary" }],
     reactions: [{ emoji: "👋", count: 48 }, { emoji: "💖", count: 19 }],
   },
   {
-    id: "info", label: "Information", title: "Server Information",
-    intro: "Everything you need to know, in one place.",
+    id: "info", label: "Server guide", title: "Where to find things",
+    intro: "Find the server’s event times, links, and staff contacts.",
     items: [
       { title: "About us", body: "A cozy space for artists and friends." },
       { title: "Server time", body: "Events run on Eastern Time." },
@@ -243,18 +242,28 @@ export const embedPurposes: EmbedPurpose[] = [
     reactions: [],
   },
   {
-    id: "faq", label: "FAQ", title: "Frequently Asked",
-    intro: "Quick answers to common questions.",
+    id: "faq", label: "FAQ", title: "Demos, commissions, and support",
+    intro: "Try commands with moth.exe in #try-the-bot. Start with `/moth try`.",
     items: [
-      { title: "How do I get roles?", body: "Visit #roles and click a button." },
-      { title: "Can I advertise?", body: "Only in #self-promo, once a week." },
-      { title: "Who do I contact?", body: "Open a ticket with the button below." },
-      { title: "How do I level up?", body: "Chat in any channel to earn XP." },
-      { title: "Can I be staff?", body: "Applications open in #announcements." },
-      { title: "Where are the rules?", body: "Read them in #rules." },
+      { title: "Where can I see more demos?", body: "Open #bot-features and choose a category, or run `/moth features`." },
+      { title: "How much will my bot cost?", body: "See starting prices in #commissions. Your written quote confirms the total and the scope." },
+      { title: "How do I report a bug?", body: "Run `/feedback send` with the command and what happened. Keep the ID for `/feedback status`." },
+      { title: "How do I earn chat XP?", body: "Run `/rank opt-in`, then check your progress with `/rank profile`." },
     ],
-    outro: "Still stuck? We’re happy to help",
-    buttons: [{ label: "Open a ticket", emoji: "🎫", style: "primary" }],
+    outro: "Report conduct concerns to a moderator privately.",
+    buttons: [],
+    reactions: [],
+  },
+  {
+    id: "quote", label: "Project estimate", title: "Your bot estimate",
+    intro: "**$135 USD estimated development total.** [Submit a project inquiry](https://scriptmoth.com/contact?type=discord-bot) to get a written quote.",
+    items: [
+      { title: "Simple Utility Bot · $115", body: "One supported main module, branded bot messages, and up to three basic slash commands." },
+      { title: "One extra slash command · $20", body: "Add one simple command, such as `/links`, beyond the package allowance." },
+      { title: "Next steps", body: "Review scope, currency, payment dates, and any recurring costs in your written quote. Work starts after you accept and meet its start conditions." },
+    ],
+    outro: "Example estimate in USD. Hosting and third-party costs depend on the written quote.",
+    buttons: [],
     reactions: [],
   },
   {
@@ -273,12 +282,12 @@ export const embedPurposes: EmbedPurpose[] = [
     reactions: [{ emoji: "⭐", count: 41 }],
   },
   {
-    id: "tickets", label: "Tickets", title: "Need Help?",
-    intro: "Open a private ticket and the team will reply soon.",
+    id: "tickets", label: "Tickets", title: "Open a support ticket",
+    intro: "Select **Open a ticket**, choose a topic, and tell staff what you need help with.",
     items: [
-      { title: "Report", body: "Let staff know about a problem." },
-      { title: "Question", body: "Ask anything about the server." },
-      { title: "Appeal", body: "Request a review of a decision." },
+      { title: "Report a problem", body: "Tell staff what happened. Add a message link if it helps them find it." },
+      { title: "Ask a server question", body: "Include the channel, role, or feature you need help with." },
+      { title: "Appeal a decision", body: "Identify the action you want staff to review." },
       { title: "Partnership", body: "Ask about partnering with us." },
       { title: "Purchase", body: "Questions about shop orders." },
       { title: "Other", body: "Anything that doesn’t fit above." },
@@ -829,7 +838,14 @@ export function composeEmbeds(style: EmbedStyle, purpose: EmbedPurpose, options:
 
   /* 1. The text, split into embeds the way this design's recipe wants. */
   let core: DiscordEmbed[];
-  if (style.layout === "cards") {
+  if (purpose.id === "quote") {
+    const [packageLine, extra, next] = purpose.items;
+    core = [
+      { title: purpose.title, description: purpose.intro, color },
+      { title: "Itemized features", description: [packageLine, extra].map(({ title, body }) => `**${title}**\n${body}`).join("\n\n"), color },
+      { title: next.title, description: `${next.body}\n\n-# ${purpose.outro}`, color },
+    ];
+  } else if (style.layout === "cards") {
     const colors = style.palette?.length ? style.palette.map(hex => parseInt(hex.slice(1), 16)) : [color];
     const colorAt = (index: number) => colors[index % colors.length];
     core = [{ title, description: withHeader(intro), color: colorAt(0) }];
@@ -876,7 +892,10 @@ export function composeEmbeds(style: EmbedStyle, purpose: EmbedPurpose, options:
   const after: DiscordEmbed[] = [];
   const attachments: ArtSlot[] = [];
 
-  switch (recipe) {
+  if (purpose.id === "quote") {
+    if (decorated) core.forEach((card) => image(card, "strip"));
+    if (elaborate) thumb(first);
+  } else switch (recipe) {
     case "hero":
       if (elaborate) before.push(imageEmbed("banner"));
       if (decorated) thumb(first);

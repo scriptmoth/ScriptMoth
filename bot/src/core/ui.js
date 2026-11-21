@@ -75,6 +75,21 @@ function embedLayout(options, { header, headerImage, footer } = {}) {
   return embeds;
 }
 
+/** A single post with a titled banner and one card per reader task. */
+function guide(options, sections, layout) {
+  const embeds = embedLayout(options, layout);
+  for (const section of sections) {
+    embeds.push(embed({
+      color: options.color,
+      divider: art(layout?.footer) ? layout.footer : options.divider,
+      thumbnail: options.thumbnail,
+      tone: options.tone,
+      ...section,
+    }));
+  }
+  return embeds;
+}
+
 function validMedia(url, available) {
   if (typeof url !== 'string') return false;
   if (url.startsWith('attachment://')) return available.has(url.slice('attachment://'.length));
@@ -117,8 +132,8 @@ async function formatEmbeds(embeds, available, local, generated) {
     }
     const image = !isTemplate && validMedia(data.image?.url, available) ? data.image : undefined;
     const thumbnail = validMedia(data.thumbnail?.url, available) ? data.thumbnail : undefined;
-    if (!content && !image && !thumbnail) return layout;
     if (!content && image && (dividers.has(name) || renderedBanner.test(name))) return [embed];
+    if (!content && !image && !thumbnail) return layout;
     const author = data.author?.icon_url && !validMedia(data.author.icon_url, available) ? { ...data.author, icon_url: undefined } : data.author;
     const footer = data.footer?.icon_url && !validMedia(data.footer.icon_url, available) ? { ...data.footer, icon_url: undefined } : data.footer;
     const style = Object.values(styles).find(({ color }) => color === data.color) ?? styles.general;
@@ -131,6 +146,7 @@ async function formatEmbeds(embeds, available, local, generated) {
     const separateDivider = media || details.footer || details.timestamp;
     const card = new EmbedBuilder({
       ...details, image: media ?? (separateDivider || nextDivider ? undefined : image ?? (divider ? { url: divider } : undefined)),
+      fields: details.fields?.map((field) => ({ ...field, inline: field.inline === true })),
       thumbnail: icon ? { url: icon } : undefined, color: data.color ?? style.color, author,
     });
     const ending = image && dividers.has(name) ? image.url : divider;
@@ -202,4 +218,4 @@ function truncate(text, max) {
   return text.length <= max ? text : `${text.slice(0, max - 1)}…`;
 }
 
-module.exports = { COLORS, TIER_BADGES, TIER_LABELS, art, embed, embedLayout, withArtwork, ok, warn, fail, empty, ephemeral, pick, truncate };
+module.exports = { COLORS, TIER_BADGES, TIER_LABELS, art, embed, embedLayout, guide, withArtwork, ok, warn, fail, empty, ephemeral, pick, truncate };

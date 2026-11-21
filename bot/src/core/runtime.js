@@ -84,7 +84,7 @@ function createRuntime({ client, modules, store, log = console }) {
     if (!(await isEnabled(interaction.guildId, mod.id))) {
       if (interaction.isAutocomplete()) return interaction.respond([]);
       return ui.ephemeral(interaction, {
-        embeds: [ui.warn(`**${mod.name}** is turned off in this server. An admin can turn it on with \`/moth enable\`.`)],
+        embeds: [ui.warn(`Ask someone with **Manage Server** to run \`/moth enable\` and select **${mod.name}**.`, 'Feature is turned off')],
       });
     }
     try {
@@ -92,7 +92,7 @@ function createRuntime({ client, modules, store, log = console }) {
     } catch (error) {
       log.error(`[${mod.id}] interaction failed:`, error);
       if (interaction.isAutocomplete()) return;
-      const payload = { embeds: [ui.fail('This command failed. If it keeps happening, use `/feedback send` to tell staff what you tried.')] };
+      const payload = { embeds: [ui.fail('Check the required options and try again. If it fails again, use `/feedback send` and include the command you tried.', 'Command failed')] };
       try {
         await ui.ephemeral(interaction, payload);
       } catch {

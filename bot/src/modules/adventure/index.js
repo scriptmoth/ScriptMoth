@@ -36,7 +36,7 @@ function play(action, choice, p, now, pick) {
       p.location = choice;
       return `You arrive at the **${choice}**. Try gathering **${locations[choice].material}** here.`;
     case 'gather':
-      if (now - p.lastGather < 5_000) return 'Give the area a few seconds to recover.';
+      if (now - p.lastGather < 5_000) return 'You can gather once every **5 seconds**. Wait a moment, then run `/adventure gather` again.';
       addItem(p, area.material, 1);
       p.lastGather = now;
       if (p.quest) p.gathered += 1;
@@ -45,11 +45,11 @@ function play(action, choice, p, now, pick) {
       const { name, cost } = recipes[choice];
       const materials = Object.entries(cost);
       if (materials.some(([item, amount]) => (p.items[item] ?? 0) < amount)) {
-        return `Crafting **${name}** needs ${materials.map(([item, amount]) => `${amount} ${item}`).join(' and ')}.`;
+        return `**${name}** requires ${materials.map(([item, amount]) => `**${amount} ${item}**`).join(' and ')}. Check your bag with \`/adventure inventory\`, gather the missing materials, then try again.`;
       }
       for (const [item, amount] of materials) addItem(p, item, -amount);
       addItem(p, name, 1);
-      return `You crafted **${name}**. Try equipping it for battles.`;
+      return `You crafted **${name}**. Use \`/adventure equip\` to get **+3** on battle rolls.`;
     }
     case 'equip': {
       const name = recipes[choice].name;
@@ -58,7 +58,7 @@ function play(action, choice, p, now, pick) {
       return `You equip **${name}**, giving you +3 on battle rolls.`;
     }
     case 'battle': {
-      if (now - p.lastBattle < 15_000) return 'Catch your breath for a few seconds before another battle.';
+      if (now - p.lastBattle < 15_000) return 'You can battle once every **15 seconds**. Wait a moment, then run `/adventure battle` again.';
       p.lastBattle = now;
       const die = pick(Array.from({ length: 20 }, (_, n) => n + 1));
       const total = die + (p.equipment ? 3 : 0);
@@ -122,7 +122,7 @@ module.exports = {
           `Faction **${p.faction ?? 'None'}** · Equipment **${p.equipment ?? 'None'}**`,
           'Start with `/adventure quest` and `/adventure gather`.',
         ].join('\n');
-        return ctx.ui.ephemeral(i, { embeds: [ctx.ui.embed({ title: 'Moonwing adventure', tone: 'bot', description })] });
+        return ctx.ui.ephemeral(i, { embeds: [ctx.ui.embed({ title: action === 'inventory' ? 'Your inventory' : 'Moonwing Adventure status', tone: 'bot', description })] });
       }
       const choice = i.options.getString('location') ?? i.options.getString('item');
       let description;
@@ -130,7 +130,8 @@ module.exports = {
         description = play(action, choice, player, Date.now(), ctx.ui.pick);
         return player;
       }, fresh);
-      return ctx.ui.ephemeral(i, { embeds: [ctx.ui.embed({ title: 'Moonwing adventure', tone: 'bot', description })] });
+      const titles = { travel: 'Travel', gather: 'Gathering', craft: 'Crafting', equip: 'Equipment', battle: 'Battle', quest: 'Gathering quest', buy: 'Supplies', faction: 'Faction' };
+      return ctx.ui.ephemeral(i, { embeds: [ctx.ui.embed({ title: titles[action], tone: 'bot', description })] });
     },
   }],
 };

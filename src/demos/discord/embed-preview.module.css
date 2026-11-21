@@ -279,6 +279,12 @@
   outline: none;
 }
 
+.markdownLink {
+  color: #a8c9ff;
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+}
+
 .mention {
   padding: 0 .15em;
   border-radius: 3px;

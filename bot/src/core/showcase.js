@@ -25,9 +25,9 @@ const groups = {
   ],
   moderation: [
     feature('role-panels', 'Self-assign role panels', 'role-panels', 'Lets members pick roles from a button panel.', 'Offer opt-in notifications, interests, or one name color.', 'Try a button in #roles to see how selection works.'),
-    feature('warnings', 'Moderation warnings', 'warnings', 'Records staff warnings and lets members see their own history.', 'Give moderators a consistent record of rule violations.', 'Run `/warning history` for your own record. Adding warnings requires staff permissions.'),
+    feature('warnings', 'Moderation warnings', 'warnings', 'Records staff warnings and lets members see their own history.', 'Give moderators a consistent record of rule violations.', 'Run `/warning history` for your own record. Adding a warning requires **Timeout Members**.'),
     feature('feedback', 'Private feedback', 'feedback', 'Collects reports and gives members a way to check their status.', 'Keep bug reports or suggestions organized away from public channels.', 'Run `/feedback send` when you have a real report, then check it with `/feedback status`.'),
-    feature('gallery-review', 'Submission review', 'gallery', 'Queues credited submissions for staff approval before they appear in a gallery.', 'Review contest entries or a client server’s art showcase.', 'Run `/gallery browse` in the demo channel to see the approved view. Review requires staff permissions.'),
+    feature('gallery-review', 'Submission review', 'gallery', 'Queues credited submissions for staff approval before they appear in a gallery.', 'Review contest entries or a client server’s art showcase.', 'Run `/gallery browse` to see approved entries. Reviewing entries requires **Manage Server**.'),
   ],
   roleplay: [
     feature('character-qotd', 'In-character question of the day', null, 'Posts a question that members answer in a character’s voice.', 'Develop characters between scenes or run character interviews.', 'Example question: What would your character never lend to anyone?'),
@@ -37,15 +37,15 @@ const groups = {
     feature('spotlight', 'Character spotlight', 'spotlight', 'Rotates featured profiles and keeps track of recent picks.', 'Introduce characters from a client server’s roster.', 'Run `/spotlight current` to see the current pick or the empty state.'),
     feature('dice', 'Dice roller', 'dice', 'Rolls dice expressions with modifiers and keep-highest or keep-lowest rules.', 'Resolve tabletop checks, damage, or randomized scene outcomes.', 'Run `/roll` with `4d6kh3`.'),
     feature('encounter', 'Random encounters', 'encounter', 'Rolls an encounter based on terrain and danger.', 'Give game masters ideas for travel scenes.', 'Run `/encounter roll` and select terrain and a danger level.'),
-    feature('gathering', 'Gathering', 'adventure', 'Collects a material based on the current location.', 'Build foraging, mining, fishing, or harvesting into your world.', 'Run `/adventure gather`. Try a different location with `/adventure travel`.'),
-    feature('crafting', 'Crafting', 'adventure', 'Checks a recipe and turns collected materials into gear.', 'Give players a use for gathered materials.', 'Gather materials first, then run `/adventure craft` and choose a recipe.'),
+    feature('gathering', 'Gathering', 'adventure', 'Collects one material from your current area.', 'Build foraging, mining, fishing, or harvesting into your world.', 'Run `/adventure gather`. Wait **5 seconds** before gathering again. Use `/adventure travel` to find different materials.'),
+    feature('crafting', 'Crafting', 'adventure', 'Turns materials into gear.', 'Give players a use for gathered materials.', 'Run `/adventure craft` and choose an item. A **Moon lantern** costs 1 Silk and 2 Moonleaf. A **Tide charm** costs 1 Moonleaf and 2 Shell.'),
     feature('inventory', 'Inventory', 'adventure', 'Lists the materials and gear a player has collected.', 'Track what a character can use in a quest or recipe.', 'Run `/adventure inventory`.'),
     feature('equipment', 'Equipment', 'adventure', 'Equips owned gear so it can affect play.', 'Let players specialize or prepare for a challenge.', 'Craft gear, then run `/adventure equip`.'),
     feature('quests', 'Quests', 'adventure', 'Tracks a task from acceptance to turn-in.', 'Guide players through a repeatable or story-based objective.', 'Run `/adventure quest`, gather the requested items, then use the command again.'),
     feature('travel', 'Travel', 'adventure', 'Moves a player between areas with different resources.', 'Give locations distinct rewards and purposes.', 'Run `/adventure travel` and pick a destination.'),
-    feature('combat', 'Combat', 'adventure', 'Resolves a creature encounter and awards loot or coins.', 'Give exploration a risk-and-reward loop.', 'Run `/adventure battle`.'),
+    feature('combat', 'Combat', 'adventure', 'Rolls against a creature and awards coins for a victory.', 'Give exploration a risk-and-reward loop.', 'Run `/adventure battle`. A roll of **10 or higher** earns **3 coins**. Wait **15 seconds** before trying again.'),
     feature('currency', 'Currency', 'adventure', 'Tracks a coin balance earned through tasks and encounters.', 'Reward quest completion and give players something to save or spend.', 'Run `/adventure status` to see your balance.'),
-    feature('shops', 'Shops', 'adventure', 'Exchanges coins for supplies.', 'Let a player buy a material instead of gathering it.', 'Run `/adventure buy` and choose where to shop.'),
+    feature('shops', 'Shops', 'adventure', 'Exchanges coins for supplies.', 'Let a player buy a material instead of gathering it.', 'Run `/adventure buy` and choose a location. One material costs **2 coins**.'),
     feature('factions', 'Factions', 'adventure', 'Lets a player join the faction in their current area.', 'Track allegiance to an in-world guild or settlement.', 'Choose a location with `/adventure travel`, then run `/adventure faction`.'),
   ],
   utilities: [
@@ -68,22 +68,16 @@ function catalogueView(ui, entries, { category, demoLink, commissionLink } = {})
   const sections = Object.entries(categories).filter(([key]) => entries.some((entry) => entry.category === key));
   const selected = sections.some(([key]) => key === category) ? category : undefined;
   const shown = entries.filter((entry) => entry.category === selected);
-  const embeds = ui.embedLayout({
+  const embeds = ui.guide({
     title: selected ? categories[selected] : 'Bot feature catalogue',
     description: selected
-      ? 'Choose a feature below for its use cases and demo instructions.'
-      : 'Browse the pieces Scriptmoth can build into a custom Discord bot. Pick a category, then open a feature.',
-    fields: selected
-      ? shown.map(({ name, description }) => ({ name, value: description }))
-      : [
-          ...sections.map(([key, name]) => ({
-            name,
-            value: entries.filter((entry) => entry.category === key).map((entry) => entry.name).join(' · '),
-          })),
-          { name: 'Try a demo or ask about a build', value: [demoLink, commissionLink].filter(Boolean).join(' ') || 'Run `/moth try` for demos or `/moth about` for commission links.' },
-        ],
+      ? 'Use **Open a feature** below for demo instructions. Use **Browse by category** to switch topics.'
+      : 'Choose a category below, then open a feature to see what it does and how to try it.\n\n' + ([demoLink, commissionLink].filter(Boolean).join('\n') || 'Run `/moth try` for demos or `/moth about` for commission links.'),
     tone: 'bot',
-  }, { header: selected ? undefined : 'header.plumWindowAlt' });
+  }, selected ? [] : sections.map(([key, title]) => ({
+    title,
+    description: entries.filter((entry) => entry.category === key).map((entry) => entry.name).join(' · '),
+  })), { header: selected ? undefined : 'header.lavenderWindow' });
   const menu = new StringSelectMenuBuilder().setCustomId('moth:category').setPlaceholder('Browse by category')
     .addOptions({ label: 'All categories', value: 'all', default: !selected }, ...sections.map(([value, label]) => ({ label, value, default: value === selected })));
   const components = [new ActionRowBuilder().addComponents(menu)];

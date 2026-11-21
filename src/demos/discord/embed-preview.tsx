@@ -10,7 +10,7 @@ const emoji = Noto_Color_Emoji({ weight: "400", subsets: ["emoji"], variable: "-
 
 /* ───────────── Discord-flavored markdown (the parts embeds support) ───────────── */
 
-const inlinePattern = /(\|\|[\s\S]+?\|\||`[^`]+`|\*\*\*[^*]+\*\*\*|\*\*[^*]+\*\*|__[^_]+__|~~[^~]+~~|\*[^*\s][^*]*\*|_[^_\s][^_]*_|#[a-z][a-z0-9-]+|@[A-Za-z][\w-]*)/g;
+const inlinePattern = /(\|\|[\s\S]+?\|\||`[^`]+`|\[[^\]\n]+\]\(https?:\/\/[^)\s]+\)|\*\*\*[^*]+\*\*\*|\*\*[^*]+\*\*|__[^_]+__|~~[^~]+~~|\*[^*\s][^*]*\*|_[^_\s][^_]*_|#[a-z][a-z0-9-]+|@[A-Za-z][\w-]*)/g;
 
 function inline(text: string, key: string): ReactNode[] {
   const nodes: ReactNode[] = [];
@@ -23,6 +23,10 @@ function inline(text: string, key: string): ReactNode[] {
     const k = `${key}-${i++}`;
     if (token.startsWith("||")) nodes.push(<span key={k} className={styles.spoiler} tabIndex={0}>{inline(token.slice(2, -2), k)}</span>);
     else if (token.startsWith("`")) nodes.push(<code key={k} className={styles.inlineCode}>{token.slice(1, -1)}</code>);
+    else if (token.startsWith("[")) {
+      const end = token.indexOf("](");
+      nodes.push(<a key={k} className={styles.markdownLink} href={token.slice(end + 2, -1)} target="_blank" rel="noreferrer">{inline(token.slice(1, end), k)}</a>);
+    }
     else if (token.startsWith("***")) nodes.push(<strong key={k}><em>{inline(token.slice(3, -3), k)}</em></strong>);
     else if (token.startsWith("**")) nodes.push(<strong key={k}>{inline(token.slice(2, -2), k)}</strong>);
     else if (token.startsWith("__")) nodes.push(<u key={k}>{inline(token.slice(2, -2), k)}</u>);

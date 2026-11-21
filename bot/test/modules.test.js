@@ -151,14 +151,18 @@ test('server posts have ordered artwork and all local attachment references reso
   const rules = await ui.withArtwork(layout.messages.rules(helpers));
   const [header, content] = rules.embeds.map((embed) => embed.toJSON());
   assert.match(header.image.url, /^attachment:\/\/title-banner-[a-f0-9]{24}\.png$/);
-  assert.match(content.title, /house rules/);
+  assert.equal(content.title, 'Scriptmoth server rules');
   assert.equal(content.thumbnail.url, ui.art('icon.rules'));
   assert.equal(content.image.url, ui.art('footer.scalloped'));
+  const ruleCards = rules.embeds.slice(2).map((embed) => embed.toJSON());
+  assert.deepEqual(ruleCards.map(({ title }) => title), ['Community conduct', 'Posting, sharing, and bot tests', 'How to report a problem']);
+  assert.deepEqual(ruleCards.flatMap(({ description }) => [...description.matchAll(/\*\*(\d)\./g)].map((match) => Number(match[1]))), [1, 2, 3, 4, 5, 6, 7]);
+  assert.ok(ruleCards.every(({ image }) => image.url === content.image.url));
 });
 
 test('compact replies upload the divider and fall back when optional art is missing', async () => {
   const { runtime } = setup();
-  const { interaction, replies } = fakeInteraction({ command: 'moth', sub: 'info', options: { module: 'dice' } });
+  const { interaction, replies } = fakeInteraction({ command: 'moth', sub: 'info', options: { module: 'missing-feature' } });
   await runtime.onInteraction(interaction);
   const [reply] = replies;
   assert.equal(reply.embeds.length, 1);
@@ -280,8 +284,10 @@ test('the catalogue covers live modules, separates features, and points to regis
   ]) {
     const { interaction, replies } = fakeInteraction({ command: 'moth', sub: 'info', options: { module: id } });
     await runtime.onInteraction(interaction);
-    assert.equal(replies[0].embeds[0].data.title, title);
-    assert.equal(replies[0].embeds[0].data.fields[1].name, label);
+    const [banner, card] = replies[0].embeds.map((embed) => embed.toJSON());
+    assert.match(banner.image.url, /^attachment:\/\/title-banner-/);
+    assert.equal(card.title, title);
+    assert.equal(card.fields[0].name, label);
     assertEmbedArtwork(replies[0]);
   }
 });
@@ -297,8 +303,8 @@ test('the welcome post directs visitors to the showcase before casual channels',
     assert.ok(channels.has(key), key);
     return '#' + channels.get(key);
   } });
-  const card = result.embeds.find((embed) => embed.data.title).toJSON();
-  assert.deepEqual(card.fields.slice(0, 3).map(({ value }) => value.match(/#[\w-]+/)[0]),
+  const cards = result.embeds.slice(1, 4).map((embed) => embed.toJSON());
+  assert.deepEqual(cards.map(({ description }) => description.match(/#[\w-]+/)[0]),
     ['#bot-features', '#try-the-bot', '#commissions']);
 });
 
@@ -471,7 +477,8 @@ test('disabled modules are blocked per server, core stays on', async () => {
 
   const { interaction, replies } = fakeInteraction({ command: 'roll', options: { dice: 'd20' } });
   await runtime.onInteraction(interaction);
-  assert.match(replies[0].embeds[0].data.description, /turned off/);
+  assert.equal(replies[0].embeds[0].data.title, 'Feature is turned off');
+  assert.match(replies[0].embeds[0].data.description, /Manage Server/);
 });
 
 test('cross-module api: birthdays see characters', async () => {
@@ -484,4 +491,26 @@ test('cross-module api: birthdays see characters', async () => {
   const ok = fakeInteraction({ command: 'charbday', sub: 'set', options: { character: 'c1', month: 11, day: 18 } });
   await runtime.onInteraction(ok.interaction);
   assert.deepEqual(await store.scope('character-birthdays').get('g1', 'birthdays'), { c1: { month: 11, day: 18 } });
+});
+
+test('birthday announcements keep artwork and dividers together across messages', async () => {
+  const { runtime, store } = setup();
+  const birthdays = modules.get('character-birthdays');
+  const ctx = runtime.contextFor(birthdays);
+  const today = new Date();
+  const birthday = { month: today.getUTCMonth() + 1, day: today.getUTCDate() };
+  const characters = Array.from({ length: 7 }, (_, i) => ({
+    id: `oc${i}`, name: `Moth ${i}`, ownerId: 'u1', image: `https://example.com/moth${i}.png`,
+  }));
+  await store.scope('characters').set('g1', 'characters', characters);
+  await ctx.store.set('g1', 'birthdays', Object.fromEntries(characters.map(({ id }) => [id, birthday])));
+  await ctx.store.set('g1', 'settings', { channelId: 'c1', timeZone: 'UTC', hour: 0 });
+  const sent = [];
+  ctx.client.channels = { fetch: async () => ({ isTextBased: () => true, send: async (payload) => sent.push(payload) }) };
+
+  assert.equal(await birthdays.announce(ctx, 'g1', { force: true }), 'sent');
+  assert.deepEqual(sent.map(({ embeds }) => embeds.length), [10, 4]);
+  assert.deepEqual(sent.flatMap(({ embeds }) => embeds.map(({ data }) => data.image.url)),
+    characters.flatMap(({ image }) => [image, ui.art('divider.sparkle')]));
+  for (const payload of sent) assertEmbedArtwork(payload);
 });

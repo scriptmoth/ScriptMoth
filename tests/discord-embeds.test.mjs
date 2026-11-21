@@ -42,7 +42,11 @@ test("every design, purpose, and look stays inside Discord's limits", () => {
       assert.ok(embed.title || embed.description || embed.image || embed.fields?.length, `${where} has an empty embed`);
       assert.ok(!/\{(ft|fT|[TtxnibupPs])\}/.test(JSON.stringify(embed)), `${where} left a template token`);
     }
-    for (const entry of purpose.items.slice(0, style.itemCount)) assert.ok(embedText(message).includes(entry.body), `${where} lost an item`);
+    const expectedItems = purpose.id === "quote" ? purpose.items : purpose.items.slice(0, style.itemCount);
+    for (const entry of expectedItems) {
+      const body = style.layout === "code" && purpose.id !== "quote" ? entry.body.replace(/`/g, "") : entry.body;
+      assert.ok(embedText(message).includes(body), `${where} lost an item`);
+    }
   }
 });
 

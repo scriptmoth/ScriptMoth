@@ -22,13 +22,13 @@ async function featureCard(ctx, guildId, entry) {
   const demo = !entry.moduleId ? { name: 'Sample · custom build', value: entry.demo }
     : enabled ? { name: 'Try it', value: entry.demo }
       : { name: 'Demo availability', value: 'This feature is turned off in this server.' };
-  return ctx.ui.embed({
+  return ctx.ui.embedLayout({
     title: entry.name,
     description: entry.description,
-    fields: [{ name: 'Use it for', value: entry.use }, demo],
+    fields: [demo, { name: 'Use it for', value: entry.use }],
     footer: categories[entry.category],
     tone: 'bot',
-  });
+  }, { header: 'header.lavenderWindow' });
 }
 
 function infoEmbed(ctx, entry, enabled) {
@@ -119,10 +119,10 @@ module.exports = {
         const id = interaction.options.getString('module');
         if (sub === 'info') {
           const feature = showcaseEntries(ctx.modules).find((entry) => entry.id === id);
-          if (feature) return interaction.reply({ embeds: [await featureCard(ctx, interaction.guildId, feature)] });
+          if (feature) return interaction.reply({ embeds: await featureCard(ctx, interaction.guildId, feature) });
         }
         const entry = catalog(ctx).find((e) => e.id === id);
-        if (!entry) return ctx.ui.ephemeral(interaction, { embeds: [ctx.ui.fail(`No feature called \`${id}\`.`)] });
+        if (!entry) return ctx.ui.ephemeral(interaction, { embeds: [ctx.ui.fail('Choose a feature from the suggestions as you type, or browse `/moth features`.', 'Feature not found')] });
 
         if (sub === 'info') {
           const enabled = await ctx.runtime.isEnabled(interaction.guildId, id);
@@ -166,7 +166,7 @@ module.exports = {
     async feature(interaction, ctx) {
       const entry = showcaseEntries(ctx.modules).find(({ id }) => id === interaction.values[0]);
       if (!entry) return ctx.ui.ephemeral(interaction, { embeds: [ctx.ui.empty('Open `/moth features` to see the current catalogue.')] });
-      return ctx.ui.ephemeral(interaction, { embeds: [await featureCard(ctx, interaction.guildId, entry)] });
+      return ctx.ui.ephemeral(interaction, { embeds: await featureCard(ctx, interaction.guildId, entry) });
     },
   },
 };

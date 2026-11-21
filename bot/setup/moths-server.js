@@ -247,34 +247,38 @@ module.exports = {
   // Message keys stay fixed so setup can edit the original posts.
   messages: {
     welcome: ({ ui, ch }) => ({
-      embeds: ui.embedLayout({
-        title: 'Welcome to Scriptmoth!',
-        description: 'This is where I show what my custom Discord bots can do. Browse the feature catalogue, try a demo, or ask me about building something for your server.',
-        fields: [
-          field('Browse the feature catalogue', 'Open ' + ch('features') + ' and choose a category to see what you could build.'),
-          field('Try a demo', 'Open ' + ch('try-commands') + ' and run `/moth try`. For features made for RP servers, visit ' + ch('roleplay') + '.'),
-          field('Ask about a custom bot', 'Visit ' + ch('build-your-bot') + ' for packages, the enquiry form, and my portfolio.'),
-          field('Say hello or share art', 'Hang out in ' + ch('general') + ' or post your work in ' + ch('art-share') + '. Read ' + ch('rules') + ' before posting.'),
-        ],
+      embeds: ui.guide({
+        title: 'Welcome to Scriptmoth',
+        description: 'Scriptmoth builds custom Discord bots. Start in ' + ch('features') + ' to see what moth.exe can do. Pick a category, then open a feature.',
         thumbnail: ui.art('icon.botFeatures'),
         color: COLORS.moonlight,
-      }, { header: 'header.starfield', footer: 'footer.starfield' }),
+      }, [
+        { title: '✦ Try the bot', description: 'Run `/moth try` in ' + ch('try-commands') + '. For character profiles, gathering, and crafting, visit ' + ch('roleplay') + '.' },
+        { title: 'Request a custom bot', description: 'Visit ' + ch('build-your-bot') + ' for package prices, the project form, and the portfolio.' },
+        { title: 'Chat and share your work', description: 'Read ' + ch('rules') + ' before posting. Say hello in ' + ch('general') + ' or share art and works in progress in ' + ch('art-share') + '.' },
+      ], { header: 'header.starfield', footer: 'footer.starfield' }),
     }),
 
     rules: ({ ui, ch }) => ({
-      embeds: ui.embedLayout({
-        title: 'The house rules',
-        description: 'Read these before posting or testing moth.exe.',
+      embeds: ui.guide({
+        title: 'Scriptmoth server rules',
+        description: 'Read these rules before posting or trying a demo. Breaking a rule can lead to a warning, timeout, or ban depending on severity.',
         color: COLORS.moonlight,
-        author: { name: 'Scriptmoth' },
         thumbnail: ui.art('icon.rules'),
-        fields: [
-          field('Look after each other', 'Be kind. Harassment, hate speech, and bullying are off-limits. Keep the server free of NSFW content and gore.'),
-          field('Respect creative work', 'Credit other creators. Get permission before reposting or tracing their work. Keep self-promotion to designated channels and avoid spam.'),
-          field('Keep demos and sharing in the right place', 'Try general commands in ' + ch('try-commands') + ' or RP bot features in ' + ch('roleplay') + '. Use fictional profiles and sample content. Keep casual chat in ' + ch('general') + ' and share art in ' + ch('art-share') + '.'),
-          field('A note from staff', 'Follow moderator directions. Report conduct concerns to a moderator privately. Share a message link if it helps them find the incident. Keep real names, payment details, and other private information out of bot tests. Breaking the rules can lead to a warning, timeout, or ban depending on severity.'),
-        ],
-      }, { header: 'header.scalloped', footer: 'footer.scalloped' }),
+      }, [
+        { title: 'Community conduct', description: [
+          '**1. Treat people with respect.** Harassment, hate speech, and bullying are prohibited.',
+          '**2. Keep content safe for work.** Do not post NSFW content or gore.',
+          '**3. Follow moderator directions.**',
+        ].join('\n\n') },
+        { title: 'Posting, sharing, and bot tests', description: [
+          '**4. Credit creators.** Get permission before reposting or tracing someone else’s work.',
+          '**5. Avoid spam.** Keep self-promotion to designated channels.',
+          '**6. Use the right channel.** Try bot commands in ' + ch('try-commands') + ' or RP features in ' + ch('roleplay') + '. Chat in ' + ch('general') + ' and share art in ' + ch('art-share') + '.',
+          '**7. Keep private details out of demos.** Use fictional profiles and sample content. Leave out real names, payment details, and other private information.',
+        ].join('\n\n') },
+        { title: 'How to report a problem', description: 'Message a moderator privately about conduct concerns. Include a message link if it helps them find the incident.' },
+      ], { header: 'header.scalloped', footer: 'footer.scalloped' }),
     }),
 
     roles: ({ ui }) => ({
@@ -311,52 +315,56 @@ module.exports = {
     }),
 
     tryCommands: ({ ui, ch }) => ({
-      embeds: ui.embedLayout({
+      embeds: ui.guide({
         title: 'Try the bot',
-        description: 'Type a command, choose the moth.exe result, and fill in the required options. Start with `/moth try`. Use fictional names and sample content when testing.',
+        description: 'Run `/moth try` for a short list, or pick a demo below. Select the moth.exe command in Discord and fill in its required options. Use fictional names and sample content.',
         color: COLORS.moth,
-        fields: [
-          field('Play a little', '`/trivia play` · answer a quiz question\n`/pet feed` · feed Luna\n`/roll` with `4d6kh3` · roll RPG dice'),
-          field('Try an RP bot feature', 'Open ' + ch('roleplay') + ' to see how sample profiles, quests, gathering, and crafting work.'),
-          field('Find an idea', '`/artprompt` · find something to draw\n`/rpprompt get` · pick up a roleplay starter\n`/encounter roll` · see what’s on the road'),
-          field('Make plans', 'Use `/signup` for a quick interest check. For `/event schedule`, enter a future date, time, and UTC offset using a format like `2026-12-04T19:00-05:00`. Discord shows each member the local time. Use `/event upcoming` in the same channel to find the event and RSVP or check in.'),
-          field('Browse more features', 'Pick an individual feature in ' + ch('features') + ' for an example or command.'),
-          field('Find a game and a time', 'Each person adds owned games with `/gameclub add` and free time with `/availability add`. Use `/gameclub pick` and `/availability match` to compare with the people you select.'),
-          field('Try personal tools', 'Use `/rank opt-in` to earn XP from chat, then check `/rank profile`. Use `/remind set` for a personal reminder and allow server DMs to receive it. Open a message’s **Apps** menu to bookmark it.'),
-          field('If something goes wrong', 'Check the required options and try in this channel. Use `/feedback send` with the command, what you expected, and what happened. Save the ID to check progress with `/feedback status`.'),
-        ],
         thumbnail: ui.art('icon.services'),
-      }, { header: 'header.lavenderWindow' }),
+      }, [{
+        title: 'Games and creative prompts',
+        fields: [
+          field('Quick games', '- `/trivia play` to answer a quiz question\n- `/pet feed` to feed Luna\n- `/roll` with `4d6kh3` to roll RPG dice'),
+          field('Creative tools', '- `/artprompt` for something to draw\n- `/rpprompt get` for a roleplay starter\n- `/encounter roll` for an encounter. Choose a biome.'),
+        ],
+      }, {
+        title: 'Sign-ups and game nights',
+        fields: [
+          field('Schedule an event', 'Use `/signup` for an interest check or `/event schedule` to set a date. Enter a future time with its UTC offset, using the format `YYYY-MM-DDTHH:MM-05:00` with your own offset. Discord displays the local time for each member. Use `/event upcoming` in the same channel to find the RSVP and check-in buttons.'),
+          field('Find a game and a time', 'Each person adds games with `/gameclub add` and free time with `/availability add`. Run `/gameclub pick` or `/availability match` with the people you want to compare.'),
+        ],
+      }, {
+        title: 'Personal tools',
+        description: '- Run `/rank opt-in` to earn chat XP, then `/rank profile` to see your progress.\n- Run `/remind set` and allow server DMs to receive reminders.\n- Open a message’s **Apps** menu and choose **Bookmark Message**.',
+      }, {
+        title: 'More demos and help',
+        description: 'Browse ' + ch('features') + ' or visit ' + ch('roleplay') + ' for profiles, quests, gathering, and crafting.\n\nIf a command fails, check its required options. Use `/feedback send` to report what you tried and what happened. Keep the ID for `/feedback status`.',
+      }], { header: 'header.lavenderWindow' }),
     }),
 
     buildYourBot: ({ ui }) => ({
-      embeds: ui.embedLayout({
+      embeds: ui.guide({
         title: 'Commission a custom Discord bot',
-        description: 'Tell me what you’d like a bot to do for your server, and I’ll help you work out what to build.',
+        description: '[Open the project builder](' + BUILD_A_BOT_URL + ') to estimate a build and submit an inquiry. Tell me who will use the bot and what they need it to do.',
         color: COLORS.moonlight,
         thumbnail: ui.art('icon.pricing') ?? ui.art('icon.commissions'),
-        fields: [
-          field('Browse', '[See packages and pricing](' + BOT_PACKAGES_URL + ')'),
-          field('Request a quote', '[Describe your project](' + BUILD_A_BOT_URL + '). Include who will use the bot, what they need it to do, and any constraints such as budget or hosting.'),
-          field('See more work', '[Bot feature catalogue](' + FEATURE_CATALOGUE_URL + ') · [Portfolio of bots, websites, themes, and profiles](' + PORTFOLIO_URL + ')'),
-        ],
-        footer: 'Handmade by Scriptmoth',
-      }, { headerImage: ui.art('header.creamRibbon') ?? ui.art('header.creamSparkle') }),
+      }, [
+        { title: 'Packages and pricing', description: '[See the current package rates and inclusions](' + BOT_PACKAGES_URL + '). Add your must-have features, budget, and any hosting constraints to your inquiry.' },
+        { title: 'Explore examples', description: '[Bot feature catalogue](' + FEATURE_CATALOGUE_URL + ')\n[Portfolio of bots, websites, themes, and profiles](' + PORTFOLIO_URL + ')' },
+        { title: 'Commission FAQ', description: '**How do I get a confirmed price?**\nSubmit an inquiry. Your written quote confirms scope, pricing, and the schedule.\n\n**When does work begin?**\nAccept the written quote and meet any start conditions listed in it.\n\n**Where do I report an issue with the demo?**\nRun `/feedback send` and keep the report ID to check with `/feedback status`.' },
+      ], { headerImage: ui.art('header.creamRibbon') ?? ui.art('header.creamSparkle') }),
     }),
 
     roleplay: ({ ui, ch }) => ({
-      embeds: ui.embedLayout({
+      embeds: ui.guide({
         title: 'Bot demos for roleplay servers',
-        description: 'Try sample systems you could commission for an RP server. Fictional profiles and inventories here are demo data.',
-        fields: [
-          field('Character profiles', 'Use `/character list` to browse demo records. Try `/character create` with a fictional name and one-line bio.'),
-          field('Gathering', 'Run `/adventure gather` to collect a material, or travel to another area with `/adventure travel`.'),
-          field('Crafting', 'Run `/adventure craft` to see a recipe. Collect its materials, then run it again to make the item.'),
-          field('Inventory and quests', 'Use `/adventure inventory` to see what you collected or `/adventure quest` to accept a sample task.'),
-          field('Prompts, dice, and encounters', 'Run `/rpprompt get`, `/roll`, or `/encounter roll`. Look in ' + ch('features') + ' for individual entries, including in-character Question of the Day.'),
-        ],
+        description: 'Try character profiles or play a round of Moonwing Adventure. Use fictional names and sample content. Find more examples in ' + ch('features') + '.',
         tone: 'bot',
-      }, { header: 'header.starfield' }),
+      }, [
+        { title: 'Character profiles', description: 'Run `/character list` to browse profiles or `/character create` to make one with a fictional name and one-line bio.' },
+        { title: 'Gathering', description: 'Run `/adventure gather` to collect one material from your current area. Wait **5 seconds** between gathers. Use `/adventure travel` to find a different material and `/adventure inventory` to check your bag.' },
+        { title: 'Crafting', description: 'Run `/adventure craft` and choose **Moon lantern** or **Tide charm**. A lantern takes **1 Silk and 2 Moonleaf**. A charm takes **1 Moonleaf and 2 Shell**. Use `/adventure equip` to equip the finished item.' },
+        { title: 'Quests, prompts, and dice', description: 'Use `/adventure quest` to start a gathering quest. Gather **3 materials**, then run it again for **10 coins**.\n\nFor a standalone demo, try `/rpprompt get`, `/roll`, or `/encounter roll` with a biome.' },
+      ], { header: 'header.starfield' }),
     }),
 
     creative: ({ ui, ch }) => ({
