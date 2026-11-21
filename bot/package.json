@@ -1,0 +1,22 @@
+{
+  "name": "scriptmoth-bot",
+  "version": "0.1.0",
+  "description": "moth.exe: Scriptmoth's showcase Discord bot, built from copy-pasteable feature modules.",
+  "private": true,
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "deploy": "node src/deploy.js",
+    "catalog": "node scripts/catalog.js",
+    "test": "node --test test/",
+    "setup-server": "node scripts/setup-server.js"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "dependencies": {
+    "discord.js": "^14.21.0",
+    "dotenv": "^16.4.5"
+  }
+}

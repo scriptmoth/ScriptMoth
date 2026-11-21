@@ -1,6 +1,7 @@
 export const navigation = [
   { href: "/", label: "Home" },
-  { href: "/products", label: "Packages" },
+  { href: "/products", label: "Services" },
+  { href: "/features", label: "Features" },
   { href: "/portfolio", label: "Portfolio" },
   { href: "/hosting", label: "Hosting" },
   { href: "/resources", label: "Resources" },
@@ -11,7 +12,7 @@ export const navigation = [
 
 export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 export const siteDescription =
-  "Scriptmoth is an independent development studio that builds personal websites, custom Discord bots, Discord server setup, and tools for online communities.";
+  "Scriptmoth is Moth’s one-person studio for personal websites, Toyhouse and Tumblr themes, character wikis, custom Discord bots, server setups, and roleplay tools.";
 
 export const themeStorageKey = "scriptmoth-theme";
 

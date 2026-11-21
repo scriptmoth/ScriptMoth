@@ -8,3 +8,7 @@ next-env.d.ts
 !.env.example
 .scriptmoth/
 .next-qa/
+.next-verify/
+
+# Worktree for the feature/bot-feature-builder branch (moved in here by accident; has its own git checkout)
+Scriptmoth-bot-builder/

@@ -57,9 +57,10 @@ export function QuoteBuilder({ contexts, packages, initial, account, currency, i
   }, [confirmation]);
 
   const fmt = moneyFormatter(currency);
-  const options = contexts[build.type]?.options ?? [];
   const packageChoices = packages.filter(item => item.type === build.type);
   const item = packageChoices.find(entry => entry.slug === build.product);
+  const hiddenIds = new Set(item?.hidden);
+  const options = (contexts[build.type]?.options ?? []).filter(entry => !hiddenIds.has(entry.id));
   const base = resolvedBase(options, item);
   const price = priceBuild(options, build.selection, base);
   const picked = new Map(build.selection.map(entry => [entry.id, entry]));
@@ -95,8 +96,9 @@ export function QuoteBuilder({ contexts, packages, initial, account, currency, i
   function choose(type: ProjectType, product: string) {
     setChosen(true);
     setPrompt(null);
+    const hidden = new Set(packages.find(entry => entry.slug === product && entry.type === type)?.hidden);
     setBuild(current => ({ type, product, hosting: current.hosting,
-      selection: current.type === type ? current.selection : defaults(type) }));
+      selection: (current.type === type ? current.selection : defaults(type)).filter(entry => !hidden.has(entry.id)) }));
   }
   function changeHosting(hosting: HostingMode) {
     setBuild(current => ({ ...current, hosting,

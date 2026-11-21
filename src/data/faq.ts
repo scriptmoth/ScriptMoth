@@ -39,7 +39,7 @@ export const questions = [
     category: "Projects",
     question: "Where can I see Discord examples?",
     answer:
-      "Browse the Discord Style Library on the Portfolio page: 100 channel and category naming styles, each with a preview and a code like 02F. Add the codes you like in the quote builder and say what you would change. For bots and server features, describe what you need and we’ll confirm the details in your quote.",
+      "Browse the Discord Style Library on the Portfolio page: 120 channel and category naming styles with codes like 02F, and 120 embed designs with codes like E03A that you can preview as rules, welcome, FAQ, or role messages. The images in embed previews are example art only, so you’ll provide your own banners and thumbnails. Add the codes you like in the quote builder and say what you would change. For bots and server features, describe what you need and we’ll confirm the details in your quote.",
   },
   {
     id: "packages-vs-custom",

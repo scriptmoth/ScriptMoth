@@ -1,31 +1,48 @@
 import Link from "next/link";
-import { ArrowDown, ArrowUpRight, Maximize2 } from "lucide-react";
-import { CarrdSite } from "@/components/carrd/carrd-site";
-import { CarrdGallery } from "@/components/carrd/carrd-gallery";
-import { DiscordStylesCallout } from "@/components/discord/styles-callout";
-import { ToyhouseGallery } from "@/components/toyhouse/toyhouse-gallery";
-import { TumblrGallery } from "@/components/tumblr/tumblr-gallery";
-import { carrdTemplates } from "@/data/carrd-templates";
+import { ArrowDown, ArrowUpRight, BookOpen, LayoutDashboard, LayoutTemplate, Maximize2, MessageCircle, NotebookPen, UserRound } from "lucide-react";
+import { CarrdSite } from "@/demos/carrd/carrd-site";
+import { CarrdGallery } from "@/demos/carrd/carrd-gallery";
+import { AstralArchiveShowcase } from "@/demos/astral-archive/showcase";
+import { DiscordEmbedsCallout, DiscordStylesCallout } from "@/demos/discord/styles-callout";
+import { ToyhouseGallery } from "@/demos/toyhouse/toyhouse-gallery";
+import { TumblrGallery } from "@/demos/tumblr/tumblr-gallery";
+import { WikiGallery } from "@/demos/wiki/wiki-gallery";
+import { carrdTemplates } from "@/demos/carrd/carrd-templates";
+import { discordStyles } from "@/demos/discord/discord-styles";
+import { embedStyles } from "@/demos/discord/discord-embeds";
 import { pageMetadata } from "@/lib/metadata";
 import styles from "./portfolio.module.css";
 
-export const metadata = pageMetadata("Portfolio", "Live one-page site demos, Tumblr themes, and Toyhouse profiles you can click through, plus a library of Discord channel and category styles.", "/portfolio");
+export const metadata = pageMetadata("Portfolio", "Live one-page site demos, Tumblr themes, Toyhouse profiles, and character wikis you can click through, plus a library of Discord channel and category styles.", "/portfolio");
 
 const featured = carrdTemplates[0];
+const sections = [
+  { id: "carrd-sites", label: "One-page sites", icon: LayoutTemplate },
+  { id: "tumblr-themes", label: "Tumblr themes", icon: NotebookPen },
+  { id: "toyhouse-profiles", label: "Toyhouse profiles", icon: UserRound },
+  { id: "oc-wikis", label: "Character wikis", icon: BookOpen },
+  { id: "dashboards", label: "Bot dashboards", icon: LayoutDashboard },
+  { id: "discord-setup", label: "Discord styles", icon: MessageCircle },
+];
 
 export default function PortfolioPage() {
   return (
     <>
-      <section className={styles.showcase} aria-labelledby="portfolio-title">
+      <section className={`night-band ${styles.showcase}`} aria-labelledby="portfolio-title">
         <div className="site-container">
           <header className={styles.header}>
             <div>
-              <p className="eyebrow">Portfolio</p>
+              <p className="eyebrow kicker-chip">Portfolio</p>
               <h1 id="portfolio-title">Package examples</h1>
-              <p>Click through a one-page site, Tumblr theme, or Toyhouse profile below. Each one also opens as a full page. Discord channel and category styles are in the style library.</p>
+              <p>Click through a one-page site, Tumblr theme, Toyhouse profile, character wiki, or bot dashboard below. Each one also opens as a full page. Discord channel and category styles are in the style library.</p>
             </div>
             <a className="text-link" href="#carrd-sites">Browse examples <ArrowDown className="icon-down" size={16} aria-hidden="true" /></a>
           </header>
+          <nav aria-label="Portfolio categories" className={styles.sectionNav}>
+            {sections.map(({ id, label, icon: Icon }) => (
+              <a key={id} href={`#${id}`}><Icon size={17} aria-hidden="true" />{label}</a>
+            ))}
+          </nav>
           <div className={styles.featured} style={{ background: featured.palette.backdrop }}>
             <CarrdSite template={featured} />
           </div>
@@ -43,8 +60,8 @@ export default function PortfolioPage() {
         <div className="site-container">
           <header className={styles.sectionHeader}>
             <p className="eyebrow">One-page sites</p>
-            <h2 id="carrd-title">One-page site packages</h2>
-            <p>Terms, prices, and examples on one shareable link. Every design opens as a real page, so you can see exactly how visitors would experience it.</p>
+            <h2 id="carrd-title">Commission sheets, bios, and shrines</h2>
+            <p>Everything that fits on one link in your bio: commission terms, BYF/DNI, an OC profile, a fan shrine. Every design opens as a real page.</p>
           </header>
           <CarrdGallery />
         </div>
@@ -62,7 +79,6 @@ export default function PortfolioPage() {
             <p>Want a theme for your blog?</p>
             <div className={styles.captionLinks}>
               <Link className="text-link" href="/products/tumblr-theme">See the package <ArrowUpRight size={16} aria-hidden="true" /></Link>
-              <Link className="text-link" href="/services#tumblr-themes">Service details</Link>
             </div>
           </div>
         </div>
@@ -80,9 +96,37 @@ export default function PortfolioPage() {
             <p>Want one for your OC?</p>
             <div className={styles.captionLinks}>
               <Link className="text-link" href="/products/toyhouse-profile">See the package <ArrowUpRight size={16} aria-hidden="true" /></Link>
-              <Link className="text-link" href="/services#toyhouse-profiles">Service details</Link>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="section section-band" id="oc-wikis" aria-labelledby="wiki-title">
+        <div className="site-container">
+          <header className={styles.sectionHeader}>
+            <p className="eyebrow">OC &amp; character wikis</p>
+            <h2 id="wiki-title">Character and world wikis</h2>
+            <p>A searchable home for your characters, places, and lore. Each demo is a working wiki: search, filter by tag, open character pages, and follow the timeline.</p>
+          </header>
+          <WikiGallery />
+          <div className={styles.caption} style={{ marginTop: "1.2rem" }}>
+            <p>Want a wiki for your world?</p>
+            <div className={styles.captionLinks}>
+              <Link className="text-link" href="/products/oc-wiki">See the package <ArrowUpRight size={16} aria-hidden="true" /></Link>
+              <Link className="text-link" href="/contact?type=oc-wiki">Request a quote</Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section" id="dashboards" aria-labelledby="dashboards-title">
+        <div className="site-container">
+          <header className={styles.sectionHeader}>
+            <p className="eyebrow">Bot dashboards</p>
+            <h2 id="dashboards-title">Staff dashboards for Discord bots</h2>
+            <p>Run the bot from a browser tab: members, applications, events, raid statics, and embeds. This one is for a Final Fantasy XIV Free Company.</p>
+          </header>
+          <AstralArchiveShowcase />
         </div>
       </section>
 
@@ -90,10 +134,11 @@ export default function PortfolioPage() {
         <div className="site-container">
           <header className={styles.sectionHeader}>
             <p className="eyebrow">Discord servers &amp; bots</p>
-            <h2 id="discord-setup-title">Discord channel styles</h2>
-            <p>Browse 100 channel and category naming styles, each with a code you can add to your quote.</p>
+            <h2 id="discord-setup-title">Discord channel &amp; embed styles</h2>
+            <p>{discordStyles.length} channel naming styles and {embedStyles.length} embed designs. Each has a code you can paste into your quote.</p>
           </header>
           <DiscordStylesCallout id="discord-styles-portfolio" headingLevel="h3" />
+          <DiscordEmbedsCallout id="discord-embeds-portfolio" headingLevel="h3" />
         </div>
       </section>
     </>

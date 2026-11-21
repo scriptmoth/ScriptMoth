@@ -11,13 +11,14 @@ import type { InquiryData, InquiryRow } from "@/lib/business/inquiries";
 import { decodeBuild } from "@/lib/business/pricing";
 import { hostingModes, projectTypes, type HostingMode, type ProjectType } from "@/lib/business/rules";
 import { assets } from "@/lib/assets";
-import { parseStyleIds } from "@/data/discord-styles";
+import { parseShowcaseIds } from "@/lib/showcase-codes";
+import { inquiryNotes } from "@/lib/feature-catalog";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata("Build a project", "Configure your Scriptmoth project, see a live estimate, and send a project inquiry.", "/contact");
 export const dynamic = "force-dynamic";
 
-export default async function Contact({ searchParams }: { searchParams: Promise<{ type?: string; draft?: string; hosting?: string; build?: string; showcase?: string }> }) {
+export default async function Contact({ searchParams }: { searchParams: Promise<{ type?: string; draft?: string; hosting?: string; build?: string; showcase?: string; systems?: string; idea?: string }> }) {
   const query = await searchParams;
   const actor = await viewer();
   const draft = typeof query.draft === "string" && actor ? one<InquiryRow>("SELECT * FROM inquiries WHERE id=? AND owner_id=? AND status='draft'", query.draft, actor.id) : undefined;
@@ -32,8 +33,11 @@ export default async function Contact({ searchParams }: { searchParams: Promise<
     hosting_mode: Object.hasOwn(hostingModes, shared.hosting) ? shared.hosting as HostingMode : "unsure",
   } : { type: starter?.type ?? selection.type, product: starter?.slug ?? selection.product?.slug ?? selection.plan?.id,
     hosting_mode: selection.plan || starter?.recurring || query.hosting === "managed" ? "managed" : query.hosting === "client" ? "client" : "unsure" };
-  // Style library links like /contact?type=discord-server-setup&showcase=02F,04B pre-fill the codes.
-  if (!draft && typeof query.showcase === "string") initial.showcase_ids = parseStyleIds(query.showcase.slice(0, 400));
+  // Style and embed library links like /contact?type=discord-server-setup&showcase=02F,E03A pre-fill the codes.
+  if (!draft && typeof query.showcase === "string") initial.showcase_ids = parseShowcaseIds(query.showcase.slice(0, 400));
+  // Feature Catalog links like /contact?type=roleplay-bot&systems=inventory,shops carry the picks into the notes.
+  const catalogNotes = !draft && !shared ? inquiryNotes(typeof query.systems === "string" ? query.systems : undefined, typeof query.idea === "string" ? query.idea : undefined) : undefined;
+  if (catalogNotes) initial.features = catalogNotes;
   const status = availability();
   const enabled = databaseConfigured();
   const accepting = enabled && status !== "Closed" && setting("maintenance") !== "yes";
@@ -47,7 +51,7 @@ export default async function Contact({ searchParams }: { searchParams: Promise<
     status === "Limited Availability" ? "Scriptmoth has limited project openings." : !accepting ? "New project inquiries are currently closed." : "";
   return <>
     <PageIntro eyebrow="Project inquiry" title="Build a project" artwork={assets.contact} tone="cream">
-      Pick a starter package, add the features you want, and watch the estimate update as you go. Every price is shown up front.
+      Pick a starter package, add the features you want, and the estimate updates as you go. Anything that needs a custom quote is marked.
     </PageIntro>
     <div className="section site-container business-stack">
       {notice && <p className="form-notice">{notice}</p>}

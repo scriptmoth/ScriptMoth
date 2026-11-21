@@ -17,4 +17,4 @@ export function pageMetadata(title: string, description: string, path: string): 
   };
 }
 
-export const homeMetadata = pageMetadata("Scriptmoth · Independent Development Studio", siteDescription, "/");
+export const homeMetadata = pageMetadata("Scriptmoth · Handmade websites & Discord bots", siteDescription, "/");

@@ -28,6 +28,12 @@
   --moth-shape: polygon(5% 22%, 24% 30%, 40% 48%, 44% 33%, 39% 14%, 46% 19%, 50% 29%, 54% 19%, 61% 14%, 56% 33%, 60% 48%, 76% 30%, 95% 22%, 100% 43%, 87% 69%, 70% 72%, 70% 89%, 59% 100%, 50% 83%, 41% 100%, 30% 89%, 30% 72%, 13% 69%, 0 43%);
   --star-shape: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
   --radius: 10px;
+  /* Shared homepage motifs: dot-grid boards, sticker outlines, the night band edge. */
+  --dot-grid: radial-gradient(#2e112814 1px, transparent 1.2px) 0 0 / 14px 14px;
+  --dot-grid-night: radial-gradient(#d6c4f01c 1px, transparent 1.2px) 0 0 / 14px 14px;
+  --sticker: drop-shadow(2px 0 0 #fff6e9) drop-shadow(-2px 0 0 #fff6e9) drop-shadow(0 2px 0 #fff6e9)
+    drop-shadow(0 -2px 0 #fff6e9) drop-shadow(0 8px 10px #0e061566);
+  --night-rule: #7b6290;
   --heading: "Bricolage Grotesque Variable", sans-serif;
   --body: "DM Sans Variable", sans-serif;
   --mono: "Courier New", monospace;
@@ -104,6 +110,11 @@ h1, h2, h3 {
   line-height: 1.08;
   letter-spacing: -.035em;
 }
+h1, h2 {
+  line-height: 1;
+  letter-spacing: -.05em;
+  text-wrap: balance;
+}
 h1 {
   font-size: clamp(2.65rem, 6vw, 4.6rem);
 }
@@ -134,7 +145,7 @@ p {
    the backwards fill hands control back to hover transforms once an element has arrived. */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    main :is(.section-heading, .services-grid > *, .project-grid > *, .process-grid > li, .detail-services > *, .about-notes > *, .contact-band) {
+    main :is(.section-heading, .about-notes > *, .pkg-card, .info-panel) {
       animation: reveal-rise linear backwards;
       animation-timeline: view();
       animation-range: entry 0% entry 70%;

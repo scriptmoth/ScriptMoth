@@ -1,0 +1,82 @@
+/* ---------- section content types ---------- */
+
+.linkList {
+  display: grid;
+  gap: .45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.linkList .directoryEntry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .8rem;
+  padding: .55rem .8rem;
+  border: 1px solid color-mix(in srgb, var(--c-ink) 28%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--c-tab) 55%, transparent);
+  color: inherit;
+  text-decoration: none;
+  transition: translate .15s, border-color .15s, color .15s;
+}
+.linkList span { display: grid; }
+.linkList small { color: var(--c-soft); font-size: .8em; }
+.prose p + p { margin-top: .6rem; }
+
+/* ---------- shared extras (hidden unless a design opts in) ---------- */
+
+.ticker { grid-column: 1 / -1; display: flex; overflow: hidden; white-space: nowrap; }
+.ticker span { flex: none; padding-right: 2rem; animation: tickerScroll 18s linear infinite; }
+
+@keyframes tickerScroll { to { translate: -100% 0; } }
+@keyframes blink { 50% { opacity: 0; } }
+/* ---------- narrow screens ---------- */
+
+@container (max-width: 640px) {
+  .card, .card[data-layout="sidebar"], .card[data-layout="cyber"] { grid-template-columns: minmax(0, 1fr); }
+  .card[data-layout="sidebar"] .artSide { order: 0; }
+  .artSide { min-height: 0; padding-top: 1rem; }
+  .character { width: min(55%, 220px); }
+  .titles, .card[data-layout="ticket"] .titles, .card[data-layout="sidebar"] .titles, .card[data-layout="cyber"] .titles { text-align: center; }
+  .card[data-layout="sidebar"] .content { grid-template-columns: minmax(0, 1fr); grid-template-areas: "titles" "opening" "tabs" "panel" "wave" "credit"; }
+  .card[data-layout="sidebar"] .tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .card[data-layout="sidebar"] .tabs button { aspect-ratio: auto; }
+  .tabs button { grid-template-columns: 3rem 1.4rem 1fr; }
+  .card[data-layout="ticket"] .artSide { aspect-ratio: 4 / 3; }
+  .card[data-layout="ticket"] .character { width: auto; height: 80%; }
+  .card[data-layout="ticket"] .tabs { gap: .5rem; }
+  .card[data-layout="cyber"] .artSide { min-height: 0; }
+}
+
+/* ---------- per-design personality: scrollbars + tab-switch animations ---------- */
+
+/* Strawberry: a soft bounce for the status label. */
+.card[data-layout="stacked"] .panelBody { animation: panelPop .5s cubic-bezier(.3, 1.6, .5, 1) both; }
+.card[data-layout="stacked"] .tabs button[aria-pressed="true"] { animation: jelly .5s ease both; }
+.card[data-layout="stacked"] .status { animation: heartbeat 1.8s ease-in-out infinite; }
+
+@keyframes panelPop { from { opacity: 0; scale: .9; } }
+@keyframes jelly { 30% { scale: 1.08 .92; } 55% { scale: .95 1.05; } 80% { scale: 1.02 .98; } }
+@keyframes heartbeat { 0%, 60%, 100% { scale: 1; } 20% { scale: 1.08; } 40% { scale: .97; } }
+
+/* Jade: content brushes in left-to-right. */
+.card[data-layout="sidebar"] .panel { scrollbar-color: var(--c-accent) var(--c-panel); }
+.card[data-layout="sidebar"] .panelBody { animation: inkWipe .6s ease-out both; }
+.card[data-layout="sidebar"] .character { animation: sway 6s ease-in-out infinite; transform-origin: 50% 90%; }
+
+@keyframes inkWipe { from { opacity: .2; clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes sway { 50% { rotate: 2.5deg; } }
+
+/* Tarot: content flips in like a dealt card. */
+.card[data-layout="ticket"] .panel { perspective: 800px; }
+.card[data-layout="ticket"] .panelBody { animation: deal .55s cubic-bezier(.2, .9, .3, 1.15) both; transform-origin: 50% 0; }
+
+@keyframes deal { from { opacity: 0; transform: rotateX(-70deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .card, .card::after, .panelBody, .status, .status::before, .tabs button, .ticker span, .titles h1, .titles h1::before, .titles h1::after, .ring, .glyph { animation: none !important; }
+  .character { animation: none !important; }
+  .tabs button, .socials li > span, .linkList .directoryEntry { transition: none; }
+}
+

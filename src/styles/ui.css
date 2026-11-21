@@ -13,8 +13,43 @@
   color: inherit;
   font-size: 1rem;
 }
-.hero .eyebrow, .page-intro .eyebrow {
+
+/* The dashed terminal-style label that opens every intro band. */
+.kicker-chip, .page-intro .eyebrow {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 1.1rem;
+  padding: .3rem .7rem .3rem .55rem;
+  border: 1px dashed #7d6390;
+  border-radius: 3px;
   color: var(--gold);
+  letter-spacing: .08em;
+}
+/* A night band with the moth flight pattern drifting in from the right, as in the homepage hero. */
+.night-band {
+  --accent: var(--lavender);
+  --focus: var(--gold);
+  --ink: var(--cream);
+  --muted: #d4c4d9;
+  --line: #503b5d;
+  --strong-line: #8d70a0;
+  --surface: #2b1b37;
+  --surface-alt: #33213f;
+  position: relative;
+  isolation: isolate;
+  background-color: var(--night);
+  color: var(--cream);
+  border-bottom: 1px solid var(--night-rule);
+}
+.night-band::before, .page-intro::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 0 35%;
+  background: url("/assets/backgrounds/pattern-moth-flight-night.webp") 0 0 / 26rem;
+  opacity: .3;
+  mask-image: radial-gradient(ellipse 65% 90% at 78% 50%, #000 20%, transparent 75%);
+  pointer-events: none;
 }
 
 .button-row {
@@ -149,15 +184,18 @@
   gap: .43rem;
   min-height: 44px;
   color: var(--accent);
+  text-decoration-thickness: 1px;
   text-underline-offset: 4px;
   font-weight: 780;
   font-size: .91rem;
+  transition: text-underline-offset var(--quick) ease;
 }
 .text-link svg {
   flex: none;
 }
-.text-link:hover {
+.text-link:is(:hover, :focus-visible) {
   text-decoration: underline;
+  text-underline-offset: 7px;
 }
 
 .divider {
@@ -384,7 +422,7 @@
   gap: 1rem;
   padding: clamp(2rem, 6vw, 4.5rem) 1rem;
   background: linear-gradient(#24132ae8, #24132ac2),
-    url("/assets/backgrounds/pattern_moth_flight_night.webp") center / 25rem;
+    url("/assets/backgrounds/pattern-moth-flight-night.webp") center / 25rem;
   color: var(--cream);
   --focus: var(--gold);
 }

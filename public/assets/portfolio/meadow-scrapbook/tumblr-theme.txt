@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{Title}{block:PostSummary} | {PostSummary}{/block:PostSummary}</title>
+<link rel="icon" href="{Favicon}">
+<link rel="alternate" type="application/rss+xml" href="{RSS}">
+{block:Description}<meta name="description" content="{MetaDescription}">{/block:Description}
+<meta name="color:Paper" content="#fffaf0">
+<meta name="color:Ink" content="#263821">
+<meta name="color:Accent" content="#a13f58">
+<meta name="image:Cover" content="">
+<meta name="text:Tagline" content="petals · polaroids · little essays">
+<style>
+:root{--paper:{color:Paper};--ink:{color:Ink};--accent:{color:Accent};--line:#48533946}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);background:#e8efdd;font:1rem/1.6 system-ui,sans-serif}
+a{color:var(--accent);text-underline-offset:.18em}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+img,iframe,video{max-width:100%}img,video{height:auto}
+.wrap{width:min(1100px,calc(100% - 2rem));margin:auto;padding:2rem 0}
+.cover{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:1rem;padding:clamp(1rem,5vw,3rem);border:1px solid var(--line);border-radius:8px 8px 28px 8px;background:repeating-linear-gradient(0deg,#ce9d4820 0 1px,transparent 1px 7px),repeating-linear-gradient(90deg,#ce9d481b 0 1px,transparent 1px 7px),var(--paper)}
+.cover h1{margin:0;font-size:clamp(2.3rem,7vw,5.5rem);line-height:.96;letter-spacing:-.07em;overflow-wrap:anywhere}.cover h1 a{color:inherit;text-decoration:none}.cover p{margin:.65rem 0 0}
+.art{border:6px solid #fff;border-bottom-width:18px;border-radius:54% 54% 8px 8px/32% 32% 8px 8px;overflow:hidden;box-shadow:0 6px 14px #30481022}
+.art img{display:block;width:100%}
+nav,form.search{display:flex;align-items:center;flex-wrap:wrap;gap:.6rem;margin:1rem 0}
+nav a,form button{padding:.38rem .7rem;border:1px solid var(--line);border-radius:999px;background:var(--paper);color:var(--accent)}
+input{max-width:100%;padding:.4rem .55rem;background:var(--paper);border:1px solid var(--line);color:var(--ink)}
+.feed{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;align-items:start}
+.permalink .feed{grid-template-columns:minmax(0,760px);justify-content:center}
+.post,.notes-list{min-width:0;padding:1rem;border:1px solid var(--line);border-radius:5px 5px 17px 5px;background:var(--paper);overflow-wrap:anywhere}
+.post h2{margin:0}.media img{display:block;width:100%;border:4px solid #fff}.post figure{margin:0}
+.quote{font:italic 1.4rem/1.35 Georgia,serif}.meta{display:flex;flex-wrap:wrap;gap:.35rem .8rem;margin-top:1rem}.meta a{font-size:.84rem}
+.npf_row,.tmblr-full{max-width:100%}
+@media(max-width:830px){.feed{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.feed,.cover{grid-template-columns:1fr}}
+{CustomCSS}
+</style>
+</head>
+<body class="{block:PermalinkPage}permalink{/block:PermalinkPage}">
+<div class="wrap">
+<header class="cover">
+ <div><h1><a href="/">{Title}</a></h1><p>{text:Tagline}</p>{block:Description}<div>{Description}</div>{/block:Description}</div>
+ {block:IfCoverImage}<div class="art"><img alt="" src="{image:Cover}"></div>{/block:IfCoverImage}
+</header>
+<nav aria-label="Blog navigation"><a href="/">Home</a><a href="/archive">Archive</a>{block:AskEnabled}<a href="/ask">{AskLabel}</a>{/block:AskEnabled}{block:HasPages}{block:Pages}<a href="{URL}">{Label}</a>{/block:Pages}{/block:HasPages}</nav>
+<form class="search" action="/search" method="get"><label for="journal-search">Search posts</label><input id="journal-search" name="q" type="search" value="{SearchQuery}"><button type="submit">Search</button></form>
+{block:NoSearchResults}<p>No posts found for {SearchQuery}.</p>{/block:NoSearchResults}
+<main class="feed">
+{block:Posts inlineMediaWidth="700" inlineNestedMediaWidth="700"}
+<article class="post" id="post-{PostID}">
+ {block:Text}{block:Title}<h2><a href="{Permalink}">{Title}</a></h2>{/block:Title}<div>{Body}</div>{/block:Text}
+ {block:Photo}<div class="media">{LinkOpenTag}<img src="{PhotoURL-HighRes}" loading="lazy" alt="{PhotoAlt}">{LinkCloseTag}</div>{block:Caption}<div>{Caption}</div>{/block:Caption}{/block:Photo}
+ {block:Photoset}<div class="media">{Photoset-500}</div>{block:Caption}<div>{Caption}</div>{/block:Caption}{/block:Photoset}
+ {block:Panorama}<div class="media">{LinkOpenTag}<img src="{PhotoURL-Panorama}" alt="{PhotoAlt}">{LinkCloseTag}</div>{block:Caption}<div>{Caption}</div>{/block:Caption}{/block:Panorama}
+ {block:Quote}<blockquote class="quote">{Quote}</blockquote>{block:Source}<p>{Source}</p>{/block:Source}{/block:Quote}
+ {block:Link}<h2><a href="{URL}" {Target}>{Name}</a></h2>{block:Description}<div>{Description}</div>{/block:Description}{/block:Link}
+ {block:Chat}{block:Title}<h2>{Title}</h2>{/block:Title}<ul>{block:Lines}<li>{block:Label}<strong>{Label}</strong> {/block:Label}{Line}</li>{/block:Lines}</ul>{/block:Chat}
+ {block:Audio}<div class="media">{AudioEmbed-640}</div>{block:Caption}{Caption}{/block:Caption}{/block:Audio}
+ {block:Video}<div class="media">{Video-500}</div>{block:Caption}{Caption}{/block:Caption}{/block:Video}
+ {block:Answer}<blockquote>{Asker} asked: {Question}</blockquote><div>{Answer}</div>{/block:Answer}
+ {block:Date}<footer class="meta"><a href="{Permalink}">{ShortMonth} {DayOfMonth}, {Year}</a>{block:HasTags}{block:Tags}<a href="{TagURL}">#{Tag}</a>{/block:Tags}{/block:HasTags}{block:NoteCount}<a href="{Permalink}">{NoteCountWithLabel}</a>{/block:NoteCount}<a href="{ReblogURL}">Reblog</a></footer>{/block:Date}
+</article>
+{block:PermalinkPage}{block:PostNotes}<section class="notes-list" aria-label="Post notes">{PostNotes-64}</section>{/block:PostNotes}{/block:PermalinkPage}
+{/block:Posts}
+</main>
+{block:Pagination}<nav aria-label="Pagination">{block:PreviousPage}<a href="{PreviousPage}">Newer posts</a>{/block:PreviousPage}{block:NextPage}<a href="{NextPage}">Older posts</a>{/block:NextPage}</nav>{/block:Pagination}
+</div>
+</body>
+</html>

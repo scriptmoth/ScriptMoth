@@ -1,0 +1,237 @@
+<!--
+Paste into Toyhouse's HTML editor with WYSIWYG disabled.
+Replace each example.com image URL with a hosted image you have permission to use.
+The tabs use Bootstrap 4 already provided by Toyhouse.
+-->
+<div class="mx-auto" style="max-width:900px;background:#eef9f6;color:#173f47;border:1px solid #afd0cd;font-family:system-ui, sans-serif">
+<header class="p-3 p-md-4" style="background-color:#d6edf0;border-bottom:1px solid #afd0cd">
+<div class="d-flex align-items-center flex-wrap" style="gap:1rem">
+<div class="p-1" style="width:112px;background:#f5fdfb;border:1px solid #afd0cd">
+<img src="https://example.com/replace-with-your-upload/ceefore.png" alt="mothlight" width="800" height="1300" style="display:block;object-fit:contain;width:100%;height:122px"/>
+</div>
+<div class="p-2" style="background:#edf9f5;color:#173f47">
+<p class="mb-2" style="font-size:.75rem;text-transform:uppercase;letter-spacing:.13em;color:#3d6671">Soft Atelier · Studio by the sea</p>
+<h1 class="mb-1" style="font-family:Georgia, serif;font-size:2.25rem;line-height:1.08;color:#173f47">mothlight</h1>
+<p class="mb-0" style="color:#3d6671;font-weight:600">@scriptmoth · codes open</p>
+</div>
+</div>
+</header>
+<div class="row no-gutters">
+<div class="col-md-4 order-2 order-md-1 p-3" style="border-right:1px solid #afd0cd">
+<p class="mb-3" style="font-family:Georgia, serif">Soft codes, windows full of sea glass, and just enough room on the studio desk for another OC.</p>
+<dl class="m-0">
+<div class="d-flex justify-content-between py-2" style="border-bottom:1px solid #afd0cd;gap:8px"><dt style="color:#3d6671;font-size:.76rem;font-weight:500">Pronouns</dt><dd class="m-0" style="font-weight:700;font-size:.84rem">they / them</dd>
+</div>
+<div class="d-flex justify-content-between py-2" style="border-bottom:1px solid #afd0cd;gap:8px"><dt style="color:#3d6671;font-size:.76rem;font-weight:500">Zodiac</dt><dd class="m-0" style="font-weight:700;font-size:.84rem">Scorpio</dd>
+</div>
+<div class="d-flex justify-content-between py-2" style="border-bottom:1px solid #afd0cd;gap:8px"><dt style="color:#3d6671;font-size:.76rem;font-weight:500">Type</dt><dd class="m-0" style="font-weight:700;font-size:.84rem">INFP</dd>
+</div>
+<div class="d-flex justify-content-between py-2" style="border-bottom:1px solid #afd0cd;gap:8px"><dt style="color:#3d6671;font-size:.76rem;font-weight:500">Timezone</dt><dd class="m-0" style="font-weight:700;font-size:.84rem">EST</dd>
+</div>
+<div class="d-flex justify-content-between py-2" style="border-bottom:1px solid #afd0cd;gap:8px"><dt style="color:#3d6671;font-size:.76rem;font-weight:500">Member since</dt><dd class="m-0" style="font-weight:700;font-size:.84rem">Nov 2024</dd>
+</div>
+</dl>
+<h2 class="mt-3 mb-2" style="color:#173f47;font-size:1rem">Studio friends</h2>
+<ul class="list-unstyled d-flex flex-wrap m-0" style="gap:.6rem">
+<li class="d-inline-flex align-items-center" style="gap:.35rem;font-size:.8rem">
+<img src="https://example.com/replace-with-your-upload/character.png" alt="" width="30" height="30" style="object-fit:contain;border-radius:50%;background:#d9efea"/>Pip</li>
+<li class="d-inline-flex align-items-center" style="gap:.35rem;font-size:.8rem">
+<img src="https://example.com/replace-with-your-upload/ao.png" alt="" width="30" height="30" style="object-fit:contain;border-radius:50%;background:#d9efea"/>Ao</li>
+<li class="d-inline-flex align-items-center" style="gap:.35rem;font-size:.8rem">
+<img src="https://example.com/replace-with-your-upload/suisen.png" alt="" width="30" height="30" style="object-fit:contain;border-radius:50%;background:#d9efea"/>Suisen</li>
+<li class="d-inline-flex align-items-center" style="gap:.35rem;font-size:.8rem">
+<img src="https://example.com/replace-with-your-upload/fuji.png" alt="" width="30" height="30" style="object-fit:contain;border-radius:50%;background:#d9efea"/>Fuji</li>
+</ul>
+<ul class="list-unstyled d-flex flex-wrap mt-3 mb-0" aria-label="Tags" style="gap:.4rem">
+<li class="px-2 py-1" style="background:#d9efea;color:#173f47;font-size:.73rem">#toyhousecodes</li>
+<li class="px-2 py-1" style="background:#d9efea;color:#173f47;font-size:.73rem">#seaglass</li>
+<li class="px-2 py-1" style="background:#d9efea;color:#173f47;font-size:.73rem">#ocdesign</li>
+<li class="px-2 py-1" style="background:#d9efea;color:#173f47;font-size:.73rem">#lanternroutes</li>
+</ul>
+</div>
+<div class="col-md-8 order-1 order-md-2 p-3 p-md-4" style="background:#fafffe">
+<ul class="nav nav-tabs flex-wrap mb-3" aria-label="Studio journal sections" style="gap:.4rem;border-bottom:1px solid #afd0cd">
+<li class="nav-item"><a href="#soft-atelier-section-0" class="nav-link px-2 px-sm-3 py-2 active" data-toggle="tab" style="color:#173f47;font-size:.82rem;font-weight:700;text-decoration:none">Posts</a>
+</li>
+<li class="nav-item"><a href="#soft-atelier-section-1" class="nav-link px-2 px-sm-3 py-2 " data-toggle="tab" style="color:#173f47;font-size:.82rem;font-weight:700;text-decoration:none">Roster</a>
+</li>
+<li class="nav-item"><a href="#soft-atelier-section-2" class="nav-link px-2 px-sm-3 py-2 " data-toggle="tab" style="color:#173f47;font-size:.82rem;font-weight:700;text-decoration:none">About</a>
+</li>
+<li class="nav-item"><a href="#soft-atelier-section-3" class="nav-link px-2 px-sm-3 py-2 " data-toggle="tab" style="color:#173f47;font-size:.82rem;font-weight:700;text-decoration:none">Gallery</a>
+</li>
+<li class="nav-item"><a href="#soft-atelier-section-4" class="nav-link px-2 px-sm-3 py-2 " data-toggle="tab" style="color:#173f47;font-size:.82rem;font-weight:700;text-decoration:none">Links</a>
+</li>
+</ul>
+<div class="tab-content" style="min-height:125px">
+<section class="tab-pane show active" id="soft-atelier-section-0" aria-label="Posts">
+<div class="row no-gutters">
+<div class="col-8 pr-2">
+<h3 class="mb-2" style="font-size:1.05rem;font-weight:700;color:#173f47">Notes from the tide desk</h3>
+<p class="mb-2" style="font-size:0.92rem;line-height:1.6;color:#173f47"><span>Today’s </span><span style="color:#246b68;font-weight:600">tidepool</span><span> haul: a bottle-green shard, a chipped blue shell, and the color palette for this week’s </span><span style="color:#246b68;font-weight:600">Toyhouse</span><span> profile. The newest drawings are filed in the gallery.</span>
+</p>
+<p class="mb-2" style="font-size:0.92rem;line-height:1.6;color:#173f47"><span>On the worktable: a folder for the ferry crew, a reference sheet for a storm-watching moth, and one very crooked star sticker I can’t bring myself to throw away.</span>
+</p>
+</div>
+<div class="col-4 text-right">
+<img src="https://example.com/replace-with-your-upload/tidepool-study.webp" alt="" width="360" height="480" style="max-width:100%;height:160px;object-fit:contain;object-position:bottom right"/>
+</div>
+</div>
+</section>
+<section class="tab-pane " id="soft-atelier-section-1" aria-label="Roster">
+<h3 class="mb-3" style="font-family:Georgia, serif;font-size:1.25rem;line-height:1.08;color:#173f47">Roster</h3>
+<div>
+<div class="mb-2" style="border:1px solid #afd0cd;background:#fafffe">
+<div class="px-2 py-1" style="background:#356764;color:#fff;font-size:0.82rem;font-weight:700">Pip <span style="font-weight:500;opacity:0.9">— Lantern Courier</span>
+</div>
+<div class="d-flex p-2">
+<img src="https://example.com/replace-with-your-upload/character.png" alt="" width="72" height="72" style="width:72px;height:72px;object-fit:cover;object-position:center top;border-radius:4px;flex:0 0 72px"/>
+<div class="pl-2 flex-grow-1" style="font-size:0.78rem">
+<div class="row no-gutters">
+<div class="col-6 mb-1"><span style="color:#3d6671">Element: </span><strong style="color:#173f47">Fire</strong>
+</div>
+<div class="col-6 mb-1"><span style="color:#3d6671">Race: </span><strong style="color:#173f47">Foxfolk</strong>
+</div>
+<div class="col-6 mb-1"><span style="color:#3d6671">Specialty: </span><strong style="color:#173f47">Delivery</strong>
+</div>
+<div class="col-6 mb-1"><span style="color:#3d6671">Style: </span><strong style="color:#173f47">Soft</strong>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mb-2" style="border:1px solid #afd0cd;background:#fafffe">
+<div class="px-2 py-1" style="background:#356764;color:#fff;font-size:0.82rem;font-weight:700">Ceefore <span style="font-weight:500;opacity:0.9">— Market Mage</span>
+</div>
+<div class="d-flex p-2">
+<img src="https://example.com/replace-with-your-upload/ceefore.png" alt="" width="72" height="72" style="width:72px;height:72px;object-fit:cover;object-position:center top;border-radius:4px;flex:0 0 72px"/>
+<div class="pl-2 flex-grow-1" style="font-size:0.78rem">
+<div class="row no-gutters">
+<div class="col-6 mb-1"><span style="color:#3d6671">Element: </span><strong style="color:#173f47">Arcane</strong>
+</div>
+<div class="col-6 mb-1"><span style="color:#3d6671">Race: </span><strong style="color:#173f47">Elf</strong>
+</div>
+<div class="col-6 mb-1"><span style="color:#3d6671">Specialty: </span><strong style="color:#173f47">Charms</strong>
+</div>
+<div class="col-6 mb-1"><span style="color:#3d6671">Style: </span><strong style="color:#173f47">Cute</strong>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mb-2" style="border:1px solid #afd0cd;background:#fafffe">
+<div class="px-2 py-1" style="background:#356764;color:#fff;font-size:0.82rem;font-weight:700">Ao <span style="font-weight:500;opacity:0.9">— Snow Guest</span>
+</div>
+<div class="d-flex p-2">
+<img src="https://example.com/replace-with-your-upload/ao.png" alt="" width="72" height="72" style="width:72px;height:72px;object-fit:cover;object-position:center top;border-radius:4px;flex:0 0 72px"/>
+<div class="pl-2 flex-grow-1" style="font-size:0.78rem">
+<div class="row no-gutters">
+<div class="col-6 mb-1"><span style="color:#3d6671">Element: </span><strong style="color:#173f47">Ice</strong>
+</div>
+<div class="col-6 mb-1"><span style="color:#3d6671">Race: </span><strong style="color:#173f47">Spirit</strong>
+</div>
+<div class="col-6 mb-1"><span style="color:#3d6671">Specialty: </span><strong style="color:#173f47">Travel</strong>
+</div>
+<div class="col-6 mb-1"><span style="color:#3d6671">Style: </span><strong style="color:#173f47">Calm</strong>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mb-2" style="border:1px solid #afd0cd;background:#fafffe">
+<div class="px-2 py-1" style="background:#356764;color:#fff;font-size:0.82rem;font-weight:700">Suisen <span style="font-weight:500;opacity:0.9">— Star Mechanic</span>
+</div>
+<div class="d-flex p-2">
+<img src="https://example.com/replace-with-your-upload/suisen.png" alt="" width="72" height="72" style="width:72px;height:72px;object-fit:cover;object-position:center top;border-radius:4px;flex:0 0 72px"/>
+<div class="pl-2 flex-grow-1" style="font-size:0.78rem">
+<div class="row no-gutters">
+<div class="col-6 mb-1"><span style="color:#3d6671">Element: </span><strong style="color:#173f47">Tech</strong>
+</div>
+<div class="col-6 mb-1"><span style="color:#3d6671">Race: </span><strong style="color:#173f47">Construct</strong>
+</div>
+<div class="col-6 mb-1"><span style="color:#3d6671">Specialty: </span><strong style="color:#173f47">Repair</strong>
+</div>
+<div class="col-6 mb-1"><span style="color:#3d6671">Style: </span><strong style="color:#173f47">Neon</strong>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="tab-pane " id="soft-atelier-section-2" aria-label="About">
+<h3 class="mb-3" style="font-family:Georgia, serif;font-size:1.25rem;line-height:1.08;color:#173f47">About</h3>
+<div class="p-1">
+<div>
+<div class="d-flex justify-content-between py-2"><span style="color:#3d6671;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em">status</span><span style="color:#173f47;font-weight:600">codes open</span>
+</div><hr class="my-0" style="border-color:#afd0cd"/>
+</div>
+<div>
+<div class="d-flex justify-content-between py-2"><span style="color:#3d6671;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em">turnaround</span><span style="color:#173f47;font-weight:600">1–2 weeks</span>
+</div><hr class="my-0" style="border-color:#afd0cd"/>
+</div>
+<div>
+<div class="d-flex justify-content-between py-2"><span style="color:#3d6671;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em">slots</span><span style="color:#173f47;font-weight:600">3 open</span>
+</div><hr class="my-0" style="border-color:#afd0cd"/>
+</div>
+<div>
+<div class="d-flex justify-content-between py-2"><span style="color:#3d6671;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em">style</span><span style="color:#173f47;font-weight:600">sea glass · studio journal</span>
+</div><hr class="my-0" style="border-color:#afd0cd"/>
+</div>
+<div>
+<div class="d-flex justify-content-between py-2"><span style="color:#3d6671;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em">includes</span><span style="color:#173f47;font-weight:600">HTML + install notes</span>
+</div><hr class="my-0" style="border-color:#afd0cd"/>
+</div>
+<div>
+<div class="d-flex justify-content-between py-2"><span style="color:#3d6671;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em">extra</span><span style="color:#173f47;font-weight:600">Premium CSS polish</span>
+</div><hr class="my-0" style="border-color:#afd0cd"/>
+</div>
+<div>
+<div class="d-flex justify-content-between py-2"><span style="color:#3d6671;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em">install</span><span style="color:#173f47;font-weight:600">Disable WYSIWYG before pasting the HTML</span>
+</div>
+</div>
+</div>
+</section>
+<section class="tab-pane " id="soft-atelier-section-3" aria-label="Gallery">
+<h3 class="mb-3" style="font-family:Georgia, serif;font-size:1.25rem;line-height:1.08;color:#173f47">Gallery</h3>
+<div class="row no-gutters m-n1">
+<div class="col-6 p-1">
+<div style="background:#d9efea;border:1px solid #afd0cd">
+<img src="https://example.com/replace-with-your-upload/butterfly-study.webp" alt="" width="678" height="1000" style="width:100%;height:110px;object-fit:contain;display:block"/>
+<div class="px-2 py-1" style="font-size:0.75rem;color:#3d6671">Butterfly study · Whistler</div>
+</div>
+</div>
+<div class="col-6 p-1">
+<div style="background:#d9efea;border:1px solid #afd0cd">
+<img src="https://example.com/replace-with-your-upload/tidepool-study.webp" alt="" width="360" height="480" style="width:100%;height:110px;object-fit:contain;display:block"/>
+<div class="px-2 py-1" style="font-size:0.75rem;color:#3d6671">Tidepool color study</div>
+</div>
+</div>
+<div class="col-6 p-1">
+<div style="background:#d9efea;border:1px solid #afd0cd">
+<img src="https://example.com/replace-with-your-upload/lanterns.jpg" alt="" width="1400" height="934" style="width:100%;height:110px;object-fit:contain;display:block"/>
+<div class="px-2 py-1" style="font-size:0.75rem;color:#3d6671">Night</div>
+</div>
+</div>
+<div class="col-6 p-1">
+<div style="background:#d9efea;border:1px solid #afd0cd">
+<img src="https://example.com/replace-with-your-upload/lantern-close.jpg" alt="" width="1400" height="933" style="width:100%;height:110px;object-fit:contain;display:block"/>
+<div class="px-2 py-1" style="font-size:0.75rem;color:#3d6671">Alley</div>
+</div>
+</div>
+</div>
+</section>
+<section class="tab-pane " id="soft-atelier-section-4" aria-label="Links">
+<h3 class="mb-3" style="font-family:Georgia, serif;font-size:1.25rem;line-height:1.08;color:#173f47">Links</h3>
+<div class="d-flex justify-content-between align-items-center mb-2 px-3 py-2" style="background:#fafffe;border:1px solid #afd0cd;border-radius:6px"><span><strong style="color:#173f47;display:block">Commission info</strong><small style="color:#3d6671">profile &amp; OC codes</small></span>
+</div>
+<div class="d-flex justify-content-between align-items-center mb-2 px-3 py-2" style="background:#fafffe;border:1px solid #afd0cd;border-radius:6px"><span><strong style="color:#173f47;display:block">Toyhouse</strong><small style="color:#3d6671">Character profiles and folders</small></span>
+</div>
+<div class="d-flex justify-content-between align-items-center mb-2 px-3 py-2" style="background:#fafffe;border:1px solid #afd0cd;border-radius:6px"><span><strong style="color:#173f47;display:block">Carrd</strong><small style="color:#3d6671">terms · prices</small></span>
+</div>
+<div class="d-flex justify-content-between align-items-center mb-2 px-3 py-2" style="background:#fafffe;border:1px solid #afd0cd;border-radius:6px"><span><strong style="color:#173f47;display:block">Contact</strong><small style="color:#3d6671">scriptmoth inquiry</small></span>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>

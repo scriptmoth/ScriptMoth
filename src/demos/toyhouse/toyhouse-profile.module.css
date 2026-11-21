@@ -1,0 +1,36 @@
+.profile {
+  overflow: hidden;
+  box-shadow: 0 18px 35px -24px #132c3c88;
+}
+
+.coast {
+  position: relative;
+  background-image: url("/assets/portfolio/soft-atelier/deep-sea.webp");
+  background-position: center;
+  background-size: cover;
+}
+
+.fishStamp { width: 46px; height: 46px; object-fit: contain; transform: rotate(-9deg); }
+
+.profile :global(.nav-link) {
+  border-bottom: 2px solid transparent;
+  transition: border-color .18s, background-color .18s;
+}
+
+.profile :global(.nav-link:hover),
+.profile :global(.nav-link.active) {
+  border-color: currentColor;
+  background: #73878513;
+}
+
+.profile :global(.nav-link:focus-visible),
+.download a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.download a { color: inherit; text-decoration: underline; text-underline-offset: .2em; }
+
+@media (prefers-reduced-motion: reduce) {
+  .profile :global(.nav-link) { transition: none; }
+}

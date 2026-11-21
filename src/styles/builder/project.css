@@ -1,0 +1,414 @@
+/* Step 1: project cards */
+.project-group {
+  display: grid;
+  gap: .7rem;
+  padding: .85rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--paper) 70%, var(--surface-alt));
+}
+.project-group > header {
+  display: flex;
+  align-items: center;
+  gap: .85rem;
+}
+.project-group > header img {
+  width: 4rem;
+  height: auto;
+  flex: none;
+}
+.project-group h3 {
+  font-size: 1.15rem;
+}
+.project-group header p {
+  color: var(--muted);
+  font-size: .92rem;
+}
+.package-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13.5rem, 1fr));
+  gap: .65rem;
+}
+.package-card {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: .3rem;
+  min-height: 44px;
+  padding: .75rem .8rem;
+  text-align: start;
+  color: var(--ink);
+  border: 2px solid var(--strong-line);
+  border-radius: 4px;
+  background: var(--surface);
+  box-shadow: 3px 3px 0 var(--strong-line);
+  transition: transform var(--quick) var(--ease-out), box-shadow var(--quick) var(--ease-out), background-color var(--quick);
+}
+.package-card:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+.package-card:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--accent);
+}
+.package-card[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--panel-lavender);
+  box-shadow: 3px 3px 0 var(--accent);
+}
+.package-card-title {
+  font: 760 1.02rem/1.2 var(--heading);
+  padding-inline-end: 1.4rem;
+}
+.package-card-price {
+  color: var(--accent);
+  font: 700 .95rem/1.3 var(--mono);
+}
+.package-card-price small {
+  color: var(--muted);
+  font: 500 .75rem var(--body);
+}
+.package-card-summary {
+  color: var(--muted);
+  font-size: .88rem;
+  line-height: 1.45;
+}
+.package-card-check {
+  position: absolute;
+  top: .45rem;
+  right: .5rem;
+  display: grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 3px;
+  background: var(--accent);
+  color: var(--surface);
+  font-size: .8rem;
+  font-weight: 800;
+  animation: check-pop 260ms var(--ease-out);
+}
+@keyframes check-pop {
+  from { transform: scale(.3) rotate(-25deg); opacity: 0; }
+}
+.included-box {
+  padding: .9rem 1rem;
+  border: 2px dashed var(--strong-line);
+  border-radius: 6px;
+  background: var(--panel-cream);
+  animation: intro-arrive 220ms var(--ease-out);
+}
+.included-box h3 {
+  margin-bottom: .45rem;
+  font-size: 1.05rem;
+}
+.included-box ul {
+  display: grid;
+  gap: .25rem;
+  padding-inline-start: 1.1rem;
+  list-style: "✦  ";
+}
+.included-hint {
+  margin-top: .5rem;
+  color: var(--muted);
+  font-size: .88rem;
+}
+
+/* Step 2: category pills and feature cards. Pills wrap cleanly, unlike folder tabs. */
+.feature-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  padding-bottom: .9rem;
+  border-bottom: 2px solid var(--line);
+}
+.feature-tabs button:not([aria-pressed="true"]):hover {
+  color: var(--ink);
+  border-color: var(--strong-line);
+}
+.feature-tabs button {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  min-height: 36px;
+  padding: .3rem .85rem;
+  color: var(--muted);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-alt);
+  font: 700 .76rem/1.2 var(--mono);
+}
+.feature-tabs button[aria-pressed="true"] {
+  color: var(--surface);
+  border-color: var(--accent);
+  background: var(--accent);
+}
+.feature-tabs button[aria-pressed="true"] .tab-count {
+  background: var(--surface);
+  color: var(--accent);
+}
+.tab-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding-inline: .25rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--surface);
+  font-size: .7rem;
+}
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: .65rem;
+}
+/* Cards in a row share a height; content stays at the top and tags sit on the bottom edge. */
+.feature-card {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  align-content: start;
+  gap: .4rem;
+  min-width: 0;
+  padding: .7rem .8rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+  box-shadow: 0 2px 0 var(--line);
+  transition: border-color var(--quick), background-color var(--quick), box-shadow var(--quick);
+}
+.feature-card:not([data-selected]):hover {
+  border-color: var(--strong-line);
+  box-shadow: 0 3px 0 var(--strong-line);
+}
+.feature-card[data-selected] {
+  border-color: var(--accent);
+  background: var(--surface-alt);
+  box-shadow: 0 2px 0 var(--accent);
+}
+/* Selected features earn a folded sticker corner, like an item added to a collection.
+   It peels on just once, when the feature was the one just picked. */
+.feature-card[data-selected]::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: .85rem;
+  height: .85rem;
+  background: linear-gradient(135deg, var(--lavender) 50%, var(--paper) 50%);
+  border-radius: 4px 0 5px 0;
+  transform-origin: right bottom;
+  pointer-events: none;
+}
+.feature-card[data-selected][data-sparkle]::after {
+  animation: sticker-peel 300ms var(--ease-out) both;
+}
+.feature-card[data-sparkle] {
+  animation: card-collect 360ms var(--ease-bounce);
+}
+.feature-card[data-sparkle] .price-tag {
+  animation: check-pop 300ms var(--ease-out);
+}
+@keyframes sticker-peel {
+  from { transform: rotateY(80deg) scale(.6); opacity: .25; }
+}
+@keyframes card-collect {
+  40% { scale: 1.018; }
+}
+.feature-card-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: .55rem;
+}
+.feature-card-head input {
+  appearance: auto;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-top: .2rem;
+  accent-color: var(--muted-purple);
+  cursor: pointer;
+}
+.feature-card-head input:disabled {
+  cursor: default;
+}
+.feature-name {
+  font-weight: 760;
+  line-height: 1.3;
+  cursor: pointer;
+}
+.feature-name::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2.6rem;
+}
+.price-tag {
+  padding: .1rem .45rem;
+  border: 1px solid var(--strong-line);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--accent);
+  font: 700 .76rem/1.4 var(--mono);
+  white-space: nowrap;
+}
+.price-tag[data-state="custom"] {
+  border-style: dashed;
+  color: var(--muted);
+}
+.price-tag[data-state="included"] {
+  border-color: transparent;
+  background: var(--gold);
+  color: var(--deep-plum);
+}
+.feature-check {
+  position: absolute;
+  top: -.55rem;
+  left: -.45rem;
+  display: grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--surface);
+  animation: check-pop 280ms var(--ease-out);
+}
+.feature-card .choice-sparkle {
+  inset: -.35rem .6rem auto auto;
+}
+.feature-body {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  padding-inline-start: 1.65rem;
+  font-size: .9rem;
+  color: var(--muted);
+}
+.feature-example {
+  padding: .3rem .5rem;
+  border-inline-start: 2px solid var(--lavender);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  font-style: italic;
+}
+.feature-example span {
+  margin-inline-end: .3rem;
+  color: var(--accent);
+  font: 700 normal .7rem var(--mono);
+  text-transform: uppercase;
+}
+.feature-tags {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: .15rem;
+  gap: .3rem;
+}
+.feature-tags:empty {
+  display: none;
+}
+.feature-tags li {
+  padding: .05rem .45rem;
+  border: 1px solid var(--line);
+  border-radius: .7rem; /* stays tidy when a long tag wraps to two lines */
+  font-size: .76rem;
+  line-height: 1.5;
+}
+.feature-tags li[data-tone="good"] {
+  border-color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 28%, transparent);
+  color: var(--ink);
+}
+.feature-tags li[data-tone="info"] {
+  border-style: dashed;
+}
+.feature-suggested {
+  padding-inline-start: 1.65rem;
+  color: var(--accent);
+  font: 700 .74rem var(--mono);
+}
+.feature-prompt {
+  display: grid;
+  gap: .45rem;
+  padding: .65rem .75rem;
+  border-inline-start: 3px solid var(--accent);
+  border-radius: 4px;
+  background: var(--panel-cream);
+  color: var(--ink);
+  font-size: .9rem;
+  animation: intro-arrive 200ms var(--ease-out);
+}
+.feature-prompt ul {
+  padding-inline-start: 1rem;
+  list-style: disc;
+  color: var(--muted);
+  font-size: .85rem;
+}
+.prompt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .4rem .9rem;
+}
+.prompt-actions .button {
+  min-height: 40px;
+  padding-block: .35rem;
+  font-size: .88rem;
+}
+.feature-config {
+  display: grid;
+  gap: .6rem;
+  margin-top: .2rem;
+  padding-top: .6rem;
+  border-top: 1px dotted var(--strong-line);
+  animation: intro-arrive 200ms var(--ease-out);
+}
+.feature-note {
+  color: var(--muted);
+  font-size: .85rem;
+}
+.level-picker {
+  display: grid;
+  gap: .4rem;
+}
+.level-picker legend {
+  margin-bottom: .3rem;
+  font-weight: 750;
+  font-size: .9rem;
+}
+.level-picker label {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: .15rem .55rem;
+  padding: .5rem .6rem;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--paper);
+  cursor: pointer;
+}
+.level-picker label[data-active] {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+.level-picker input {
+  appearance: auto;
+  margin-top: .25rem;
+  accent-color: var(--muted-purple);
+}
+.level-picker small {
+  display: block;
+  color: var(--muted);
+  font-size: .83rem;
+  line-height: 1.4;
+}
+.level-picker em {
+  grid-column: 2;
+  color: var(--accent);
+  font: 700 normal .78rem var(--mono);
+}
+.notes-field textarea {
+  min-height: 6rem;
+}

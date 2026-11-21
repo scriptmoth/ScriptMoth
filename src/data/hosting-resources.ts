@@ -118,7 +118,7 @@ export const resourceSections: ResourceSection[] = [
         range: "$7–25",
         ease: 3,
         budget: 3,
-        cost: "$7/month for a Starter worker",
+        cost: "Paid workers from $7/month",
         fit: "Gateway bots on a managed background worker",
         note: "Configure a build command, a start command, and environment variables. A worker runs without a public URL.",
         docs: "https://render.com/hosting/discord-bots",

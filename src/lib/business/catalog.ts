@@ -71,7 +71,10 @@ export const categoryArt = (category: string) => ({
 const legacy: Record<string, ProjectType> = {
   websites: "personal-site", discord: "discord-bot", "discord-setup": "discord-setup", community: "roleplay-bot",
 };
-export function quoteSelection(prefill: string) {
+/** Packages that were merged into another one, so old quote links still preselect a package. */
+const mergedPackages: Record<string, string> = { "single-page-website": "carrd-site" };
+export function quoteSelection(requested: string) {
+  const prefill = mergedPackages[requested] ?? requested;
   const product = catalog().find(item => item.slug === prefill);
   const plan = plans().find(item => item.id === prefill);
   const type = product?.projectType ?? (plan ? "hosting" : legacy[prefill] ?? (Object.hasOwn(projectTypes, prefill) ? prefill as ProjectType : ""));

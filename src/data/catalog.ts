@@ -23,18 +23,17 @@ type Product = {
   demo?: string;
 };
 const listings: Record<string, { art: Artwork; extras: string; category: string; demo?: string }> = {
-  "carrd-site": { art: assets.gallery, category: "Websites", demo: "/portfolio#carrd-sites", extras: "Extra sections, a larger gallery, animations, and a custom domain setup" },
+  "carrd-site": { art: assets.gallery, category: "Websites", demo: "/portfolio#carrd-sites", extras: "Extra sections, a larger gallery, a contact form, and connecting your own domain" },
   "toyhouse-profile": { art: assets.gallery, category: "Websites", demo: "/portfolio#toyhouse-profiles", extras: "Extra character pages, matching folder codes, masterlist layouts, and Premium CSS polish checked against Toyhouse’s sanitizer" },
   "tumblr-theme": { art: assets.gallery, category: "Websites", demo: "/portfolio#tumblr-themes", extras: "Extra post types, infinite-scroll polish, custom permalink pages, and appearance-option toggles in the Tumblr editor" },
-  "custom-discord-bot": { art: assets.bot, category: "Discord Bots", extras: "Extra modules, branded embeds, moderation, tickets, and Discord server setup" },
+  "custom-discord-bot": { art: assets.bot, category: "Discord Bots", extras: "A second module, welcome images, moderation, tickets, and Discord server setup" },
   "community-engagement-bot": { art: assets.bot, category: "Discord Bots", extras: "More modules, question review, trivia scoring, moderation, tickets, and Discord server setup" },
   "discord-server-setup": { art: assets.community, category: "Discord Servers", extras: "Extra embeds, interest roles, existing-server cleanup, and emoji placement" },
   "custom-rp-bot": { art: assets.community, category: "Roleplay & Community Systems", extras: "Inventories, currency, quests, progression, a web dashboard, and Discord server setup" },
-  "single-page-website": { art: assets.websites, category: "Websites", extras: "Extra pages, galleries, contact forms, and animations" },
   "personal-website": { art: assets.websites, category: "Websites", extras: "Extra pages, filterable galleries, contact forms, and editable content" },
-  "oc-wiki": { art: assets.gallery, category: "Websites", extras: "Timelines, lore articles, relationships, and bulk imports" },
+  "oc-wiki": { art: assets.gallery, category: "Websites", demo: "/portfolio#oc-wikis", extras: "Timelines, lore articles, relationships, and bulk imports" },
   "community-website": { art: assets.gallery, category: "Websites", extras: "Member accounts, applications, event calendars, and dashboards" },
-  "custom-bot-dashboard": { art: assets.community, category: "Websites", extras: "New bot integrations, extra screens, analytics, and multiple servers" },
+  "custom-bot-dashboard": { art: assets.community, category: "Websites", demo: "/portfolio#dashboards", extras: "New bot integrations, extra screens, analytics, and multiple servers" },
 };
 
 export const products: Product[] = starterPackages.filter(item => item.product && item.dollars !== null).map(item => ({

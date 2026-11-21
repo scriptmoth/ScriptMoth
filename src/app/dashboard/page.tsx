@@ -64,7 +64,7 @@ export default async function Dashboard() {
           <Field name="priority" label="Impact" options={priorities} value="Normal" required />
           <Field name="project" label="Project (required for revisions)" options={projects.map(({ id, title }) => ({ id, title }))} />
           <Field name="affected_feature" label="Affected feature" max={200} />
-          <Field name="body" label="What can we help with?" max={5000} large required />
+          <Field name="body" label="What do you need help with?" max={5000} large required />
           <AttachmentField />
         </ClientForm>
       </div>

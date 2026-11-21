@@ -1,145 +1,129 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { ServiceCard } from "@/components/cards";
-import { CarrdGallery } from "@/components/carrd/carrd-gallery";
-import { DiscordStylesCallout } from "@/components/discord/styles-callout";
-import { ToyhouseGallery } from "@/components/toyhouse/toyhouse-gallery";
-import { TumblrGallery } from "@/components/tumblr/tumblr-gallery";
-import { HeroCommand } from "@/components/hero-command";
-import { Art, ButtonLink, Divider, SectionHeading, Window } from "@/components/ui";
+import { DiscordStylesCallout } from "@/demos/discord/styles-callout";
+import { Art, ButtonLink, Window } from "@/components/ui";
 import { catalog, currency } from "@/lib/business/catalog";
 import { money } from "@/lib/business/rules";
 import { processSteps, services } from "@/data/services";
 import { assets } from "@/lib/assets";
+import { HomeHero } from "./_home/home-hero";
+import { HomeShowcase } from "./_home/home-showcase";
+import styles from "./_home/home.module.css";
 
 export const dynamic = "force-dynamic";
+
+/** Where each service row points on the combined /products page. */
+const serviceHref: Record<string, string> = {
+  websites: "/products#website-packages",
+  discord: "/products#discord-packages",
+  "discord-setup": "/products#discord-server-setup",
+  community: "/products#custom-rp-bot",
+  hosting: "/hosting",
+};
 
 export default function Home() {
   const featuredProducts = catalog().filter(product => product.featured_order !== null);
   return (
-    <>
-      <section className="hero" aria-labelledby="hero-title">
-        <div className="site-container hero-inner">
-          <div className="hero-copy">
-            <p className="eyebrow"><span aria-hidden="true">&gt;_</span> Independent development studio</p>
-            <h1 id="hero-title">Personal websites and <em>Discord bots</em></h1>
-            <p className="hero-description">Scriptmoth builds portfolios for artists, bots for Discord servers, and tools for roleplay groups that need a shared roster or quest log.</p>
-            <div className="button-row">
-              <ButtonLink href="/products">Compare packages</ButtonLink>
-              <ButtonLink href="/contact" variant="secondary">Build a project</ButtonLink>
-            </div>
-          </div>
-          <figure className="hero-figure">
-            <div className="hero-mark">
-              <Art artwork={assets.logo} alt="Scriptmoth, a purple and cream moth with a terminal prompt" className="hero-logo"
-                sizes="(max-width: 700px) 74vw, (max-width: 1100px) 43vw, 490px" eager />
-              <Art artwork={assets.logo} className="hero-logo-moth"
-                sizes="(max-width: 700px) 74vw, (max-width: 1100px) 43vw, 490px" eager />
-              <span className="hero-sparkle sparkle" aria-hidden="true" />
-              <span className="hero-heart" aria-hidden="true" />
-            </div>
-            <HeroCommand />
-            <span className="hero-twinkles" aria-hidden="true"><i /><i /><i /><i /></span>
-          </figure>
-        </div>
-      </section>
+    <div className={styles.home}>
+      <HomeHero />
 
-      {featuredProducts.length > 0 && <section className="section section-band" aria-labelledby="featured-products-title">
-        <div className="site-container">
-          <SectionHeading eyebrow="Packages" title="Featured packages" id="featured-products-title">
-            <Link className="text-link" href="/products">All packages <ArrowRight size={16} aria-hidden="true" /></Link>
-          </SectionHeading>
-          <div className="project-grid featured-products">
-            {featuredProducts.map(({ id, slug, title, summary, cents, pricing }) => (
-              <article key={id} className="service-card service-card--preview">
-                <h3><Link className="card-link" href={`/products/${slug}`}>{title}</Link></h3>
-                <p className="catalog-price">{cents === null ? "Custom quote" : `${pricing === "quote" ? "From " : ""}${money(cents, currency())}`}</p>
-                <p>{summary}</p>
-              </article>
+      <HomeShowcase />
+
+      <section className={styles.make} aria-labelledby="services-title">
+        <div className={`site-container ${styles.makeSpread}`}>
+          <header className={styles.makeIntro}>
+            <p className={styles.sectionKicker}><span aria-hidden="true">✦</span> What Scriptmoth makes</p>
+            <h2 id="services-title" className={styles.display}>Small, useful things for <em>people who make things</em></h2>
+            <p>It’s just me, so the list is short. Start from a package, or ask for something custom.</p>
+            <Link className="text-link" href="/products#custom">Something custom <ArrowRight size={16} aria-hidden="true" /></Link>
+            {featuredProducts.length === 0 && <Link className="text-link" href="/products">Compare packages</Link>}
+          </header>
+          <ol className={styles.serviceList}>
+            {services.map(({ id, title, summary, art }) => (
+              <li key={id} className={styles.service}>
+                <span className={styles.serviceArt}><Art artwork={art} sizes="56px" /></span>
+                <div>
+                  <h3><Link href={serviceHref[id] ?? "/products"}>{title}</Link></h3>
+                  <p>{summary}</p>
+                </div>
+                <ArrowRight className={styles.serviceArrow} size={20} aria-hidden="true" />
+              </li>
             ))}
+          </ol>
+        </div>
+
+        {featuredProducts.length > 0 && (
+          <div className={`site-container ${styles.priceList}`} aria-labelledby="featured-products-title" role="region">
+            <header>
+              <h3 id="featured-products-title">Popular packages</h3>
+              <Link className="text-link" href="/products">All packages <ArrowRight size={16} aria-hidden="true" /></Link>
+            </header>
+            <ul>
+              {featuredProducts.map(({ id, slug, title, summary, cents, pricing }) => (
+                <li key={id}>
+                  <h4><Link href={`/products/${slug}`}>{title}</Link></h4>
+                  <span className={styles.leader} aria-hidden="true" />
+                  <span className={styles.price}>{cents === null ? "Custom quote" : `${pricing === "quote" ? "from " : ""}${money(cents, currency())}`}</span>
+                  <p>{summary}</p>
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
-      </section>}
+        )}
 
-      <section className="section section--services site-container" aria-labelledby="services-title">
-        <SectionHeading eyebrow="Services" title="What we build" id="services-title">
-          <Link className="text-link" href="/services">Custom development <ArrowRight size={16} aria-hidden="true" /></Link>
-        </SectionHeading>
-        <div className="services-grid">
-          {services.map((service) => <ServiceCard key={service.id} service={service} />)}
-        </div>
-      </section>
-
-      <div className="site-container"><Divider /></div>
-
-      <section className="section gallery-band" aria-labelledby="portfolio-title">
-        <div className="site-container">
-          <SectionHeading eyebrow="Portfolio" title="Live package demos" id="portfolio-title">
-            <Link className="text-link" href="/portfolio">Browse portfolio <ArrowRight size={16} aria-hidden="true" /></Link>
-          </SectionHeading>
-          <CarrdGallery />
-        </div>
-      </section>
-
-      <section className="section section-band" aria-labelledby="tumblr-home-title">
-        <div className="site-container">
-          <SectionHeading eyebrow="Tumblr" title="Custom Tumblr themes" id="tumblr-home-title">
-            <Link className="text-link" href="/portfolio#tumblr-themes">Browse Tumblr demos <ArrowRight size={16} aria-hidden="true" /></Link>
-          </SectionHeading>
-          <TumblrGallery />
-        </div>
-      </section>
-
-      <section className="section" aria-labelledby="toyhouse-home-title">
-        <div className="site-container">
-          <SectionHeading eyebrow="Toyhouse" title="OC and profile designs" id="toyhouse-home-title">
-            <Link className="text-link" href="/portfolio#toyhouse-profiles">Browse Toyhouse demos <ArrowRight size={16} aria-hidden="true" /></Link>
-          </SectionHeading>
-          <ToyhouseGallery />
-        </div>
-      </section>
-
-      <section className="section section-band" aria-labelledby="discord-setup-home-title">
-        <div className="site-container">
-          <SectionHeading eyebrow="Discord" title="Discord servers and bots" id="discord-setup-home-title">
-            <Link className="text-link" href="/services#discord-setup">Discord services <ArrowRight size={16} aria-hidden="true" /></Link>
-          </SectionHeading>
+        <div className={`site-container ${styles.discordCallout}`}>
           <DiscordStylesCallout id="discord-styles-home" headingLevel="h3" />
         </div>
       </section>
 
-      <section className="section section-band section-band--studio" aria-labelledby="studio-title">
-        <div className="site-container split-section">
+      <section className={styles.studio} aria-labelledby="studio-title">
+        <div className={`site-container ${styles.studioSpread}`}>
           <div>
-            <SectionHeading eyebrow="The studio" title="Meet Moth" id="studio-title" />
-            <p>Moth learned to code by customizing MySpace pages. Today they build websites, bots, and the occasional tool that started as a 2 AM idea.</p>
+            <p className={styles.sectionKicker}><span aria-hidden="true">✦</span> The studio</p>
+            <h2 id="studio-title" className={styles.display}>Meet <em>Moth</em></h2>
+            <p className={styles.studioBio}>
+              Moth learned to code by customizing MySpace pages. Today they build websites, bots, and the occasional
+              tool that started as a 2 AM idea.
+            </p>
             <Link className="text-link" href="/about">About Scriptmoth <ArrowRight size={16} aria-hidden="true" /></Link>
           </div>
-          <Window label="scriptmoth / workshop" className="workshop-window">
+          <Window label="scriptmoth / workshop" className={`workshop-window ${styles.studioWindow}`}>
             <div className="workshop-art">
               <Art artwork={assets.coding} alt="Moth-shaped coding terminal" sizes="(max-width: 600px) 140px, 190px" />
             </div>
           </Window>
         </div>
+
+        <div className={`site-container ${styles.process}`}>
+          <h3 id="process-title">From inquiry to handover</h3>
+          <ol aria-labelledby="process-title">
+            {processSteps.map(({ title, description }, index) => (
+              <li key={title}>
+                <span className={styles.step} aria-hidden="true">{index + 1}</span>
+                <h4>{title}</h4>
+                <p>{description}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
 
-      <section className="section site-container" aria-labelledby="process-title">
-        <SectionHeading eyebrow="Development process" title="From inquiry to handover" id="process-title">
-          <Art artwork={assets.process} className="process-art" sizes="54px" />
-        </SectionHeading>
-        <ol className="process-grid">
-          {processSteps.map(({ title, description }) => (
-            <li key={title}><h3>{title}</h3><p>{description}</p></li>
-          ))}
-        </ol>
+      <section className={styles.contact} aria-labelledby="contact-title">
+        <div className={`site-container ${styles.contactSpread}`}>
+          <div>
+            <h2 id="contact-title" className={styles.display}>Have a little project <em>in mind?</em></h2>
+            <p>Tell me what you want to make and who it’s for. Half-formed 2 AM ideas count.</p>
+            <div className={styles.contactActions}>
+              <ButtonLink href="/contact" variant="secondary">Start a project</ButtonLink>
+              <Link className="text-link" href="/faq">Read the FAQ first <ArrowRight size={16} aria-hidden="true" /></Link>
+            </div>
+          </div>
+          <div className={styles.envelope} aria-hidden="true">
+            <Art artwork={assets.contact} sizes="(max-width: 740px) 120px, 240px" />
+            <Art artwork={assets.mark} className={styles.perched} sizes="44px" />
+          </div>
+        </div>
       </section>
-
-      <section className="site-container contact-band" aria-labelledby="contact-title">
-        <Art artwork={assets.mark} className="perched-moth" sizes="32px" />
-        <Art artwork={assets.contact} sizes="(max-width: 600px) 80px, 110px" />
-        <div><h2 id="contact-title">Have a project in mind?</h2><p>Start with what you want to make and who will use it.</p></div>
-        <ButtonLink href="/contact">Build a project</ButtonLink>
-      </section>
-    </>
+    </div>
   );
 }

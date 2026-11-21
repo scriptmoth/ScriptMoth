@@ -1,50 +1,41 @@
 import { assets } from "@/lib/assets";
 
+/** The service rows on the homepage. Package prices and contents live in `data/builder.ts`. */
 export const services = [
   {
     id: "websites",
     title: "Personal Websites",
-    category: "Websites",
     art: assets.websites,
-    summary: "Publish your art, writing, or character profiles on your own site.",
-    features: ["Personal sites and creator portfolios", "Tumblr theme designs", "Toyhouse OC and profile designs", "Galleries for artwork and original characters", "Fan and community websites"],
+    summary: "One-page sites, Toyhouse codes, Tumblr themes, and character wikis for your art, writing, and OCs.",
   },
   {
     id: "discord",
     title: "Custom Discord Bots",
-    category: "Discord Bots",
     art: assets.bot,
-    summary: "Automate welcome messages, roles, support tickets, and moderation tasks.",
-    features: ["Moderation commands and activity logs", "Welcome messages and links for new members", "Roles members can choose from a menu or with reactions", "Private support tickets and community management tools"],
+    summary: "Welcome messages, reaction roles, tickets, mod logs, birthdays, and question-of-the-day posts, built for one server.",
   },
   {
     id: "discord-setup",
     title: "Discord Server Setup",
-    category: "Discord Servers",
     art: assets.community,
-    summary: "We build out your Discord: channels, roles, permissions, and branded embeds—standalone or with a bot.",
-    features: ["Channel categories, naming, topics, and permission layout", "Role hierarchy with colors and clear staff vs member access", "Formatted embeds for rules, welcome, FAQs, and info posts", "Can be ordered alone or bundled with a custom Discord bot"],
+    summary: "Channels, roles, permissions, and branded embeds, laid out so people can find things. Works with or without a bot.",
   },
   {
     id: "community",
     title: "Roleplay & Community Tools",
-    category: "Community Systems",
     art: assets.community,
-    summary: "Give your group one place to track characters, gear, and quests.",
-    features: ["Character profiles and rosters", "Inventories, currencies, and progression", "Quests and custom roleplay mechanics", "Dashboards and Discord integrations"],
+    summary: "Character approvals and rosters, dice, inventories, shops, quests, and crafting for roleplay groups.",
   },
   {
     id: "hosting",
     title: "Hosting & Maintenance",
-    category: "Hosting",
     art: assets.hosting,
-    summary: "Choose your own provider or have Scriptmoth set up and manage third-party services for your project.",
-    features: ["Third-party setup for websites, bots, and databases", "Maintenance and updates", "Uptime and infrastructure monitoring", "Technical support"],
+    summary: "Host it yourself with a handover, or I set up the hosting and keep it updated each month.",
   },
 ] as const;
 
 export const processSteps = [
-  { title: "Describe the project", description: "Start with who will use it and what they need to do." },
-  { title: "Try a first version", description: "Once the scope is agreed, you can try an early layout or prototype and give feedback." },
-  { title: "Test and hand over", description: "Scriptmoth tests the finished work. Before handover, both sides agree on who will maintain it after launch." },
+  { title: "Tell me what you’re making", description: "Who it’s for and what they need to do with it. Rough ideas are fine." },
+  { title: "Try an early version", description: "Once we agree on scope, you get a first layout or prototype to click around and react to." },
+  { title: "Testing and handover", description: "I test everything before handing it over, and we agree up front on who looks after it once it’s live." },
 ];

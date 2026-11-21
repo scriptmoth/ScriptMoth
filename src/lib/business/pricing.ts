@@ -18,9 +18,11 @@ export type PricingRules = {
   unpriced?: boolean;
   /** Additional page features whose names must not repeat a selected named page. */
   pageNames?: boolean;
-  /** Base packages: feature IDs covered by the package price. With `choose`, only that many units are covered. */
-  includes?: { ids: string[]; choose?: number };
+  /** Base packages: feature IDs covered by the package price. With `choose`, only that many units are covered.
+   *  `always` lists features that come with the package on top of the chosen ones. */
+  includes?: PackageIncludes;
 };
+export type PackageIncludes = { ids: string[]; choose?: number; always?: string[] };
 export type Feature = QuoteOption & PricingRules;
 export type Selection = { id: string; quantity: number; complexity?: string; settings?: Record<string, string> };
 export type PriceLine = {
@@ -31,7 +33,7 @@ export type PriceLine = {
 };
 
 export function resolvedBase(features: Feature[], item?: {
-  slug: string; title: string; recurring: boolean; cents: number | null; includes?: { ids: string[]; choose?: number }; manual?: boolean; needs?: string[];
+  slug: string; title: string; recurring: boolean; cents: number | null; includes?: PackageIncludes; manual?: boolean; needs?: string[];
 }): Feature | undefined {
   const base = features.find(feature => feature.kind === "base");
   if (!item) return base;
@@ -72,18 +74,16 @@ export function packageCoverage(base: Feature | undefined, lookup: Map<string, F
   const covered = new Map<string, number>();
   const includes = base?.includes;
   if (!includes) return { covered, fixed: [] as string[] };
-  if (!includes.choose) {
-    const fixed = includes.ids.filter(id => lookup.has(id));
-    for (const id of fixed) covered.set(id, 1);
-    return { covered, fixed };
-  }
+  const fixed = (includes.choose ? includes.always ?? [] : [...includes.ids, ...includes.always ?? []]).filter(id => lookup.has(id));
+  for (const id of fixed) covered.set(id, 1);
+  if (!includes.choose) return { covered, fixed };
   const units = selected.filter(item => includes.ids.includes(item.id)).flatMap(item => {
     const feature = lookup.get(item.id);
     const unit = feature ? unitPrice(feature, item.quantity) : null;
     return unit === null ? [] : Array.from({ length: item.quantity }, () => ({ id: item.id, unit }));
   }).sort((a, b) => b.unit - a.unit || a.id.localeCompare(b.id)).slice(0, includes.choose);
   for (const unit of units) covered.set(unit.id, (covered.get(unit.id) ?? 0) + 1);
-  return { covered, fixed: [] as string[] };
+  return { covered, fixed };
 }
 
 export function priceBuild(options: Feature[], selected: Selection[], base?: Feature) {

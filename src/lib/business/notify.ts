@@ -2,7 +2,7 @@ import { all, one, run } from "./db";
 import { setting } from "./catalog";
 
 export const templates = {
-  inquiry: "We received your Scriptmoth inquiry {{reference}}.",
+  inquiry: "Got it! Your Scriptmoth inquiry {{reference}} came through.",
   admin_inquiry: "A new Scriptmoth inquiry is ready for review. Reference {{reference}}.",
   quote: "Your quote is ready for review in the Scriptmoth portal.",
   quote_accepted: "The client accepted a Scriptmoth quote.",

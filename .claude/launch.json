@@ -23,6 +23,20 @@
       "env": {
         "NEXT_DIST_DIR": ".next-qa"
       }
+    },
+    {
+      "name": "dev-verify",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "next",
+        "dev",
+        "-p",
+        "3011"
+      ],
+      "port": 3011,
+      "env": {
+        "NEXT_DIST_DIR": ".next-verify"
+      }
     }
   ]
 }

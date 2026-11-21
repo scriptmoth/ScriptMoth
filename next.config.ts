@@ -9,9 +9,12 @@ const config: NextConfig = {
   async redirects() {
     return [
       // Renamed demo and retired project pages, so old links and bookmarks don't 404.
+      { source: "/services", destination: "/products", permanent: true },
+      // Single-Page Website was merged into the One-Page Site package.
+      { source: "/products/single-page-website", destination: "/products/carrd-site", permanent: true },
       { source: "/demos/starlit-atelier", destination: "/demos/celestial-observatory", permanent: true },
       { source: "/demos/starfall-codex", destination: "/demos/soft-atelier", permanent: true },
-      { source: "/portfolio/:slug((?!discord-styles$).*)", destination: "/portfolio", permanent: false },
+      { source: "/portfolio/:slug((?!discord-styles$|discord-embeds$|discord-embeds/).*)", destination: "/portfolio", permanent: false },
     ];
   },
   async headers() {

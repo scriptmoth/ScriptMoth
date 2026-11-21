@@ -5,7 +5,7 @@ import { parseSelections, type Selection } from "./pricing";
 import { audit, db, one, run, takeLimit, transaction } from "./db";
 import { readUploads, storeUploads, type Actor } from "./files";
 import { enqueue } from "./notify";
-import { parseStyleIds } from "@/data/discord-styles";
+import { parseShowcaseIds } from "@/lib/showcase-codes";
 import { dateValue, hostingModes, isEmail, list, textValue, webUrl, type ProjectType, type HostingMode } from "./rules";
 
 export type InquiryData = {
@@ -48,7 +48,7 @@ export async function saveInquiry(form: FormData, actor: Actor | null, draft: bo
     deadline: dateValue(textValue(form, "deadline", 10)) ?? "",
     hosting: textValue(form, "hosting", 120), existing: textValue(form, "existing", 1500),
     discord: textValue(form, "discord", 100), references: list(textValue(form, "references", 2000)).map(webUrl).join("\n"),
-    showcase_ids: parseStyleIds(textValue(form, "showcase_ids", 400)), showcase_notes: textValue(form, "showcase_notes", 1500),
+    showcase_ids: parseShowcaseIds(textValue(form, "showcase_ids", 400)), showcase_notes: textValue(form, "showcase_notes", 1500),
     selected: configuration.map(item => item.id), configuration,
     hosting_mode: hostingMode as HostingMode, hosting_provider: hostingProvider,
   };

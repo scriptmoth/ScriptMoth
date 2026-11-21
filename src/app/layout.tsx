@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Header } from "@/components/navigation";
-import { Footer } from "@/components/footer";
-import { SiteChrome } from "@/components/site-chrome";
+import { Header } from "@/components/site/navigation";
+import { Footer } from "@/components/site/footer";
+import { SiteChrome } from "@/components/site/site-chrome";
+import { BackToTop } from "@/components/site/back-to-top";
 import { siteUrl, themeStorageKey } from "@/lib/site";
 import { homeMetadata } from "@/lib/metadata";
 import "@fontsource-variable/bricolage-grotesque";
@@ -11,7 +12,7 @@ import "@/styles/globals.css";
 
 export const metadata: Metadata = {
   ...homeMetadata,
-  title: { default: "Scriptmoth · Independent Development Studio", template: "%s | Scriptmoth" },
+  title: { default: "Scriptmoth · Handmade websites & Discord bots", template: "%s | Scriptmoth" },
   ...(siteUrl ? { metadataBase: new URL(siteUrl) } : { robots: { index: false, follow: false } }),
 };
 
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <SiteChrome><Header /></SiteChrome>
         <main id="main-content" tabIndex={-1}>{children}</main>
         <SiteChrome><Footer /></SiteChrome>
+        <BackToTop />
       </body>
     </html>
   );

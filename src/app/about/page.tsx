@@ -13,7 +13,7 @@ export default function AboutPage() {
   return (
     <>
       <PageIntro eyebrow="The studio" title="About Scriptmoth" tone="cream" artwork={assets.mark}>
-        Scriptmoth builds websites, Discord bots, Discord server setup, and tools for artists, hobbyists, and roleplay groups.
+        One person making websites, Discord bots, and roleplay tools for artists, writers, and the communities around them.
       </PageIntro>
       <section className="section site-container about-layout" aria-labelledby="studio-intro">
         <div>
@@ -23,7 +23,7 @@ export default function AboutPage() {
           <p>I&apos;ve always liked making websites, especially the kind that have a little too much personality. Custom cursors, weird layouts, tiny pixel graphics, all that stuff. I miss when the internet was a little more fun to look at.</p>
           <p>These days I mostly build websites, bots, and little tools that I think would be useful. Sometimes it&apos;s something someone asks for, sometimes it&apos;s just an idea I got at 2 AM and decided I needed to make.</p>
           <p>Anyway, that&apos;s pretty much how Scriptmoth started. I like making stuff, so here we are.</p>
-          <ButtonLink href="/services" variant="secondary">View services</ButtonLink>
+          <ButtonLink href="/products" variant="secondary">See packages &amp; prices</ButtonLink>
         </div>
         <Window label="moth / workshop" className="workshop-window">
           <div className="workshop-art">
@@ -35,13 +35,13 @@ export default function AboutPage() {
         <section className="info-panel">
           <div>
             <h2>How I work</h2>
-            <p>Tell me what you use today and where it gets in the way. Once we agree on what to build, you’ll get an early layout or prototype to try.</p>
+            <p>Tell me what you use now and where it gets annoying. Once we agree on what to build, you get an early layout or prototype to try before I finish it.</p>
           </div>
         </section>
         <section className="info-panel">
           <div>
-            <h2>Project inquiries</h2>
-            <p>Choose the features you need, see a live estimate as you configure, and send your inquiry from the same page.</p>
+            <h2>Starting a project</h2>
+            <p>Pick the features you want in the builder. The estimate updates as you go, and you send the inquiry from the same page.</p>
             <Link className="text-link" href="/contact">Build a project</Link>
           </div>
         </section>

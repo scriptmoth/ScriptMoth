@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { channelNotes, channelTemplate, discordStyles, parseStyleIds, styleFamilies } from "../src/data/discord-styles.ts";
+import { channelNotes, channelTemplate, discordStyles, parseStyleIds, styleFamilies } from "../src/demos/discord/discord-styles.ts";
 
 test("style codes are unique and match their family number", () => {
   const ids = discordStyles.map(style => style.id);

@@ -13,7 +13,7 @@
   transform: translateY(0);
 }
 
-.site-header, .site-footer, .hero, .page-intro {
+.site-header, .site-footer, .page-intro {
   --focus: var(--gold);
   color: var(--cream);
   background-color: var(--night);
@@ -136,147 +136,42 @@
 .icon-button:active {
   transform: scale(.92);
 }
+
+/* Floating back-to-top button (the footer has its own inline .back-to-top link), shown after scrolling past the first screen. */
+.scroll-top {
+  --focus: var(--gold);
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 30;
+  box-shadow: 3px 3px 0 #120a18;
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 .5rem;
+  transition: opacity var(--quick), translate var(--quick) var(--ease-out), visibility var(--quick),
+    color var(--quick), border-color var(--quick), transform var(--quick) var(--ease-bounce);
+}
+.scroll-top[data-visible] {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+}
+/* On narrow screens, lift the button above the builder's estimate dock and the demo switcher bar. */
+@media (max-width: 720px) {
+  body:has(.estimate-dock) .scroll-top, .scroll-top[data-demo] {
+    bottom: 5.5rem;
+  }
+}
 .mobile-toggle, .mobile-nav {
   display: none;
 }
 
-.hero {
-  --hero-shade: linear-gradient(var(--night), transparent 18%),
-    linear-gradient(90deg, var(--night) 18%, #1e1128f2 38%, #1e112855 68%, #1e112824);
-  overflow: clip;
-  background-image: var(--hero-shade), url("/assets/backgrounds/background_moth_night_sky.webp");
-  background-position: center, center, right bottom;
-  background-size: cover, cover, max(100%, 60rem) auto;
-  background-repeat: no-repeat;
-  border-bottom: 4px double #826495;
-}
-.hero-inner {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  align-items: center;
-  gap: 2rem;
-  padding-block: clamp(2.75rem, 4.25vw, 3.85rem);
-}
-
-.hero h1 {
-  max-width: 10.2em;
-  font-size: clamp(3.2rem, 5.4vw, 4.85rem);
-  line-height: .99;
-  letter-spacing: -.055em;
-}
-.hero h1 em {
-  display: block;
-  color: var(--lavender);
-  font-style: normal;
-}
-.hero-description {
-  max-width: 32rem;
-  margin-block: 1.15rem 1.4rem;
-  color: #e2d4e5;
-  font-size: clamp(1rem, 2vw, 1.19rem);
-}
-
-.hero-figure {
-  display: grid;
-  place-items: center;
-  align-content: center;
-  gap: .6rem;
-  min-height: 280px;
-}
-.hero-figure {
-  position: relative;
-}
-.hero-mark {
-  position: relative;
-  width: 100%;
-  max-width: 34rem;
-  animation: moth-float 6s ease-in-out infinite;
-}
-/* A few pixel stars around the mascot. Slow and sparse, so they read as atmosphere. */
-.hero-twinkles i {
-  position: absolute;
-  width: .55rem;
-  aspect-ratio: 1;
-  background: var(--lavender);
-  clip-path: var(--star-shape);
-  pointer-events: none;
-  animation: twinkle 4.2s ease-in-out infinite;
-}
-.hero-twinkles i:nth-child(1) { top: 8%; left: 12%; }
-.hero-twinkles i:nth-child(2) { top: 18%; right: 6%; width: .4rem; background: var(--gold); animation-duration: 5.6s; animation-delay: -2s; }
-.hero-twinkles i:nth-child(3) { bottom: 26%; left: 4%; width: .35rem; animation-duration: 6.4s; animation-delay: -4s; }
-.hero-twinkles i:nth-child(4) { bottom: 14%; right: 16%; width: .45rem; background: #edadd3; animation-duration: 5s; animation-delay: -1s; }
-.hero-logo, .hero-logo-moth {
-  width: 100%;
-  height: auto;
-}
-.hero-logo {
-  clip-path: inset(66% 0 0);
-}
-.hero-logo-moth {
-  position: absolute;
-  inset: 0;
-  clip-path: inset(0 0 34%);
-  transform-origin: 52% 50%;
-}
-.hero-sparkle {
-  position: absolute;
-  inset: 22% 20% auto auto;
-  width: clamp(.65rem, 1.2vw, 1rem);
-  color: var(--gold);
-}
-.hero-heart {
-  position: absolute;
-  inset: 11% auto auto 24%;
-  width: .75rem;
-  aspect-ratio: 1;
-  background: #edadd3;
-  clip-path: polygon(0 16%, 16% 16%, 16% 0, 41% 0, 41% 16%, 59% 16%, 59% 0, 84% 0, 84% 16%, 100% 16%, 100% 55%, 50% 100%, 0 55%);
-  opacity: 0;
-  pointer-events: none;
-}
-@media (hover: hover) and (pointer: fine) {
-  .hero-mark:hover .hero-logo-moth {
-    animation: wing-flutter 520ms var(--ease-out);
-  }
-  .hero-mark:hover .hero-sparkle {
-    animation: sparkle-pop 540ms var(--ease-out);
-  }
-  .hero-mark:hover .hero-heart {
-    animation: sparkle-pop 650ms .12s var(--ease-out);
-  }
-}
-.hero-command {
-  display: inline-flex;
-  align-items: center;
-  gap: .35rem;
-  border: 1px solid #725682;
-  border-radius: 3px;
-  padding: .25rem .5rem;
-  background: var(--night);
-  color: var(--lavender);
-  font: 700 .72rem/1.35 var(--mono);
-}
-.hero-command code {
-  font: inherit;
-}
-.hero-command code span {
-  display: inline-block;
-  white-space: nowrap;
-}
-.hero-command [data-type] {
-  animation: terminal-type .9s steps(13, end);
-}
-@keyframes terminal-type {
-  from { clip-path: inset(0 100% 0 0); }
-  to { clip-path: inset(0); }
-}
 @keyframes wing-flutter {
   24% { transform: scaleX(.93) rotate(-.9deg); }
   48% { transform: scaleX(1.025) rotate(.6deg); }
   70% { transform: scaleX(.975); }
 }
-.hero-copy, .intro-inner > div:first-child {
+.intro-inner > div:first-child {
   animation: intro-arrive var(--settle) var(--ease-out) both;
 }
 @keyframes intro-arrive {
@@ -290,32 +185,22 @@
   background: var(--surface-alt);
   border-block: 1px solid var(--line);
 }
-.section-band--studio {
-  --studio-tint: color-mix(in srgb, var(--surface-alt) 88%, transparent);
-  background-image: linear-gradient(105deg, var(--surface-alt) 25%, var(--studio-tint) 72%),
-    url("/assets/backgrounds/pattern_cream_leaf_sprigs.webp");
-  background-size: auto, 23rem;
-}
-.gallery-band {
-  background-color: var(--surface-alt);
-  border-block: 1px solid var(--line);
-}
-.split-section, .about-layout {
+.about-layout {
   display: grid;
   grid-template-columns: 1.2fr .85fr;
   align-items: center;
   gap: clamp(2rem, 7vw, 6rem);
 }
-.split-section p:not(.eyebrow), .about-layout p {
+.about-layout p {
   max-width: 50ch;
   color: var(--muted);
   margin-bottom: .7rem;
 }
 .workshop-window {
-  --workshop-art: url("/assets/backgrounds/background_lavender_gradient_cloud_frame.webp");
+  --workshop-art: url("/assets/backgrounds/background-lavender-gradient-cloud-frame.webp");
 }
 .about-layout .workshop-window {
-  --workshop-art: url("/assets/backgrounds/background_cream_moth_frame.webp");
+  --workshop-art: url("/assets/backgrounds/background-cream-moth-frame.webp");
 }
 .workshop-art {
   display: grid;
@@ -327,82 +212,10 @@
   width: min(48%, 12rem);
   height: auto;
 }
-.process-art {
-  width: 54px;
-  height: auto;
-}
-.process-grid {
-  grid-template-columns: repeat(3, 1fr);
-  counter-reset: steps;
-}
-.process-grid li {
-  counter-increment: steps;
-  padding: 1.25rem;
-  transition: transform var(--quick) var(--ease-out), box-shadow var(--quick), border-color var(--quick);
-}
-@media (hover: hover) and (pointer: fine) {
-  .process-grid li:hover {
-    transform: translateY(-3px) rotate(-.4deg);
-    border-color: var(--strong-line);
-    box-shadow: var(--panel-shadow);
-  }
-  .process-grid li:nth-child(2n):hover {
-    transform: translateY(-3px) rotate(.4deg);
-  }
-}
-.process-grid li::before {
-  content: "0" counter(steps);
-  display: block;
-  color: var(--accent);
-  font: bold .9rem/1 var(--mono);
-  margin-bottom: .75rem;
-}
-.contact-band {
-  --focus: var(--gold);
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 1.3rem;
-  padding: 1.4rem clamp(1rem, 4vw, 2rem);
-  margin-bottom: clamp(2.75rem, 6vw, 5.25rem);
-  border: 1px solid var(--strong-line);
-  border-radius: var(--radius);
-  color: var(--cream);
-  background-color: #302039;
-}
-.contact-band {
-  position: relative;
-}
-.contact-band img {
-  width: 88px;
-  height: auto;
-}
-/* A moth resting on the band's top edge; it stretches its wings when the band is hovered. */
-.contact-band .perched-moth {
-  position: absolute;
-  top: -1.05rem;
-  right: clamp(1.5rem, 9vw, 7rem);
-  width: 2rem;
-  rotate: 8deg;
-  transform-origin: 50% 90%;
-  pointer-events: none;
-}
-@media (hover: hover) and (pointer: fine) {
-  .contact-band:hover .perched-moth {
-    animation: wing-flutter 520ms var(--ease-out) 2;
-  }
-}
-.contact-band h2 {
-  font-size: clamp(1.55rem, 4vw, 2.1rem);
-}
-.contact-band p {
-  color: #e2d4e5;
-  margin-top: .3rem;
-}
 .site-footer {
   border-top: 4px double #826495;
   background-image: linear-gradient(var(--night) 35%, #1e1128d9 70%, #1e11286e),
-    url("/assets/backgrounds/footer_night_background.jpg");
+    url("/assets/backgrounds/footer-night-background.jpg");
   background-position: center, center bottom -8.25rem;
   background-repeat: no-repeat, repeat-x;
   background-size: cover, 54rem auto;
@@ -543,62 +356,77 @@
   font: .8rem/1.4 var(--mono);
 }
 
+/* Inner-page intro. Same language as the homepage hero: night sky with the moth flight pattern,
+   a dashed kicker chip, and the page illustration stuck on like a sticker. Light tones are flat
+   cream or lavender boards that look the same in both themes. */
 .page-intro {
-  --intro-shade: linear-gradient(100deg, var(--night) 35%, #2b1836f2 63%, #34223fbf);
-  background-image: var(--intro-shade), url("/assets/backgrounds/pattern_moth_flight_night.webp");
-  background-position: center, right center;
-  background-size: auto, 29rem;
-  border-bottom: 4px double #826495;
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  border-bottom: 1px solid var(--night-rule);
 }
-.page-intro[data-tone="plain"] {
-  background-image: linear-gradient(100deg, var(--night) 35%, #34223f);
+.page-intro[data-tone="plain"]::before {
+  inset: 0;
+  background: var(--dot-grid-night);
+  opacity: 1;
+  mask-image: linear-gradient(90deg, transparent 30%, #000);
 }
 .page-intro:is([data-tone="cream"], [data-tone="lavender"]) {
-  --focus: var(--accent);
-  --intro-surface: var(--panel-cream);
-  --intro-pattern: url("/assets/backgrounds/pattern_cream_leaf_sprigs.webp");
-  --intro-shade: linear-gradient(105deg, var(--intro-surface) 25%,
-    color-mix(in srgb, var(--intro-surface) 87%, transparent) 82%);
-  color: var(--ink);
-  background-color: var(--intro-surface);
-  background-image: var(--intro-shade), var(--intro-pattern);
-  border-bottom-color: var(--strong-line);
+  --accent: #5f3577;
+  --focus: #5f3577;
+  color: #2e1738;
+  background: var(--dot-grid), #f6ead6;
+  border-bottom-color: #cdb6d5;
 }
 .page-intro[data-tone="lavender"] {
-  --intro-surface: var(--panel-lavender);
-  --intro-pattern: url("/assets/backgrounds/pattern_lavender_moons_and_clouds.webp");
+  background: var(--dot-grid), #e4cff0;
 }
-.page-intro:is([data-tone="cream"], [data-tone="lavender"]) .eyebrow {
-  color: var(--accent);
-}
-.page-intro:is([data-tone="cream"], [data-tone="lavender"]) .intro-inner p:last-child {
-  color: var(--muted);
-}
+.page-intro:is([data-tone="cream"], [data-tone="lavender"])::before { content: none; }
 .intro-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
-  padding-block: clamp(2rem, 4.4vw, 3.75rem);
+  padding-block: clamp(2.5rem, 5vw, 4.25rem);
+}
+.page-intro:is([data-tone="cream"], [data-tone="lavender"]) .eyebrow {
+  border-color: #a98cb4;
+  color: var(--accent);
 }
 .intro-inner h1 {
+  max-width: 14em;
   font-size: clamp(2.45rem, 5vw, 4.1rem);
+  line-height: .98;
+  letter-spacing: -.05em;
+  text-wrap: balance;
 }
 .intro-inner p:last-child {
   max-width: 52ch;
-  margin-top: .8rem;
-  color: #e2d4e5;
+  margin-top: 1rem;
+  color: #e4d6e6;
   font-size: 1.08rem;
+}
+.page-intro:is([data-tone="cream"], [data-tone="lavender"]) .intro-inner p:last-child {
+  color: #5a4560;
 }
 .intro-art {
   position: relative;
-  width: clamp(5.4rem, 15vw, 10rem);
+  width: clamp(5.4rem, 13vw, 9rem);
   height: auto;
   flex: none;
+  rotate: 6deg;
+  transition: rotate var(--settle) var(--ease-bounce), scale var(--settle) var(--ease-bounce);
 }
 .intro-art img {
   width: 100%;
   height: auto;
+  filter: var(--sticker);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .intro-art img { animation: moth-float 5.5s 1s ease-in-out infinite; }
+}
+@media (hover: hover) {
+  .intro-art:hover { rotate: -2deg; scale: 1.05; }
 }
 .server-lights {
   position: absolute;
@@ -620,9 +448,6 @@
   50% { opacity: .85; }
 }
 
-.section--services {
-  padding-block: clamp(2.7rem, 4.2vw, 3.65rem);
-}
 .desktop-nav a[href="/contact"]:not([aria-current]) {
   border-color: #695273;
   color: var(--gold);
@@ -653,12 +478,6 @@
   }
 }
 
-@media (max-width: 860px) {
-  .hero-inner {
-    gap: 1.4rem;
-  }
-}
-
 @media (max-width: 700px) {
   .site-container {
     width: calc(100% - 2rem);
@@ -666,36 +485,9 @@
   .header-row {
     min-height: 66px;
   }
-  .hero {
-    --hero-shade: linear-gradient(var(--night) 54%, #1e1128eb 65%, #1e112845 84%, #1e112824);
-    background-position: center, center bottom;
-    background-size: cover, max(100%, 33rem) auto;
-  }
-  .page-intro[data-tone="night"] {
-    --intro-shade: linear-gradient(100deg, var(--night) 14%, #2b1836f5 58%, #34223fcf);
-  }
-  .page-intro {
-    background-size: auto, 22rem;
-  }
-  .section-band--studio {
-    background-image: linear-gradient(var(--surface-alt) 16%, var(--studio-tint) 70%),
-      url("/assets/backgrounds/pattern_cream_leaf_sprigs.webp");
-  }
-  .hero-inner {
-    grid-template-columns: 1fr;
-    padding-block: 2.35rem 2rem;
-    gap: 1.6rem;
-  }
-  .hero h1 {
-    font-size: clamp(2.65rem, 8.8vw, 4.1rem);
-  }
-  .hero-description {
-    margin-block: 1rem 1.15rem;
-  }
-  .hero-figure {
-    width: min(82%, 23rem);
-    min-height: 0;
-    margin-inline: auto;
+  .page-intro::before {
+    inset: 0;
+    mask-image: radial-gradient(ellipse 60% 80% at 100% 50%, #000 10%, transparent 70%);
   }
   .footer-egg {
     position: static;
@@ -712,27 +504,11 @@
   .intro-art {
     width: clamp(3.85rem, 15vw, 6rem);
   }
-  .split-section, .about-layout {
+  .about-layout {
     grid-template-columns: minmax(0, 1fr);
   }
   .workshop-window {
     max-width: 29rem;
-  }
-  .process-art {
-    display: none;
-  }
-  .process-grid {
-    grid-template-columns: 1fr;
-  }
-  .contact-band {
-    grid-template-columns: auto 1fr;
-  }
-  .contact-band .button {
-    grid-column: 1 / -1;
-    justify-self: start;
-  }
-  .contact-band img {
-    width: 65px;
   }
 }
 
@@ -746,12 +522,6 @@
   }
   .brand img {
     width: 33px;
-  }
-  .hero .button {
-    padding-inline: .95rem;
-  }
-  .hero .button-row {
-    gap: .4rem;
   }
 }
 

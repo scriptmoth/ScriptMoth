@@ -37,24 +37,52 @@ export const builderBases: Record<ProjectType, { label: string; dollars: number 
 
 export type StarterPackage = {
   slug: string; type: ProjectType; title: string; dollars: number | null; summary: string; included: string[];
-  /** Feature IDs (without the type prefix) covered by the package price. `choose` lets the customer pick N of them. */
-  includes?: { ids: string[]; choose?: number };
+  /** Feature IDs (without the type prefix) covered by the package price. `choose` lets the customer pick N of them;
+   *  `always` features come with the package on top of the picks. */
+  includes?: { ids: string[]; choose?: number; always?: string[] };
   /** Starting price that is confirmed after a requirements review. */
   manual?: boolean;
   /** Listed on /products; title, price, summary, and included lines can then be edited at /admin/catalog. */
   product?: boolean;
+  /** Feature categories and feature IDs (without the type prefix) that don't fit this package. Packages share their
+   *  project type's feature list, so this keeps, say, OC features off a utility bot. Hidden features can't be picked. */
+  hide?: { categories?: string[]; features?: string[] };
 };
 
+/** Fully qualified IDs of the features a package hides, given its project type's features. */
+export function hiddenFeatures(item: Pick<StarterPackage, "hide"> | undefined, features: Pick<Feature, "id" | "category">[]) {
+  if (!item?.hide) return [];
+  const categories = new Set(item.hide.categories);
+  const ids = new Set(item.hide.features);
+  return features.filter(feature => categories.has(feature.category ?? "") || ids.has(feature.id.slice(feature.id.indexOf(":") + 1))).map(feature => feature.id);
+}
+
 export const starterPackages: StarterPackage[] = [
-  { slug: "custom-discord-bot", type: "discord-bot", title: "Simple Utility Bot", dollars: 95, product: true,
-    summary: "A small helper bot for one Discord server with one starter module.",
-    included: ["One bot for one Discord server", "One starter module: welcome messages or reaction roles (up to five existing roles)", "Up to three basic slash commands for that module", "Setup, one review round, testing, and handover instructions"],
-    includes: { ids: ["welcome-messages", "reaction-roles"], choose: 1 } },
-  { slug: "community-engagement-bot", type: "discord-bot", title: "Community Management Bot", dollars: 150, product: true,
-    summary: "Keeps a community active with two scheduled community modules.",
-    included: ["Two community modules from: Question of the Day, daily prompts, trivia, birthday announcements, or member spotlights", "One Discord server and time zone, with a channel and posting schedule for each module", "Up to 20 entries you provide per content library", "Setup, one review round, testing, and handover instructions"],
-    includes: { ids: ["question-of-the-day", "daily-prompts", "trivia", "birthday-announcements", "member-spotlights"], choose: 2 } },
-  { slug: "discord-server-setup", type: "discord-setup", title: "Discord Server Setup", dollars: 85, product: true,
+  { slug: "custom-discord-bot", type: "discord-bot", title: "Simple Utility Bot", dollars: 115, product: true,
+    summary: "A ready-to-use helper bot for one Discord server: one main module, branded messages, and the basics members expect.",
+    included: [
+      "One main module of your choice: welcome messages, reaction roles, button role menus, polls, or suggestions",
+      "Branded embeds: every bot message uses your colors, icon, and footer",
+      "Goodbye messages when members leave",
+      "A custom bot status, like “Watching over #general”",
+      "Up to three basic slash commands, such as /help, /rules, and /links",
+    ],
+    includes: { ids: ["welcome-messages", "reaction-roles", "button-based-role-menus", "polls-and-voting", "suggestion-submissions"], choose: 1,
+      always: ["custom-embed-theme", "goodbye-messages", "custom-bot-status"] },
+    hide: { categories: ["Characters & OCs", "Creators & fandom", "Leveling & economy"], features: ["character-birthdays"] } },
+  { slug: "community-engagement-bot", type: "discord-bot", title: "Community Management Bot", dollars: 185, product: true,
+    summary: "Keeps a community active with two scheduled modules, plus polls and staff announcements.",
+    included: [
+      "Two community modules: Question of the Day, daily prompts, trivia, birthday announcements, or member spotlights",
+      "Polls and voting with buttons, with results when the poll closes",
+      "Scheduled announcements: staff write now, the bot posts later",
+      "Branded embeds in your colors, plus a custom bot status",
+      "A channel and posting schedule for each module, with up to 20 entries you provide per content library",
+    ],
+    includes: { ids: ["question-of-the-day", "daily-prompts", "trivia", "birthday-announcements", "member-spotlights"], choose: 2,
+      always: ["polls-and-voting", "scheduled-announcements", "custom-embed-theme", "custom-bot-status"] },
+    hide: { categories: ["Characters & OCs"], features: ["character-birthdays"] } },
+  { slug: "discord-server-setup", type: "discord-setup", title: "Discord Server Setup", dollars: 50, product: true,
     summary: "A clean Discord layout: channels, roles, permissions, and branded embeds—no bot required.",
     included: [
       "Channel categories and channels with clear names, topics, and descriptions",
@@ -64,49 +92,68 @@ export const starterPackages: StarterPackage[] = [
       "One review round and a short handover note for how the server is organized",
     ],
     includes: { ids: ["channel-layout", "role-hierarchy", "permission-layout", "branded-info-embeds"] } },
-  { slug: "custom-rp-bot", type: "roleplay-bot", title: "Roleplay Bot", dollars: 200, product: true,
+  { slug: "custom-rp-bot", type: "roleplay-bot", title: "Roleplay Bot", dollars: 250, product: true,
     summary: "Players submit characters, staff approve them, and members browse the roster in Discord.",
-    included: ["Character profiles with up to six fields", "A character roster members can browse", "Staff approval for new and edited characters", "Setup for up to 25 character records you provide", "A database so records survive restarts"],
-    includes: { ids: ["character-profiles", "character-roster", "character-approval-workflow"] } },
-  { slug: "carrd-site", type: "personal-site", title: "Carrd-Style Creator Site", dollars: 95, product: true,
-    summary: "A one-page link-in-bio home for your commission menu, portfolio, or socials.",
-    included: ["One card-style page that works on phones and desktops", "Up to three sections, such as about, commission rates, and a small gallery", "Social and contact links styled to match", "A color palette and fonts that fit your look"] },
+    included: ["Character profiles with up to six fields", "A character roster members can browse", "Staff approval for new and edited characters", "Dice rolls with modifiers, like /roll 1d20+3", "Setup for up to 25 character records you provide", "A database so records survive restarts"],
+    includes: { ids: ["character-profiles", "character-roster", "character-approval-workflow", "dice-mechanics"] },
+    // Already covered by the roleplay versions under Character management and Community administration.
+    hide: { features: ["character-birthdays", "rules-acknowledgment"] } },
+  // Replaces the old Single-Page Website package, which covered the same one-page build at a higher price.
+  { slug: "carrd-site", type: "personal-site", title: "One-Page Site", dollars: 125, product: true,
+    summary: "One responsive page for your art, writing, commissions, or links, Carrd-style or a full-width layout.",
+    included: ["One page that works on phones and desktops, as a link-in-bio card or a full-width layout", "Up to three sections, such as about, commission rates, and a small gallery", "Social and contact links styled as buttons to match", "A color palette and fonts that fit your look", "Hover effects and small animations, plus a page title and search description", "Published to the host you choose, with a check that everything works"],
+    includes: { ids: ["social-media-integration", "animated-elements", "deployment-setup"] },
+    hide: { categories: ["Pages"], features: ["search", "portfolio-filtering", "character-directory", "content-management-system", "password-protected-page",
+      "member-accounts", "admin-dashboard", "database-integration", "discord-oauth", "external-api-integration", "payment-integration", "booking-or-scheduling"] } },
   { slug: "toyhouse-profile", type: "personal-site", title: "Toyhouse OC & Profile Design", dollars: 75, product: true,
     summary: "A Toyhouse-ready character page or user profile code, built on Bootstrap 4 so it pastes cleanly into Toyhouse.",
     included: [
       "One character page or user profile layout written for Toyhouse’s HTML field",
       "Bootstrap 4 structure with working tabs (data-toggle), cards, and responsive columns",
       "Inline styles + optional Premium CSS matched to your OC palette (Premium needed for custom CSS)",
+      "Link buttons for your socials, other profiles, or commission info",
       "Install notes: turn off WYSIWYG, paste the code, swap in your Toyhouse-hosted images",
-    ] },
+    ],
+    includes: { ids: ["interactive-navigation", "social-media-integration"] },
+    // Toyhouse is pasted HTML and CSS: no forms, sign-ins, databases, or hosting.
+    hide: { categories: ["Pages", "Integrations", "Setup & launch"], features: ["light-dark-theme", "contact-form", "portfolio-filtering", "search",
+      "character-directory", "content-management-system", "newsletter-integration", "password-protected-page", "member-accounts", "admin-dashboard", "database-integration"] } },
   { slug: "tumblr-theme", type: "personal-site", title: "Tumblr Theme Design", dollars: 85, product: true,
     summary: "A custom Tumblr theme for an art or lifestyle blog — sidebar or grid layout, styled posts, and install-ready CSS.",
     included: [
       "One Tumblr theme layout (classic sidebar or photo grid) matched to your palette",
       "Styled photo, text, and quote posts with tags and a sidebar bio / links block",
       "Custom CSS written for Tumblr’s theme editor, with notes for swapping images and colors",
+      "Hover effects on posts, links, and navigation",
+      "Social and follow links in the sidebar",
       "Install guide: paste CSS, set appearance options, and point header / avatar assets",
-    ] },
-  { slug: "single-page-website", type: "personal-site", title: "Single-Page Website", dollars: 175, product: true,
-    summary: "One polished, responsive page for your art, writing, or project.",
-    included: ["One responsive page that works on phones and desktops", "A color palette and type styles that fit you", "Your text, images, and social or contact links", "Page title and search description"] },
-  { slug: "personal-website", type: "personal-site", title: "Multipage Website", dollars: 300, product: true,
+    ],
+    includes: { ids: ["animated-elements", "social-media-integration"] },
+    // Tumblr hosts the blog, posts, search, and ask box itself.
+    hide: { features: ["blog-or-news-page", "contact-form", "search", "character-directory", "content-management-system", "password-protected-page",
+      "member-accounts", "admin-dashboard", "database-integration", "discord-oauth", "payment-integration", "booking-or-scheduling", "deployment-setup"] } },
+  { slug: "personal-website", type: "personal-site", title: "Multipage Website", dollars: 250, product: true,
     summary: "A small site with shared navigation, such as Home, About, and Work pages.",
-    included: ["Up to three pages with shared navigation", "Two of them can be an About, Contact, FAQ, or basic page you pick below (the homepage is the third)", "Responsive layouts, color palette, and type styles", "Page titles and search descriptions"],
-    includes: { ids: ["about-page", "contact-page", "faq-page", "additional-basic-page"], choose: 2 } },
+    included: ["Up to three pages with shared navigation", "Two of them can be an About, Contact, FAQ, or basic page you pick below (the homepage is the third)", "Responsive layouts, color palette, and type styles", "Social links, hover effects, and small animations", "Page titles and search descriptions", "Published to the host you choose and connected to your own domain, if you have one"],
+    includes: { ids: ["about-page", "contact-page", "faq-page", "additional-basic-page"], choose: 2,
+      always: ["social-media-integration", "animated-elements", "deployment-setup", "domain-configuration"] } },
   { slug: "oc-wiki", type: "oc-wiki", title: "OC / Character Wiki", dollars: 550, product: true,
     summary: "A searchable wiki for your original characters and worlds, with an editor so you can keep it updated.",
-    included: ["Public directories and a page for each character or world", "Search across names and summaries", "One editor account and up to eight fields per record type", "Setup for up to ten records you provide", "A database for your entries"] },
-  { slug: "community-website", type: "community-site", title: "Community Website", dollars: 650, product: true,
+    included: ["Public directories and a page for each character or world, with search across names and summaries", "One editor account and up to eight fields per record type", "Character tags so visitors can find related characters", "Setup for up to ten records you provide", "A database for your entries", "Published online and connected to your own domain, if you have one"],
+    includes: { ids: ["character-and-world-pages", "wiki-editor", "character-tagging", "deployment-setup", "domain-configuration"] } },
+  { slug: "community-website", type: "community-site", title: "Community Website", dollars: 600, product: true,
     summary: "A home for your group: rules, staff, announcements, and more.",
-    included: ["Up to four public pages, such as home, rules, staff, and announcements", "Responsive layouts that match your community’s look", "Page titles and search descriptions"] },
+    included: ["Four public pages, such as home, rules, staff, and announcements", "A custom layout that matches your community’s look", "Site search across your pages", "A Discord widget with your server and an invite button", "Hover effects and small animations, plus page titles and search descriptions", "Published online and connected to your own domain, if you have one"],
+    includes: { ids: ["core-community-pages", "custom-layout-design", "search", "discord-widget", "animated-elements", "deployment-setup", "domain-configuration"] } },
   { slug: "custom-bot-dashboard", type: "web-app", title: "Custom Dashboard", dollars: 600, product: true,
     summary: "Let staff change a compatible Discord bot’s settings in their browser.",
-    included: ["Discord sign-in and staff access for one server", "One screen for editing up to five existing settings", "Connection through the bot’s existing API or data layer, if compatible"],
-    includes: { ids: ["authentication"] } },
+    included: ["Discord sign-in, limited to your staff role on one server", "One screen for viewing and editing up to five existing settings", "A change history showing who changed which setting and when", "Connection through the bot’s existing API or data layer, if compatible", "Published online on the hosting you choose"],
+    includes: { ids: ["discord-sign-in", "staff-access-checks", "settings-screen", "change-history", "deployment-setup"] },
+    hide: { features: ["payment-processing", "file-storage"] } },
   { slug: "custom-web-application", type: "web-app", title: "Custom Web Application", dollars: 1500, manual: true,
     summary: "A web app built around your workflow. The starting price is confirmed after reviewing what it needs to do.",
-    included: ["A requirements review and written scope", "A responsive web interface", "The features you choose below, scoped individually"] },
+    included: ["A requirements review and written scope", "A responsive web interface", "The features you choose below, scoped individually"],
+    hide: { categories: ["Bot dashboard"] } },
   { slug: "bot-website-integration", type: "web-app", title: "Discord Bot + Website Integration", dollars: null,
     summary: "Connect a Discord bot and a website so they share data, like a roster that updates in both places.",
     included: ["A review of the bot and site you have or want", "A custom estimate for connecting them"] },
@@ -125,7 +172,7 @@ export const projectGroups: { id: string; title: string; blurb: string; art: "bo
       { type: "discord-setup", slug: "discord-server-setup" },
     ] },
   { id: "websites", title: "Website Development", art: "websites", blurb: "Personal sites, Toyhouse codes, Tumblr themes, character wikis, and community homes.",
-    choices: [{ type: "personal-site", slug: "carrd-site" }, { type: "personal-site", slug: "toyhouse-profile" }, { type: "personal-site", slug: "tumblr-theme" }, { type: "personal-site", slug: "single-page-website" }, { type: "personal-site", slug: "personal-website" }, { type: "oc-wiki", slug: "oc-wiki" }, { type: "community-site", slug: "community-website" }] },
+    choices: [{ type: "personal-site", slug: "carrd-site" }, { type: "personal-site", slug: "toyhouse-profile" }, { type: "personal-site", slug: "tumblr-theme" }, { type: "personal-site", slug: "personal-website" }, { type: "oc-wiki", slug: "oc-wiki" }, { type: "community-site", slug: "community-website" }] },
   { id: "apps", title: "Dashboards & Applications", art: "coding", blurb: "Browser tools for staff, members, and bigger workflows.",
     choices: [{ type: "web-app", slug: "custom-bot-dashboard" }, { type: "web-app", slug: "custom-web-application" }, { type: "web-app", slug: "bot-website-integration" }] },
   { id: "existing", title: "Existing Project Improvements", art: "process", blurb: "Fixes, upgrades, and upkeep for something you already have.",
@@ -446,6 +493,8 @@ const site: Group[] = [
 ];
 const wiki: Group[] = [
   ["Content", [
+    f("Character and world pages", 300, "Public directories with a page for each character and world, plus search across names and summaries.", { needs: ["database"] }),
+    f("Wiki editor", 150, "A private editor where you add, update, and remove entries without touching code.", { needs: ["database", "accounts"] }),
     f("Multiple worlds", 100, "Keep separate settings or universes apart, each with its own characters.", { max: 20 }),
     f("Character relationships", 100, "Link characters as friends, family, rivals, and more."),
     f("Lore encyclopedia", 125, "Articles about your world’s history, magic, and culture."),
@@ -474,6 +523,7 @@ const wiki: Group[] = [
 ];
 const community: Group[] = [
   ["Pages & membership", [
+    f("Core community pages", 260, "Four public pages, such as Home, Rules, Staff, and Announcements, with shared navigation."),
     f("Additional basic page", 65, "One more public page beyond the four included.", { max: 25, fields: [{ key: "names", label: "Pages beyond the first four" }] }),
     f("Member registration", 250, "Members sign up for an account on the site.", { needs: ["database", "accounts"] }),
     f("Discord login", 150, "Members sign in with Discord.", { needs: ["accounts"] }),
@@ -486,6 +536,7 @@ const community: Group[] = [
     f("News management", 150, "Staff post announcements and news on the site.", { needs: ["database"] }),
     f("Event calendar", 150, "A calendar of upcoming community events.", { needs: ["database"] }),
     f("Search", 125, "Search across the site’s pages and posts."),
+    f("Discord widget", 40, "Shows your Discord server and an invite button on the site."),
     f("Character directory", null, "A browsable list of community characters.", { unpriced: true, needs: ["database"] }),
     f("Community statistics", 150, "Show numbers like members, posts, or events.", { needs: ["database"] }),
     f("Member dashboard", 350, "A private page where members manage their account and activity.", { requires: ["member-registration"] }),
@@ -513,6 +564,12 @@ const appFeatures: [string, string, string[]?][] = [
   ["Import/export tools", "Bring data in or take it out as files."],
 ];
 const app: Group[] = [
+  ["Bot dashboard", [
+    f("Discord sign-in", 150, "Staff sign in with their Discord account.", { needs: ["accounts"] }),
+    f("Staff access checks", 100, "Only people with your staff role on the server can open the dashboard.", { requires: ["discord-sign-in"] }),
+    f("Settings screen", 250, "One screen where staff view and change up to five of the bot’s existing settings, with checks that reject invalid values."),
+    f("Change history", 75, "A log of who changed which setting and when.", { needs: ["database"] }),
+  ]],
   ["Application capabilities", appFeatures.map(([label, description, needs]) => f(label, null, description, {
     needs, fields: [{ key: "behavior", label: "Describe what it should do" }],
     thirdParty: label === "Payment processing" ? ["A payment processor account, which takes a fee from each payment"]

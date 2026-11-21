@@ -1,25 +1,71 @@
 # Scriptmoth
 
-Scriptmoth’s storefront, project configurator, and client portal. The application uses the existing Next.js App Router, TypeScript, Tailwind styles, and Scriptmoth illustrations.
+Moth’s portfolio and storefront (a Next.js site) plus **moth.exe**, the showcase Discord bot. They live in one repo but run and deploy separately.
 
-## Run locally
+## Project map
 
-Use Node.js 22.13 or later in the 22.x line, or Node.js 24 LTS. Copy `.env.example` to `.env.local` before configuring any providers.
+```
+src/                 website (Next.js App Router)
+  app/               routes: one folder per URL (app/_home/ holds the homepage sections)
+  demos/             portfolio demos, one folder per family; see src/demos/README.md
+  components/        site chrome (site/), shared UI (ui.tsx), quote builder and portals (business/)
+  data/              service info: packages, prices, features, FAQ, policies, hosting providers
+  lib/               site helpers, asset registry, and business logic (business/: db, pricing, auth)
+  styles/            global CSS
+public/assets/       images and downloads served as-is; URLs are linked from outside, don't move them
+tests/               site tests (node --test)
+scripts/             site maintenance scripts
+bot/                 moth.exe Discord bot: its own package.json, .env, and README
+design/              source artwork and design notes (not deployed)
+```
+
+The site and bot share no code. The bot keeps its own copy of the site links it uses in `bot/src/links.js`.
+
+## Commands
+
+Use Node.js 22.13 or later in the 22.x line, or Node.js 24 LTS.
+
+**Website** (from the repo root; copy `.env.example` to `.env.local` first):
 
 ```sh
 npm ci
-npm run dev
+npm run dev          # http://localhost:3000
 npm run typecheck
 npm run lint
 npm test
-npm run build
+npm run build && npm start
+npm run embed-art    # redraw Discord embed art in public/assets/discord/embeds/
 ```
 
-Open [localhost:3000](http://localhost:3000). Development automatically uses `.scriptmoth/studio.sqlite` when `SCRIPTMOTH_DB_PATH` is blank. Production needs an explicit database path. Public catalog browsing and estimate previews remain available without storage. Submissions clearly show when they are unavailable.
+**Bot** (from `bot/`; copy `bot/.env.example` to `bot/.env`, or let it fall back to the root `.env`):
 
-## Architecture
+```sh
+npm install
+npm start            # run the bot
+npm test
+npm run catalog      # list every module and its commands
+npm run deploy       # register slash commands with Discord (live)
+npm run setup-server -- setup/moths-server.js --dry-run   # preview the server layout
+```
 
-The storefront and pricing engine feed persisted inquiries. Email OTP gates the admin and client portals. Formal quote acceptance creates a project that anchors milestones, messages, invoices, support, and hosting. Stripe and transactional email are configured separately. Portfolio demos are template-driven under `src/data/*-templates.ts`, with illustrations in `design/` and `public/assets/`. Discord channel and category styles are in the style library (see below).
+## Where to edit service info
+
+| What | File |
+| --- | --- |
+| Package prices, what’s included, feature prices, builder options | `src/data/builder.ts` (one file for every price) |
+| Package art, “optional extras”, hosting plan rates | `src/data/catalog.ts` |
+| Homepage service rows and process steps | `src/data/services.ts` |
+| FAQ answers | `src/data/faq.ts` |
+| Policies | `src/data/policies.ts` |
+| Hosting providers on /resources | `src/data/hosting-resources.ts` |
+| Site description and navigation | `src/lib/site.ts` |
+| Discord channel styles / embed designs | `src/demos/discord/discord-styles.ts`, `discord-embeds.ts` |
+| Bot feature list (shown by `/moth features`) | each module’s `index.js` in `bot/src/modules/` |
+| Bot links to the site, server welcome/build-your-bot posts | `bot/src/links.js`, `bot/setup/moths-server.js` |
+
+Saved edits at `/admin/builder` and `/admin/catalog` override the file defaults at runtime, so check there if a change doesn’t show up.
+
+Development uses `.scriptmoth/studio.sqlite` when `SCRIPTMOTH_DB_PATH` is blank. Production needs an explicit database path. Visitors can browse the catalog and preview estimates without storage. When storage is missing, the inquiry form says submissions are unavailable.
 
 ## Storefront and builder
 
@@ -31,11 +77,11 @@ The storefront and pricing engine feed persisted inquiries. Email OTP gates the 
 - Guests can save a configuration in their browser. The local save excludes contact and attachment fields. Verified clients can save inquiry drafts to their account and resume them from `/dashboard`.
 - `/hosting` explains client-managed and Scriptmoth-managed deployment. For client-managed hosting, the client supplies the intended provider and plan before scope is agreed. Scriptmoth-managed services use third-party infrastructure with setup and provider charges scoped separately. `/resources` links to provider documentation.
 
-## Discord style library
+## Discord style and embed libraries
 
-`/portfolio/discord-styles` lists 100 Discord category and channel naming styles, with search, a family filter, copyable names, and formatting notes.
+`/portfolio/discord-styles` lists 120 Discord category and channel naming styles, and `/portfolio/discord-embeds` lists 120 embed designs (codes like `E03A`). Both have search, a family filter, and copyable text.
 
-- `src/data/discord-styles.ts` is the single list. Codes are permanent: two digits for the family and a letter for the design (`02F`). Never renumber or reuse one; add new styles at the end of a family.
+- `src/demos/discord/discord-styles.ts` and `discord-embeds.ts` are the single lists. Codes are permanent: two digits for the family and a letter for the design (`02F`, or `E03A` for embeds). Never renumber or reuse one; add new styles at the end of a family.
 - Clients add codes in the quote builder for Discord projects. Links such as `/contact?type=discord-server-setup&showcase=02F,04B` open the builder with those codes filled in. The form fields keep the older `showcase_ids` / `showcase_notes` names so saved inquiries still load.
 
 ## Client and studio operations
