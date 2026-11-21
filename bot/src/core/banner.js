@@ -1,7 +1,8 @@
 const { createHash } = require('node:crypto');
+const { existsSync } = require('node:fs');
 const { join } = require('node:path');
 
-const fontfile = join(__dirname, '..', '..', 'assets', 'fonts', 'BricolageGrotesque-Bold.ttf');
+const fontfile = join(__dirname, '..', '..', 'assets', 'fonts', 'DMSerifDisplay-Regular.ttf');
 const cream = '#fbe8cc';
 const plum = '#392436';
 // Each template reserves a central area clear of its frame and corner art.
@@ -29,7 +30,7 @@ function wrapTitle(title) {
 }
 
 async function renderBanner(name, template, title) {
-  if (!template || !title?.trim()) return;
+  if (!template || !title?.trim() || !existsSync(fontfile)) return;
   const layout = templates.get(name);
   try {
     const sharp = require('sharp');
@@ -39,7 +40,7 @@ async function renderBanner(name, template, title) {
     const text = title.trim().replace(/\s+/gu, ' ');
     const rasterize = (value, size) => sharp({ text: {
       text: `<span foreground="${layout.color}">${value.replace(/[&<>]/g, (char) => entities[char])}</span>`,
-      font: `Bricolage Grotesque Bold ${size}`,
+      font: `DM Serif Display ${size}`,
       fontfile,
       align: 'centre',
       spacing: Math.round(size * 0.08),
