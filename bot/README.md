@@ -2,7 +2,7 @@
 
 Scriptmoth's showcase Discord bot. Every feature is a **self-contained module** you can copy into a client's bot. It deploys on its own and shares no code with the website. People can run `/moth features` in Discord to see what their own bot could do.
 
-[Join the Scriptmoth showcase](https://discord.gg/uxPzawJ89Q). Browse **#bot-features**, run `/moth try` in **#try-the-bot**, or visit **#commissions** to ask about a bot for your server. Use `/feedback send` to report a bug or suggest a feature.
+[Join the Scriptmoth showcase](https://discord.gg/uxPzawJ89Q). Browse [bot features](https://discord.com/channels/1572548005620486324/1572815668343210004), run `/moth try` in the [demo channel](https://discord.com/channels/1572548005620486324/1572815669244985556), or visit [commissions](https://discord.com/channels/1572548005620486324/1572815670683635734) to ask about a bot for your server. Use `/feedback send` to report a bug or suggest a feature.
 
 ## Run it
 
@@ -36,8 +36,8 @@ Use `--sync-role-panels` to publish new role panels or add options to existing o
 
 1. Start the bot with the new code and run `npm run deploy` to update the displayed slash-command descriptions. The catalogue post’s menus use the new bot handlers.
 2. Run `npm run setup-server -- setup/moths-server.js --refresh-design --dry-run`, then rerun without `--dry-run` when the preview looks right. This renames the retained channels, updates their topics, and edits the existing welcome, rules, catalogue, demo, commission, role, announcement, and sharing posts in place. Check the pins for those posts after the refresh.
-3. In Discord, rename the server to **Scriptmoth** if it still uses the old display name. Order the categories **Start Here**, **Bot showcase**, **Roleplay bot demos**, **Event bot demos**, **Community hangout**, **Creative sharing**, **Voice lounge**, and **Staff**. Put **#bot-features**, **#try-the-bot**, and **#commissions** in that order within **Bot showcase**.
-4. Archive the old **Character Atlas** and the dedicated **#ooc** and **#prompts** channels after reviewing their history and pins. The old character profile guide stays with **#oc-chat**. **#general** and **#share-your-work** now cover introductions, media, writing, and work in progress, so review those old channels before archiving them. If spotlight or birthday automation points to an archived channel, use `/spotlight setup` or `/charbday setup` to move sample announcements to **#rp-bot-demos**, or disable the module here.
+3. In Discord, rename the server to **Scriptmoth** if it still uses the old display name. Follow the selected order in the [sidebar preview](../design/discord-sidebar-preview.html). The feature catalogue and demo channel are the first two entries under Bot showcase.
+4. Archive the old **Character Atlas** and the dedicated **#ooc** and **#prompts** channels after reviewing their history and pins. The old character profile guide stays with **#oc-chat**. **🌙·general** and **🖼️·share-your-work** now cover introductions, media, writing, and work in progress, so review those old channels before archiving them. If spotlight or birthday automation points to an archived channel, use `/spotlight setup` or `/charbday setup` to move sample announcements to **🎲·rp-bot-demos**, or disable the module here.
 
 ## How it's put together
 

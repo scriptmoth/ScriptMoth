@@ -1,6 +1,7 @@
 import type { CatalogSystem } from "./feature-catalog";
 
 export const showcaseInvite = "https://discord.gg/uxPzawJ89Q";
+export const showcaseDemoChannel = "https://discord.com/channels/1572548005620486324/1572815669244985556";
 
 export const showcaseCommands: Partial<Record<CatalogSystem["id"], string>> = {
   "art-prompts": "/artprompt",
@@ -37,7 +38,7 @@ export const showcaseCommands: Partial<Record<CatalogSystem["id"], string>> = {
   "travel-locations": "/adventure travel",
   "random-encounters": "/encounter roll",
   "settlements-factions": "/adventure faction",
-  "role-management": "Use the buttons in #roles",
+  "role-management": "Use the self-assign role buttons",
   moderation: "/warning history",
   bookmarks: "Message menu → Apps → Bookmark Message · /bookmarks list",
 };

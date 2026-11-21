@@ -255,7 +255,7 @@ export const embedPurposes: EmbedPurpose[] = [
     reactions: [],
   },
   {
-    id: "quote", label: "Project estimate", title: "Your bot estimate",
+    id: "quote", label: "Project estimate", title: "🧾 Your bot estimate",
     intro: "**$135 USD estimated development total.** [Submit a project inquiry](https://scriptmoth.com/contact?type=discord-bot) to get a written quote.",
     items: [
       { title: "Simple Utility Bot · $115", body: "One supported main module, branded bot messages, and up to three basic slash commands." },
@@ -283,7 +283,7 @@ export const embedPurposes: EmbedPurpose[] = [
   },
   {
     id: "tickets", label: "Tickets", title: "Open a support ticket",
-    intro: "Select **Open a ticket**, choose a topic, and tell staff what you need help with.",
+    intro: "**✉️ Contact staff privately**\nSelect **Open a ticket**, choose a topic, and tell staff what you need help with.",
     items: [
       { title: "Report a problem", body: "Tell staff what happened. Add a message link if it helps them find it." },
       { title: "Ask a server question", body: "Include the channel, role, or feature you need help with." },
@@ -292,7 +292,7 @@ export const embedPurposes: EmbedPurpose[] = [
       { title: "Purchase", body: "Questions about shop orders." },
       { title: "Other", body: "Anything that doesn’t fit above." },
     ],
-    outro: "Tickets are private to you and staff",
+    outro: "_Tickets are private to you and staff._",
     buttons: [{ label: "Open a ticket", emoji: "🎫", style: "success" }],
     reactions: [],
   },
@@ -842,8 +842,8 @@ export function composeEmbeds(style: EmbedStyle, purpose: EmbedPurpose, options:
     const [packageLine, extra, next] = purpose.items;
     core = [
       { title: purpose.title, description: purpose.intro, color },
-      { title: "Itemized features", description: [packageLine, extra].map(({ title, body }) => `**${title}**\n${body}`).join("\n\n"), color },
-      { title: next.title, description: `${next.body}\n\n-# ${purpose.outro}`, color },
+      { title: "✦ Itemized features", description: [packageLine, extra].map(({ title, body }) => `**${title}**\n${body}`).join("\n\n"), color },
+      { title: next.title, description: `${next.body}\n\n> ${purpose.outro}`, color },
     ];
   } else if (style.layout === "cards") {
     const colors = style.palette?.length ? style.palette.map(hex => parseInt(hex.slice(1), 16)) : [color];

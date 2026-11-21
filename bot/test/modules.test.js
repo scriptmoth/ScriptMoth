@@ -151,13 +151,26 @@ test('server posts have ordered artwork and all local attachment references reso
   const rules = await ui.withArtwork(layout.messages.rules(helpers));
   const [header, content] = rules.embeds.map((embed) => embed.toJSON());
   assert.match(header.image.url, /^attachment:\/\/title-banner-[a-f0-9]{24}\.png$/);
-  assert.equal(content.title, 'Scriptmoth server rules');
+  assert.equal(content.title, 'Scriptmoth Rules');
   assert.equal(content.thumbnail.url, ui.art('icon.rules'));
   assert.equal(content.image.url, ui.art('footer.scalloped'));
   const ruleCards = rules.embeds.slice(2).map((embed) => embed.toJSON());
-  assert.deepEqual(ruleCards.map(({ title }) => title), ['Community conduct', 'Posting, sharing, and bot tests', 'How to report a problem']);
-  assert.deepEqual(ruleCards.flatMap(({ description }) => [...description.matchAll(/\*\*(\d)\./g)].map((match) => Number(match[1]))), [1, 2, 3, 4, 5, 6, 7]);
-  assert.ok(ruleCards.every(({ image }) => image.url === content.image.url));
+  assert.deepEqual(ruleCards.map(({ title }) => title), [
+    '✦ Community conduct', '✦ Posting and privacy', '✦ Bot demos', '✦ Commissions and support', '✦ Reports and moderation',
+  ]);
+  assert.deepEqual(ruleCards.flatMap(({ description }) => [...description.matchAll(/^\*\*(\d{2})\. .+\*\*$/gm)].map((match) => match[1])), [
+    '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12',
+  ]);
+  assert.ok(ruleCards.every(({ image, thumbnail }) => image.url === content.image.url && thumbnail.url === content.thumbnail.url));
+  assert.match(ruleCards.at(-1).description, /^> DM a moderator/m);
+  const channelSpecs = new Map(layout.categories.flatMap(({ channels }) => channels.map((spec) => [spec.key, spec])));
+  const referencedChannels = [];
+  layout.messages.rules({ ui, ch: (key) => {
+    assert.ok(channelSpecs.has(key), `Unknown channel ${key}`);
+    referencedChannels.push(key);
+    return `#${channelSpecs.get(key).name}`;
+  } });
+  assert.deepEqual(referencedChannels, ['general', 'art-share', 'try-commands', 'roleplay', 'build-your-bot']);
 });
 
 test('compact replies upload the divider and fall back when optional art is missing', async () => {
@@ -259,7 +272,8 @@ test('feature menu edits drop an unused banner and retain the divider and other 
   await runtime.onInteraction(interaction);
   assert.equal(replies[0].embeds.length, 1);
   assert.equal(replies[0].components.length, 2);
-  assert.deepEqual(replies[0].attachments, attachments.filter(({ name }) => name !== banner && name !== 'lilac-spark.webp').map(({ id }) => ({ id })));
+  const references = attachmentNames(replies[0].embeds);
+  assert.deepEqual(replies[0].attachments, attachments.filter(({ name }) => references.has(name) || name === 'member-file.txt').map(({ id }) => ({ id })));
   assert.deepEqual(replies[0].files, []);
 });
 
@@ -277,8 +291,8 @@ test('the catalogue covers live modules, separates features, and points to regis
   }
   const { runtime } = setup();
   for (const [id, title, label] of [
-    ['gathering', 'Gathering', 'Try it'],
-    ['crafting', 'Crafting', 'Try it'],
+    ['gathering', 'Gathering', '🕹️ Try it'],
+    ['crafting', 'Crafting', '🕹️ Try it'],
     ['community-qotd', 'Community question of the day', 'Sample · custom build'],
     ['character-qotd', 'In-character question of the day', 'Sample · custom build'],
   ]) {
@@ -292,20 +306,58 @@ test('the catalogue covers live modules, separates features, and points to regis
   }
 });
 
+test('crafting samples default to plain text and toggle ANSI without changing state', async () => {
+  const { runtime } = setup();
+  const initial = fakeInteraction({ command: 'moth', sub: 'info', options: { module: 'crafting' } });
+  await runtime.onInteraction(initial.interaction);
+  const [reply] = initial.replies;
+  const plain = reply.embeds.at(-1).data.description;
+  assert.match(plain, /```\nREADY\n/);
+  assert.ok(!plain.includes('\x1b'));
+
+  async function click(payload) {
+    const { interaction, replies } = fakeInteraction({});
+    Object.assign(interaction, {
+      isChatInputCommand: () => false,
+      isMessageComponent: () => true,
+      customId: payload.components[0].toJSON().components[0].custom_id,
+    });
+    await runtime.onInteraction(interaction);
+    assert.equal(replies.length, 1);
+    assertEmbedArtwork(replies[0]);
+    return replies[0];
+  }
+  const color = await click(reply);
+  const rendered = color.embeds[0].data.description;
+  assert.ok(rendered.includes('```ansi\n\x1b[1;36mREADY\x1b[0m\n'));
+  assert.ok(rendered.includes('\x1b[1;33mNEEDS MATERIALS\x1b[0m\n'));
+  assert.equal((await click(color)).embeds[0].data.description, plain);
+
+  const settings = fakeInteraction({ command: 'moth', sub: 'info', options: { module: 'role-panels' } });
+  await runtime.onInteraction(settings.interaction);
+  const [, json] = settings.replies[0].embeds.at(-1).data.description.match(/```json\n([\s\S]+?)\n```/);
+  const sample = JSON.parse(json);
+  const original = layout.rolePanels.find(({ key }) => key === sample.key);
+  assert.equal(sample.exclusive, original.exclusive);
+  assert.ok(sample.roles.every(([role, label]) => original.roles.some(([a, b]) => role === a && label === b)));
+});
+
 test('the welcome post directs visitors to the showcase before casual channels', () => {
   const channels = new Map(layout.categories.flatMap(({ channels }) => channels.map(({ key, name }) => [key, name])));
   const [start, showcase] = layout.categories;
-  assert.equal(start.name, 'Start Here');
-  assert.equal(showcase.name, 'Bot showcase');
-  assert.deepEqual(showcase.channels.map(({ name }) => name), ['bot-features', 'try-the-bot', 'commissions']);
+  assert.equal(start.name, '☁️━ start here');
+  assert.equal(showcase.name, '🤖━━ bot showcase');
+  assert.deepEqual(showcase.channels.map(({ key }) => key), ['features', 'try-commands', 'build-your-bot']);
   assert.ok(['oc-chat', 'ooc', 'prompts'].every((name) => !channels.has(name)));
   const result = layout.messages.welcome({ ui, ch: (key) => {
     assert.ok(channels.has(key), key);
     return '#' + channels.get(key);
   } });
   const cards = result.embeds.slice(1, 4).map((embed) => embed.toJSON());
-  assert.deepEqual(cards.map(({ description }) => description.match(/#[\w-]+/)[0]),
-    ['#bot-features', '#try-the-bot', '#commissions']);
+  const [catalogue, demos, commissions] = ['features', 'try-commands', 'build-your-bot'].map((key) => '#' + channels.get(key));
+  assert.ok(cards[0].description.includes(catalogue));
+  assert.ok(cards[1].description.includes(demos));
+  assert.ok(cards[2].description.includes(commissions));
 });
 
 test('spotlight sends the character artwork and formats the deferred confirmation', async () => {

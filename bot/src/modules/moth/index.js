@@ -2,14 +2,57 @@
 // This is the only module that is always on. Every Scriptmoth bot ships with it.
 
 const {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   PermissionFlagsBits,
   SlashCommandBuilder,
 } = require('discord.js');
 const { CATEGORIES, TIERS, describeModules } = require('../../core/loader');
 const { BUILD_A_BOT_URL, BOT_PACKAGES_URL, FEATURE_CATALOGUE_URL, PORTFOLIO_URL } = require('../../links');
-const { categories, showcaseEntries, catalogueView } = require('../../core/showcase');
+const { showcaseChannel, showcaseEntries, catalogueView } = require('../../core/showcase');
 
 const quickStart = ['trivia', 'polls', 'dice', 'gathering', 'crafting', 'art-prompt'];
+const craftingReadout = [
+  { tone: 'ready', label: 'READY', detail: 'Moon lantern → crafted' },
+  { tone: 'waiting', label: 'NEEDS MATERIALS', detail: 'Moonleaf missing → try again' },
+];
+
+function craftingExample(ui, ansi = false) {
+  return ui.embed({
+    title: '✦ Example crafting results',
+    description: 'Sample outcomes for the **Moon lantern** recipe.\n\n' + ui.statusBlock(craftingReadout, ansi),
+    color: ui.COLORS.night,
+    thumbnail: ui.art('icon.services'),
+  });
+}
+
+function readoutButton(ansi, update = false) {
+  return new ActionRowBuilder().addComponents(new ButtonBuilder()
+    .setCustomId(`moth:crafting:${ansi ? 'plain' : 'ansi'}:${update ? 'update' : 'open'}`)
+    .setStyle(ButtonStyle.Secondary)
+    .setLabel(ansi ? 'View plain-text example' : 'View ANSI example on desktop'));
+}
+
+function rolePanelExample(ui) {
+  return {
+    title: '✦ Example role panel settings',
+    description: 'Sample entry for the `rolePanels` array in `setup/moths-server.js`. Role names must already exist on the server.\n\n' +
+      ui.codeBlock([
+        '{',
+        '  "key": "pronouns",',
+        '  "title": "Pronouns",',
+        '  "exclusive": false,',
+        '  "roles": [',
+        '    ["◌ she/her ⋆˚", "she/her"],',
+        '    ["◌ they/them ⋆˚", "they/them"]',
+        '  ]',
+        '}',
+      ], 'json') + '\n\n↳ `exclusive: false` lets a member pick more than one role.\n\n◇ *Add other pronouns to the `roles` list as needed.*',
+    color: ui.COLORS.night,
+    thumbnail: ui.art('icon.services'),
+  };
+}
 
 function catalog(ctx) {
   return describeModules(ctx.modules).sort(
@@ -18,17 +61,20 @@ function catalog(ctx) {
 }
 
 async function featureCard(ctx, guildId, entry) {
+  const { ui } = ctx;
   const enabled = entry.moduleId && await ctx.runtime.isEnabled(guildId, entry.moduleId);
   const demo = !entry.moduleId ? { name: 'Sample · custom build', value: entry.demo }
-    : enabled ? { name: 'Try it', value: entry.demo }
-      : { name: 'Demo availability', value: 'This feature is turned off in this server.' };
-  return ctx.ui.embedLayout({
+    : enabled ? { name: '🕹️ Try it', value: entry.demo }
+      : { name: 'Demo availability', value: 'This feature is turned off in this server. Someone with **Manage Server** can enable its module with `/moth enable`.' };
+  const crafting = enabled && entry.id === 'crafting';
+  const embeds = ui.guide({
     title: entry.name,
     description: entry.description,
-    fields: [demo, { name: 'Use it for', value: entry.use }],
-    footer: categories[entry.category],
+    fields: [demo, { name: '✦ Use it for', value: entry.use }],
     tone: 'bot',
-  }, { header: 'header.lavenderWindow' });
+  }, enabled && entry.id === 'role-panels' ? [rolePanelExample(ui)] : [], { header: 'header.lavenderWindow' });
+  if (crafting) embeds.push(craftingExample(ui));
+  return crafting ? { embeds, components: [readoutButton(false)] } : { embeds };
 }
 
 function infoEmbed(ctx, entry, enabled) {
@@ -85,18 +131,22 @@ module.exports = {
 
         if (sub === 'try') {
           const disabled = new Set(await ctx.runtime.disabledModules(interaction.guildId));
-          const entries = showcaseEntries(ctx.modules);
+          const entries = showcaseEntries(ctx.modules, interaction.guildId);
           const fields = quickStart
             .map((id) => entries.find((entry) => entry.id === id))
             .filter((entry) => entry && !disabled.has(entry.moduleId))
             .map((entry) => ({ name: entry.name, value: entry.demo }));
           return ctx.ui.ephemeral(interaction, {
-            embeds: [ctx.ui.embed({
+            embeds: ctx.ui.guide({
               title: 'Try the bot',
-              description: 'Pick a demo and run its command with moth.exe in #try-the-bot. Use fictional data when a demo asks for input.',
-              fields: [...fields, { name: 'Find more demos', value: 'Open the catalogue with `/moth features` or browse the [website catalogue](' + FEATURE_CATALOGUE_URL + ').' }],
+              description: 'Run a command below with moth.exe in ' + showcaseChannel(interaction.guildId, 'demos', 'a channel where the bot can post') + '.\n\n> **Demo data:** Use fictional names and sample content.',
               tone: 'help',
-            })],
+            }, [
+              ...[fields.slice(0, 3), fields.slice(3)].filter((group) => group.length).map((group, index) => ({
+                title: index === 0 ? '🕹️ Quick demos' : '✦ More demos', fields: group,
+              })),
+              { title: 'Browse the full catalogue', description: 'Run `/moth features` or open the [website catalogue](' + FEATURE_CATALOGUE_URL + ').' },
+            ], { header: 'header.lavenderWindow' }),
           });
         }
 
@@ -118,8 +168,8 @@ module.exports = {
 
         const id = interaction.options.getString('module');
         if (sub === 'info') {
-          const feature = showcaseEntries(ctx.modules).find((entry) => entry.id === id);
-          if (feature) return interaction.reply({ embeds: await featureCard(ctx, interaction.guildId, feature) });
+          const feature = showcaseEntries(ctx.modules, interaction.guildId).find((entry) => entry.id === id);
+          if (feature) return interaction.reply(await featureCard(ctx, interaction.guildId, feature));
         }
         const entry = catalog(ctx).find((e) => e.id === id);
         if (!entry) return ctx.ui.ephemeral(interaction, { embeds: [ctx.ui.fail('Choose a feature from the suggestions as you type, or browse `/moth features`.', 'Feature not found')] });
@@ -164,9 +214,14 @@ module.exports = {
       return ctx.ui.ephemeral(interaction, view);
     },
     async feature(interaction, ctx) {
-      const entry = showcaseEntries(ctx.modules).find(({ id }) => id === interaction.values[0]);
+      const entry = showcaseEntries(ctx.modules, interaction.guildId).find(({ id }) => id === interaction.values[0]);
       if (!entry) return ctx.ui.ephemeral(interaction, { embeds: [ctx.ui.empty('Open `/moth features` to see the current catalogue.')] });
-      return ctx.ui.ephemeral(interaction, { embeds: await featureCard(ctx, interaction.guildId, entry) });
+      return ctx.ui.ephemeral(interaction, await featureCard(ctx, interaction.guildId, entry));
+    },
+    crafting(interaction, ctx, [mode, action]) {
+      const ansi = mode === 'ansi';
+      const payload = { embeds: [craftingExample(ctx.ui, ansi)], components: [readoutButton(ansi, true)] };
+      return action === 'update' ? interaction.update(payload) : ctx.ui.ephemeral(interaction, payload);
     },
   },
 };

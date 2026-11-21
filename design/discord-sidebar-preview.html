@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scriptmoth | Discord sidebar previews</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #15121d; color: #eee7fa; font: 15px/1.45 "Segoe UI", sans-serif; }
+  main { max-width: 1100px; margin: auto; padding: 24px 16px 40px; }
+  h1 { margin: 0 0 8px; font-size: 28px; }
+  p { margin: 0 0 20px; color: #cdc1df; }
+  form { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-bottom: 14px; }
+  label { display: flex; align-items: center; gap: 6px; }
+  select { background: #282034; color: inherit; border: 1px solid #86759e; border-radius: 5px; padding: 6px; font: inherit; }
+  .previews { display: flex; flex-wrap: wrap; gap: 18px; }
+  article { min-width: 0; }
+  h2 { margin: 0 0 8px; font-size: 16px; }
+  .sidebar { width: min(244px, calc(100vw - 32px)); padding: 10px 8px; border: 1px solid #493a59; border-radius: 8px; background: #211a2a; }
+  .narrow .sidebar { width: min(180px, calc(100vw - 32px)); padding-inline: 2px; }
+  .category + .category { margin-top: 8px; }
+  .category[hidden] { display: none; }
+  h3, .row { display: flex; align-items: center; gap: 5px; min-height: 24px; margin: 0; padding-inline: 4px; }
+  h3 { font-size: 12px; color: #c8b6df; }
+  .row { font-size: 14px; color: #dfd5ea; }
+  .symbol { width: 14px; flex: 0 0 14px; text-align: center; color: #ab9dbd; }
+  .featured { background: #38284e; color: #f2dcff; border-radius: 4px; font-weight: 600; }
+  .name { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+</style>
+<main>
+  <h1>Scriptmoth sidebar previews</h1>
+  <p>Dark Moon pairs moonlit category headers with one emoji per channel. Member view hides the two private staff channels.</p>
+  <form>
+    <label>View <select id="view"><option value="staff">Staff</option><option value="member">Member</option></select></label>
+    <label>Sidebar width <select id="width"><option value="desktop">Desktop · 244 px</option><option value="narrow">Narrow · 180 px</option></select></label>
+  </form>
+  <div class="previews" id="previews"></div>
+</main>
+<script>
+  const categories = [
+    { name: 'start here', icon: '🌘', channels: ['welcome', 'rules', 'roles', 'announcements'] },
+    { name: 'bot showcase', icon: '🌕', channels: ['bot-features', 'try-the-bot', 'commissions'] },
+    { name: 'roleplay bot demos', icon: '🌌', channels: ['rp-bot-demos'] },
+    { name: 'event bot demos', icon: '☄️', channels: ['event-demo', 'gift-exchange'] },
+    { name: 'community hangout', icon: '🌙', channels: ['general'] },
+    { name: 'creative sharing', icon: '🕯️', channels: ['share-your-work'] },
+    { name: 'voice lounge', icon: '🌑', channels: ['lounge', 'art stream'], voice: true },
+    { name: 'staff', icon: '🔒', channels: ['staff-chat', 'mod-log'], private: true },
+  ];
+  const featured = new Set(['bot-features', 'try-the-bot']);
+  const channelIcons = new Map([
+    ['bot-features', '🔮'], ['try-the-bot', '🕹️'],
+    ['welcome', '☁️'], ['rules', '📜'], ['roles', '💜'], ['announcements', '🔔'],
+    ['commissions', '✉️'], ['rp-bot-demos', '🎲'], ['event-demo', '🗓️'],
+    ['gift-exchange', '🎁'], ['general', '🌙'], ['share-your-work', '🖼️'],
+    ['lounge', '🎧'], ['art stream', '🖌️'], ['staff-chat', '💬'], ['mod-log', '📋'],
+  ]);
+  const styles = [
+    {
+      title: 'Dark Moon',
+      category: (name, icon) => icon + (name === 'bot showcase' ? '━━ ' : '━ ') + name.replace(/\b\w/g, (letter) => letter.toUpperCase()),
+      channel: (name) => channelIcons.get(name) + '·' + name,
+    },
+    {
+      title: 'Mothlight Branches',
+      category: (name) => '✧─' + name + (name === 'bot showcase' ? '·☾✦' : '·☾'),
+      channel: (name, index, count) => {
+        const branch = index === count - 1 ? '╰' : index === 0 ? '╭' : '├';
+        const accent = channelIcons.get(name);
+        return branch + '·' + accent + '·' + name;
+      },
+    },
+    {
+      title: 'Retro Browser Tabs',
+      category: (name) => '⌜ ' + name + ' ⌟',
+      channel: (name) => (featured.has(name) ? '▪' : '▫') + '・' + name,
+    },
+    {
+      title: 'Starfield Ribbons',
+      category: (name) => '☾・' + name + '・☽',
+      channel: (name) => name + ({ 'bot-features': '・✦', 'try-the-bot': '・✦', 'share-your-work': '・✧' }[name] ?? ''),
+    },
+  ];
+
+  const previews = document.querySelector('#previews');
+  const view = document.querySelector('#view');
+  const width = document.querySelector('#width');
+  function add(parent, tag, label, className) {
+    const node = document.createElement(tag);
+    if (label) node.textContent = label;
+    if (className) node.className = className;
+    parent.append(node);
+    return node;
+  }
+
+  for (const style of styles) {
+    const article = add(previews, 'article');
+    add(article, 'h2', style.title);
+    const sidebar = add(article, 'div', '', 'sidebar');
+    for (const category of categories) {
+      const group = add(sidebar, 'section', '', 'category');
+      if (category.private) group.dataset.private = '';
+      const heading = add(group, 'h3');
+      add(heading, 'span', '⌄', 'symbol').ariaHidden = 'true';
+      add(heading, 'span', style.category(category.name, category.icon), 'name');
+      category.channels.forEach((name, index) => {
+        const row = add(group, 'div', '', featured.has(name) ? 'row featured' : 'row');
+        const symbol = add(row, 'span', category.voice ? '♪' : category.private ? '🔒' : '#', 'symbol');
+        symbol.ariaHidden = 'true';
+        if (category.voice) row.setAttribute('title', 'Voice channel');
+        if (category.private) row.setAttribute('title', 'Private staff channel');
+        add(row, 'span', style.channel(name, index, category.channels.length), 'name');
+      });
+    }
+  }
+
+  function update() {
+    previews.classList.toggle('narrow', width.value === 'narrow');
+    for (const section of previews.querySelectorAll('[data-private]')) section.hidden = view.value !== 'staff';
+  }
+  view.addEventListener('change', update);
+  width.addEventListener('change', update);
+  update();
+</script>

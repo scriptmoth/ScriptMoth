@@ -2,7 +2,7 @@ import Link from "next/link";
 import { PageIntro } from "@/components/ui";
 import { assets } from "@/lib/assets";
 import { pageMetadata } from "@/lib/metadata";
-import { showcaseInvite } from "@/data/bot-showcase";
+import { showcaseDemoChannel, showcaseInvite } from "@/data/bot-showcase";
 import { FeatureCatalog } from "./feature-catalog";
 import styles from "./catalog.module.css";
 
@@ -23,7 +23,7 @@ export default function FeaturesPage() {
         <section className={styles.showcase} aria-labelledby="try-moth">
           <div>
             <h2 id="try-moth">Try moth.exe on Discord</h2>
-            <p>Join the Scriptmoth showcase, open <strong>#try-the-bot</strong>, and run <code>/moth try</code>. Use the “Has a Discord demo” filter below to find features with commands to try.</p>
+            <p>Join the Scriptmoth showcase, open <a className="text-link" href={showcaseDemoChannel}>the demo channel</a>, and run <code>/moth try</code>. Use the “Has a Discord demo” filter below to find features with commands to try.</p>
           </div>
           <a className="button button--primary" href={showcaseInvite}>Join the Discord showcase</a>
         </section>

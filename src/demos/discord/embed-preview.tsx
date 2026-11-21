@@ -40,13 +40,35 @@ function inline(text: string, key: string): ReactNode[] {
   return nodes;
 }
 
-/** Renders the block-level markdown Discord supports in embeds: headers, subtext, quotes, and code blocks. */
+function fencedCode(language: string, code: string): ReactNode {
+  if (language === "ansi") {
+    const parts = code.split(/\x1b\[([\d;]*)m/);
+    return parts.map((part, index) => {
+      if (index % 2) return null;
+      const style = parts[index - 1];
+      if (style === "1;36") return <strong key={index} className={styles.ansiReady}>{part}</strong>;
+      if (style === "1;33") return <strong key={index} className={styles.ansiWaiting}>{part}</strong>;
+      return part;
+    });
+  }
+  if (language === "json") {
+    return code.split(/("(?:\\.|[^"\\\r\n])*"|\b(?:true|false|null)\b)/).map((part, index, parts) => {
+      if (index % 2 === 0) return part;
+      const token = part.startsWith('"') && /^\s*:/.test(parts[index + 1]) ? styles.jsonKey : styles.jsonValue;
+      return <span key={index} className={token}>{part}</span>;
+    });
+  }
+  return code;
+}
+
+/** Renders the block-level markdown used in Discord embeds. */
 export function Markdown({ text }: { text: string }) {
   const out: ReactNode[] = [];
-  const parts = text.split(/```[a-z]*\n?([\s\S]*?)```/);
+  const parts = text.split(/```([a-z]*)\n([\s\S]*?)```/i);
   parts.forEach((part, index) => {
-    if (index % 2 === 1) {
-      out.push(<pre key={`c${index}`} className={styles.codeBlock}><code>{part.replace(/\n$/, "")}</code></pre>);
+    if (index % 3 === 1) return;
+    if (index % 3 === 2) {
+      out.push(<pre key={`c${index}`} className={styles.codeBlock}><code>{fencedCode(parts[index - 1].toLowerCase(), part.replace(/\n$/, ""))}</code></pre>);
       return;
     }
     const lines = part.replace(/^\n|\n$/g, "").split("\n");
@@ -67,6 +89,7 @@ export function Markdown({ text }: { text: string }) {
     lines.forEach((line, n) => {
       const key = `${index}-${n}`;
       if (line.startsWith("> ")) {
+        flushList(`${key}l`);
         if (quote.length) quote.push(<br key={`${key}b`} />);
         quote.push(<span key={key}>{inline(line.slice(2), key)}</span>);
         return;

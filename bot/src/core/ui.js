@@ -90,6 +90,19 @@ function guide(options, sections, layout) {
   return embeds;
 }
 
+function codeBlock(lines, language = '') {
+  return ['```' + language, ...lines, '```'].join('\n');
+}
+
+// Keep ANSI opt-in. Every colored segment ends with a reset and has a text label.
+function statusBlock(rows, ansi = false) {
+  const tones = { ready: 36, waiting: 33 };
+  return codeBlock(rows.map(({ label, detail, tone }) => {
+    const status = ansi ? `\x1b[1;${tones[tone]}m${label}\x1b[0m` : label;
+    return `${status}\n${detail}`;
+  }), ansi ? 'ansi' : '');
+}
+
 function validMedia(url, available) {
   if (typeof url !== 'string') return false;
   if (url.startsWith('attachment://')) return available.has(url.slice('attachment://'.length));
@@ -218,4 +231,4 @@ function truncate(text, max) {
   return text.length <= max ? text : `${text.slice(0, max - 1)}…`;
 }
 
-module.exports = { COLORS, TIER_BADGES, TIER_LABELS, art, embed, embedLayout, guide, withArtwork, ok, warn, fail, empty, ephemeral, pick, truncate };
+module.exports = { COLORS, TIER_BADGES, TIER_LABELS, art, embed, embedLayout, guide, codeBlock, statusBlock, withArtwork, ok, warn, fail, empty, ephemeral, pick, truncate };

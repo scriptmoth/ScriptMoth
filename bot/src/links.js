@@ -12,4 +12,6 @@ module.exports = {
   BOT_PACKAGES_URL: `${SITE_URL}/products#discord-packages`,
   FEATURE_CATALOGUE_URL: `${SITE_URL}/features`,
   PORTFOLIO_URL: `${SITE_URL}/portfolio`,
+  BUSINESS_POLICIES_URL: `${SITE_URL}/policies`,
+  CLIENT_SUPPORT_URL: `${SITE_URL}/dashboard#support`,
 };
